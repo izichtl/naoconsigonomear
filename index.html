@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carregador de HTML</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; line-height: 1.4; }
+    h1 { margin-top: 0; }
+    textarea { width: 100%; min-height: 180px; margin-top: 8px; }
+    .row { margin: 12px 0; }
+    ul { padding-left: 20px; }
+    button { cursor: pointer; }
+    iframe { width: 100%; min-height: 320px; border: 1px solid #ccc; margin-top: 12px; }
+    .item-actions { margin-left: 8px; display: inline-flex; gap: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Carregar HTML e gerar página funcional</h1>
+  <p>Cole HTML ou envie um arquivo. Cada item vira uma página funcional (via Blob URL) e também pode ser visualizado abaixo.</p>
+
+  <div class="row">
+    <label for="htmlFile">Arquivo HTML</label><br>
+    <input id="htmlFile" type="file" accept=".html,text/html">
+  </div>
+
+  <div class="row">
+    <label for="htmlText">HTML manual</label>
+    <textarea id="htmlText" placeholder="Cole aqui um HTML completo..."></textarea>
+  </div>
+
+  <div class="row">
+    <button id="addBtn" type="button">Adicionar item</button>
+  </div>
+
+  <h2>Itens carregados</h2>
+  <ul id="items"></ul>
+
+  <h2>Preview</h2>
+  <iframe id="preview" title="Preview do HTML"></iframe>
+
+  <script>
+    const STORAGE_KEY = "html-render-items";
+    const fileInput = document.getElementById("htmlFile");
+    const htmlText = document.getElementById("htmlText");
+    const addBtn = document.getElementById("addBtn");
+    const itemsList = document.getElementById("items");
+    const preview = document.getElementById("preview");
+
+    let items = [];
+
+    function createPageUrl(html) {
+      const blob = new Blob([html], { type: "text/html" });
+      return URL.createObjectURL(blob);
+    }
+
+    function saveItems() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    function addItem(name, html) {
+      const item = {
+        id: Date.now() + Math.random().toString(16).slice(2),
+        name: name || "sem_nome.html",
+        html
+      };
+      items.push(item);
+      saveItems();
+      renderItems();
+      showPreview(item.id);
+    }
+
+    function showPreview(id) {
+      const item = items.find((entry) => entry.id === id);
+      if (!item) return;
+      preview.srcdoc = item.html;
+    }
+
+    function renderItems() {
+      itemsList.innerHTML = "";
+      items.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item.name;
+
+        const actions = document.createElement("span");
+        actions.className = "item-actions";
+
+        const openButton = document.createElement("button");
+        openButton.type = "button";
+        openButton.textContent = "Abrir página";
+        openButton.addEventListener("click", () => {
+          const pageUrl = createPageUrl(item.html);
+          window.open(pageUrl, "_blank", "noopener,noreferrer");
+        });
+
+        const previewButton = document.createElement("button");
+        previewButton.type = "button";
+        previewButton.textContent = "Preview";
+        previewButton.addEventListener("click", () => showPreview(item.id));
+
+        actions.appendChild(openButton);
+        actions.appendChild(previewButton);
+        li.appendChild(actions);
+        itemsList.appendChild(li);
+      });
+    }
+
+    function readSelectedFile() {
+      return new Promise((resolve, reject) => {
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) {
+          resolve(null);
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => resolve({ name: file.name, html: String(reader.result || "") });
+        reader.onerror = () => reject(new Error("Falha ao ler o arquivo."));
+        reader.readAsText(file);
+      });
+    }
+
+    async function onAddClick() {
+      try {
+        const fileResult = await readSelectedFile();
+        const textValue = htmlText.value.trim();
+
+        if (fileResult && fileResult.html.trim()) {
+          addItem(fileResult.name, fileResult.html);
+          fileInput.value = "";
+          return;
+        }
+
+        if (textValue) {
+          addItem("html_manual.html", textValue);
+          htmlText.value = "";
+          return;
+        }
+
+        alert("Cole HTML no campo de texto ou selecione um arquivo .html.");
+      } catch (error) {
+        alert(error.message || "Erro ao adicionar o item.");
+      }
+    }
+
+    function loadItems() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return;
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          items = parsed.filter((entry) =>
+            entry && typeof entry.id === "string" && typeof entry.name === "string" && typeof entry.html === "string"
+          );
+        }
+      } catch (_error) {
+        items = [];
+      }
+    }
+
+    addBtn.addEventListener("click", onAddClick);
+    loadItems();
+    renderItems();
+  </script>
+</body>
+</html>
