@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construtor de Protocolo RSL</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter e Merriweather -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        academic: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            600: '#2563eb',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                            950: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .active-toc-item {
+            background-color: #eff6ff;
+            color: #1e40af;
+            border-left: 3px solid #2563eb;
+            font-weight: 600;
+        }
+
+        @media print {
+            .no-print, header, nav, sidebar, button { display: none !important; }
+            body { background: white !important; font-size: 11pt; color: black !important; }
+            .print-only { display: block !important; }
+            .container-print { max-width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important; }
+        }
+
+        /* Esta versão mantém somente as etapas práticas do construtor. */
+        #s1-1, #s1-2, #s1-3,
+        #s2-1, #s2-2, #s2-3,
+        #s3-1, #s3-2,
+        #s4-1,
+        #s5-1, #s5-2,
+        #s6-2,
+        #toc-s1-1, #toc-s1-2, #toc-s1-3,
+        #toc-s2-1, #toc-s2-2, #toc-s2-3,
+        #toc-s3-1, #toc-s3-2,
+        #toc-s4-1,
+        #toc-s5-1, #toc-s5-2,
+        #toc-s6-2 {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-900 bg-slate-50 min-h-screen flex flex-col selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- HEADER / BARRA SUPERIOR FIXA -->
+    <header class="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-xs no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logotipo & Título -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-blue-900 flex items-center justify-center text-white font-serif font-bold text-lg shadow-xs">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-base sm:text-lg font-bold text-slate-900 font-serif leading-tight">Construtor de Protocolo RSL</h1>
+                        <p class="text-xs text-slate-500 font-medium">Ferramenta prática para construir prompts metodológicos de Revisões Sistemáticas da Literatura.</p>
+                    </div>
+                </div>
+
+                <!-- Progresso e Status -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <div class="flex items-center space-x-2 text-xs bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full border border-slate-200">
+                        <span id="saveStatusDot" class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span id="saveStatusText" class="font-medium">Salvo no navegador</span>
+                    </div>
+
+                    <div class="flex items-center space-x-2 text-xs">
+                        <span class="font-semibold text-slate-600">Progresso do Protocolo:</span>
+                        <span id="completionBadge" class="bg-blue-100 text-blue-800 font-bold px-2.5 py-0.5 rounded-full border border-blue-200">0%</span>
+                    </div>
+                </div>
+
+                <!-- Botão de Acesso Rápido -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="scrollToSection('m6')" class="px-3.5 py-1.5 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-xs">
+                        <i class="fa-solid fa-file-contract"></i>
+                        <span class="hidden sm:inline">Ir ao Protocolo Final (6.1)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Barra Visual de Progresso -->
+        <div class="w-full bg-slate-100 h-1 overflow-hidden">
+            <div id="topProgressBar" class="bg-blue-600 h-full w-0 transition-all duration-300"></div>
+        </div>
+    </header>
+
+    <!-- LAYOUT PRINCIPAL -->
+    <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow flex flex-col md:flex-row gap-8">
+
+        <!-- NAVEGAÇÃO LATERAL (SUMÁRIO / TABLE OF CONTENTS STICKY) -->
+        <aside class="w-full md:w-72 shrink-0 no-print">
+            <div class="sticky top-20 bg-white border border-slate-200 rounded-xl p-4 shadow-xs space-y-4 max-h-[85vh] overflow-y-auto">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Etapas do construtor</h2>
+                    <i class="fa-solid fa-list-ol text-slate-400 text-xs"></i>
+                </div>
+
+                <nav class="space-y-1 text-xs" id="tocNav">
+                    <!-- MÓDULO 1 -->
+                    <div class="pt-1">
+                        <span class="text-[11px] font-bold text-slate-900 uppercase tracking-tight block px-2 py-1 bg-slate-100 rounded mb-1">Módulo 1: Fundamentos</span>
+                        <a href="#s1-1" onclick="setActiveToc('s1-1')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s1-1">1.1 O que é RSL & Diferenças</a>
+                        <a href="#s1-2" onclick="setActiveToc('s1-2')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s1-2">1.2 Diretrizes & Psicologia</a>
+                        <a href="#s1-3" onclick="setActiveToc('s1-3')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s1-3">1.3 Fluxograma de Etapas RSL</a>
+                        <a href="#s1-4" onclick="setActiveToc('s1-4')" class="toc-item block px-2.5 py-1.5 rounded font-semibold text-blue-800 bg-blue-50/50 hover:bg-blue-100/50 transition border-l-2 border-blue-600" id="toc-s1-4">1.4 Prática: Identificação</a>
+                    </div>
+
+                    <!-- MÓDULO 2 -->
+                    <div class="pt-2">
+                        <span class="text-[11px] font-bold text-slate-900 uppercase tracking-tight block px-2 py-1 bg-slate-100 rounded mb-1">Módulo 2: Pergunta & Métodos</span>
+                        <a href="#s2-1" onclick="setActiveToc('s2-1')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s2-1">2.1 A Pergunta Metodológica</a>
+                        <a href="#s2-2" onclick="setActiveToc('s2-2')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s2-2">2.2 PICO vs SPIDER & Exemplos</a>
+                        <a href="#s2-3" onclick="setActiveToc('s2-3')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s2-3">2.3 Metanálise & Metassíntese</a>
+                        <a href="#s2-4" onclick="setActiveToc('s2-4')" class="toc-item block px-2.5 py-1.5 rounded font-semibold text-blue-800 bg-blue-50/50 hover:bg-blue-100/50 transition border-l-2 border-blue-600" id="toc-s2-4">2.4 Prática: Pergunta Dinâmica</a>
+                    </div>
+
+                    <!-- MÓDULO 3 -->
+                    <div class="pt-2">
+                        <span class="text-[11px] font-bold text-slate-900 uppercase tracking-tight block px-2 py-1 bg-slate-100 rounded mb-1">Módulo 3: Elegibilidade & Bases</span>
+                        <a href="#s3-1" onclick="setActiveToc('s3-1')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s3-1">3.1 Critérios de Elegibilidade</a>
+                        <a href="#s3-2" onclick="setActiveToc('s3-2')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s3-2">3.2 Mapeamento de Bases</a>
+                        <a href="#s3-3" onclick="setActiveToc('s3-3')" class="toc-item block px-2.5 py-1.5 rounded font-semibold text-blue-800 bg-blue-50/50 hover:bg-blue-100/50 transition border-l-2 border-blue-600" id="toc-s3-3">3.3 Prática: Seletor de Bases</a>
+                        <a href="#s3-4" onclick="setActiveToc('s3-4')" class="toc-item block px-2.5 py-1.5 rounded font-semibold text-blue-800 bg-blue-50/50 hover:bg-blue-100/50 transition border-l-2 border-blue-600" id="toc-s3-4">3.4 Prática: Racional & Categoria</a>
+                    </div>
+
+                    <!-- MÓDULO 4 -->
+                    <div class="pt-2">
+                        <span class="text-[11px] font-bold text-slate-900 uppercase tracking-tight block px-2 py-1 bg-slate-100 rounded mb-1">Módulo 4: Busca & Sintaxe</span>
+                        <a href="#s4-1" onclick="setActiveToc('s4-1')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s4-1">4.1 Sintaxe, Tesauros & Operadores</a>
+                        <a href="#s4-2" onclick="setActiveToc('s4-2')" class="toc-item block px-2.5 py-1.5 rounded font-semibold text-blue-800 bg-blue-50/50 hover:bg-blue-100/50 transition border-l-2 border-blue-600" id="toc-s4-2">4.2 Prática: String & Validador</a>
+                    </div>
+
+                    <!-- MÓDULO 5 -->
+                    <div class="pt-2">
+                        <span class="text-[11px] font-bold text-slate-900 uppercase tracking-tight block px-2 py-1 bg-slate-100 rounded mb-1">Módulo 5: Viés & Extração</span>
+                        <a href="#s5-1" onclick="setActiveToc('s5-1')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s5-1">5.1 Avaliação Crítica & Viés</a>
+                        <a href="#s5-2" onclick="setActiveToc('s5-2')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s5-2">5.2 Protocolo de Extração</a>
+                        <a href="#s5-3" onclick="setActiveToc('s5-3')" class="toc-item block px-2.5 py-1.5 rounded font-semibold text-blue-800 bg-blue-50/50 hover:bg-blue-100/50 transition border-l-2 border-blue-600" id="toc-s5-3">5.3 Prática: Ferramentas & Divergências</a>
+                    </div>
+
+                    <!-- MÓDULO 6 -->
+                    <div class="pt-2">
+                        <span class="text-[11px] font-bold text-slate-900 uppercase tracking-tight block px-2 py-1 bg-emerald-100 text-emerald-900 rounded mb-1">Módulo 6: Síntese & ABNT</span>
+                        <a href="#s6-1" onclick="setActiveToc('s6-1')" class="toc-item block px-2.5 py-1.5 rounded font-bold text-slate-900 hover:bg-slate-50 transition" id="toc-s6-1">6.1 Central do Protocolo Final</a>
+                        <a href="#s6-2" onclick="setActiveToc('s6-2')" class="toc-item block px-2.5 py-1.5 rounded text-slate-700 hover:bg-slate-50 transition" id="toc-s6-2">6.2 Referências (ABNT NBR 6023)</a>
+                    </div>
+                </nav>
+
+                <!-- Resumo do Preenchimento -->
+                <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
+                    <div class="flex justify-between">
+                        <span>Campos Validados:</span>
+                        <span id="completedFieldsCount" class="font-bold text-slate-800">0 / 12</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                        <div id="sidebarProgressBar" class="bg-blue-600 h-full w-0 transition-all"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL (MÓDULOS 1 A 6) -->
+        <main class="flex-grow space-y-16">
+
+            <!-- ================= MÓDULO 1 ================= -->
+            <section id="m1" class="space-y-8">
+                <div class="border-b-2 border-slate-900 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-blue-800">Módulo 1</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold font-serif text-slate-900">Fundamentos da RSL em Psicologia e Ciências Humanas</h2>
+                </div>
+
+                <!-- 1.1 TEORIA -->
+                <div id="s1-1" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        1.1 Teoria • Conceito e Tipologia
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">O que é uma Revisão Sistemática e por que utilizá-la?</h3>
+
+                    <p class="text-slate-700 leading-relaxed text-sm">
+                        A <strong>Revisão Sistemática da Literatura (RSL)</strong> é um delineamento de pesquisa secundária orientado por uma pergunta investigativa altamente delimitada. Ela aplica procedimentos rigorosos, transparentes e previamente auditáveis para identificar, selecionar, avaliar criticamente e sintetizar a totalidade das evidências empíricas relevantes sobre determinado tópico (<strong>KITCHENHAM, 2004</strong>; <strong>HIGGINS; GREEN, 2011</strong>).
+                    </p>
+
+                    <!-- Quadro Comparativo das Modalidades -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+                            <span class="font-bold text-slate-900 text-sm block border-b border-slate-200 pb-1">
+                                <i class="fa-solid fa-align-left text-amber-600 mr-1"></i> Revisão Narrativa
+                            </span>
+                            <p class="text-slate-600 leading-relaxed">
+                                Seleção informal e assistemática de publicações. A escolha das fontes depende do julgamento subjetivo do autor, gerando alto viés de confirmação. Não possui protocolo reprodutível.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+                            <span class="font-bold text-slate-900 text-sm block border-b border-slate-200 pb-1">
+                                <i class="fa-solid fa-diagram-project text-blue-600 mr-1"></i> Revisão Integrativa
+                            </span>
+                            <p class="text-slate-600 leading-relaxed">
+                                Permite a inclusão simultânea de pesquisas teóricas, empíricas, quantitativas e qualitativas. Visa a construção teórica, conceitual ou de definições operacionais abrangentes.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-blue-50/70 border border-blue-200 text-xs space-y-2">
+                            <span class="font-bold text-blue-950 text-sm block border-b border-blue-200 pb-1">
+                                <i class="fa-solid fa-list-check text-blue-700 mr-1"></i> Revisão Sistemática (RSL)
+                            </span>
+                            <p class="text-blue-900 leading-relaxed">
+                                Exige registro prévio de protocolo, busca exaustiva e replicável em múltiplas bases de dados, pares de revisores independentes, critérios rígidos e avaliação metodológica de viés.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.2 TEORIA -->
+                <div id="s1-2" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        1.2 Teoria • Diretrizes e Particularidades na Psicologia
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">Diretrizes Internacionais e o Contexto da Psicologia</h3>
+
+                    <p class="text-slate-700 leading-relaxed text-sm">
+                        Originalmente desenvolvida nas ciências médicas (Cochrane Collaboration), a RSL foi adaptada para as Ciências Humanas e Sociais para acomodar a complexidade dos fenômenos psíquicos e comportamentais (<strong>COSTA; ZOLTOWSKI, 2014</strong>). Em Psicologia, convivem tanto desfechos psicométricos quantitativos quanto dados qualitativos sobre vivências e significados.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1">
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                            <strong class="text-slate-900 block font-bold">PRISMA 2020</strong>
+                            <p class="text-slate-600">Recomendações padronizadas contendo checklist de 27 itens e fluxograma transparente de seleção de estudos.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                            <strong class="text-slate-900 block font-bold">JBI (Joanna Briggs Institute)</strong>
+                            <p class="text-slate-600">Principal autoridade metodológica para síntese de evidências qualitativas, mista, fenomenológica e teórica.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                            <strong class="text-slate-900 block font-bold">Cochrane Handbook</strong>
+                            <p class="text-slate-600">Referência global para avaliação sistemática de risco de viés em intervenções e tratamentos psicológicos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.3 TEORIA: FLUXOGRAMA DE ETAPAS INTERATIVO -->
+                <div id="s1-3" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        1.3 Teoria • Ciclo de Vida da RSL (Kitchenham & PRISMA)
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">Fluxograma Visual das 3 Fases Fundamentais</h3>
+
+                    <!-- FLUXOGRAMA VISUAL CSS/SVG -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3">
+                        <!-- FASE 1 -->
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 relative space-y-2">
+                            <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                                <span class="w-6 h-6 rounded-full bg-blue-900 text-white font-bold flex items-center justify-center text-xs">1</span>
+                                <span class="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Planejamento</span>
+                            </div>
+                            <h4 class="text-xs font-bold text-slate-900">Construção do Protocolo</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1 list-disc list-inside">
+                                <li>Formulação da Pergunta (PICO/SPIDER)</li>
+                                <li>Definição dos Critérios de Elegibilidade</li>
+                                <li>Elaboração das Strings de Busca</li>
+                                <li><strong>Registro Prévio (PROSPERO / OSF)</strong></li>
+                            </ul>
+                        </div>
+
+                        <!-- FASE 2 -->
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 relative space-y-2">
+                            <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                                <span class="w-6 h-6 rounded-full bg-blue-900 text-white font-bold flex items-center justify-center text-xs">2</span>
+                                <span class="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Execução</span>
+                            </div>
+                            <h4 class="text-xs font-bold text-slate-900">Busca & Triagem (PRISMA)</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1 list-disc list-inside">
+                                <li>Busca exaustiva em Múltiplas Bases</li>
+                                <li>Remoção de Artigos Duplicados</li>
+                                <li>Triagem por Título/Resumo em Dupla</li>
+                                <li>Leitura do Texto Completo & Viés</li>
+                            </ul>
+                        </div>
+
+                        <!-- FASE 3 -->
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 relative space-y-2">
+                            <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                                <span class="w-6 h-6 rounded-full bg-blue-900 text-white font-bold flex items-center justify-center text-xs">3</span>
+                                <span class="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Relato & Síntese</span>
+                            </div>
+                            <h4 class="text-xs font-bold text-slate-900">Análise & Divulgação</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1 list-disc list-inside">
+                                <li>Extração Estruturada de Dados</li>
+                                <li>Sintese Qualitativa / Metanálise</li>
+                                <li>Preenchimento do Diagrama PRISMA</li>
+                                <li>Publicação com Checklist Completo</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.4 PRÁTICA: IDENTIFICAÇÃO DO PROTOCOLO -->
+                <div id="s1-4" class="scroll-mt-20 bg-blue-50/40 border-2 border-blue-200/80 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-blue-200/60">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-clip text-blue-700"></i> 1.4 Prática • Identificação Geral do Protocolo
+                        </span>
+                        <span class="text-[11px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded">Etapa 1</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-800 mb-1">Título Provisório da RSL *</label>
+                            <input type="text" id="prot_title" oninput="updateProtocolData('title', this.value)" placeholder="Ex: Eficácia de intervenções psicológicas em ansiedade de universitários: RSL" class="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-800 mb-1">Pesquisador(es) Responsável(eis) *</label>
+                            <input type="text" id="prot_authors" oninput="updateProtocolData('authors', this.value)" placeholder="Ex: Oliveira, R. S.; Silva, M. A." class="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-800 mb-1">Subárea Científica</label>
+                            <select id="prot_subfield" onchange="updateProtocolData('subfield', this.value)" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                                <option value="Psicologia Clínica e Saúde Mental">Psicologia Clínica e Saúde Mental</option>
+                                <option value="Psicologia Escolar e Desenvolvimento">Psicologia Escolar e Desenvolvimento</option>
+                                <option value="Psicologia Social e Comunidade">Psicologia Social e Comunidade</option>
+                                <option value="Psicologia do Trabalho e Organizacional">Psicologia do Trabalho e Organizacional</option>
+                                <option value="Avaliação Psicológica e Psicometria">Avaliação Psicológica e Psicometria</option>
+                                <option value="Neuropsicologia e Cognição">Neuropsicologia e Cognição</option>
+                                <option value="Humanas e Interdisciplinar">Humanas e Interdisciplinar</option>
+                            </select>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-800 mb-1">Objetivo Geral do Estudo *</label>
+                            <textarea id="prot_objective" oninput="updateProtocolData('objective', this.value)" rows="3" placeholder="Ex: Mapear e sintetizar a literatura científica empírica sobre..." class="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão de Navegação -->
+                <div class="flex justify-end pt-2">
+                    <button onclick="scrollToSection('s2-1')" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold transition flex items-center gap-2">
+                        Avançar para Módulo 2: Pergunta & Métodos <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+
+            <!-- ================= MÓDULO 2 ================= -->
+            <section id="m2" class="space-y-8">
+                <div class="border-b-2 border-slate-900 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-blue-800">Módulo 2</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold font-serif text-slate-900">Pergunta de Pesquisa, PICO/SPIDER & Tipos de Análise</h2>
+                </div>
+
+                <!-- 2.1 TEORIA -->
+                <div id="s2-1" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        2.1 Teoria • A Âncora Metodológica
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">A Pergunta como Núcleo Norteador do Protocolo</h3>
+
+                    <p class="text-slate-700 leading-relaxed text-sm">
+                        Em uma RSL, a pergunta de pesquisa determina diretamente todos os passos subsequentes: a escolha dos termos de busca, a especificação dos critérios de inclusão/exclusão e as técnicas estatísticas ou qualitativas de síntese. Uma pergunta mal formulada compromete a validade de toda a revisão.
+                    </p>
+                </div>
+
+                <!-- 2.2 TEORIA: PICO VS SPIDER E EXEMPLOS REAIS -->
+                <div id="s2-2" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        2.2 Teoria • Estruturas PICO/PICOS vs SPIDER
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">Comparativo Estrutural e Artigos Brasileiros Ilustrativos</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                            <span class="font-bold text-blue-900 text-sm block">PICO (Estudos Quantitativos/Clínicos)</span>
+                            <ul class="space-y-1 text-slate-700">
+                                <li><strong>P (Population):</strong> Amostra / Condição psicológica.</li>
+                                <li><strong>I (Intervention):</strong> Técnica, teste ou psicoterapia.</li>
+                                <li><strong>C (Comparison):</strong> Controle, placebo ou tratamento usual.</li>
+                                <li><strong>O (Outcome):</strong> Desfecho medido (ex: escores BDI, STAI).</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                            <span class="font-bold text-slate-900 text-sm block">SPIDER (Estudos Qualitativos/Sociais)</span>
+                            <ul class="space-y-1 text-slate-700">
+                                <li><strong>S (Sample):</strong> Amostra delimitada.</li>
+                                <li><strong>PI (Phenomenon of Interest):</strong> Vivência ou comportamento.</li>
+                                <li><strong>D (Design):</strong> Entrevistas, grupos focais, etnografia.</li>
+                                <li><strong>E (Evaluation):</strong> Significados, percepções e atitudes.</li>
+                                <li><strong>R (Research type):</strong> Estudos qualitativos ou mistos.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 space-y-2 text-xs">
+                        <h4 class="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Exemplos em Periódicos Brasileiros:</h4>
+                        <div class="p-3 bg-blue-50/50 rounded-lg border border-blue-200">
+                            <strong class="text-blue-950 font-semibold block">Costa & Zoltowski (2014) - Trends in Psychology</strong>
+                            <p class="text-slate-600 mt-0.5">Utilizam acrônimo PICO para rastrear a eficácia de programas de intervenção em saúde mental no Brasil.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong class="text-slate-900 font-semibold block">Zoltowski et al. (2014) - Psico-USF</strong>
+                            <p class="text-slate-600 mt-0.5">Foco na análise metodológica e qualitativa do estresse laboral e burnout em profissionais de saúde.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.3 TEORIA: METANÁLISE E METASSÍNTESE -->
+                <div id="s2-3" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        2.3 Teoria • Tipos de Metanálise e Metassíntese
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">Métodos de Análise Avançada (Quantitativos e Qualitativos)</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                        <!-- QUANTI -->
+                        <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-slate-900 text-sm border-b border-slate-200 pb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-calculator text-blue-700"></i> Abordagens Quantitativas (Metanálise)
+                            </h4>
+                            <div class="space-y-2 text-slate-700">
+                                <p><strong>Modelo de Efeitos Fixos vs. Aleatórios:</strong> O modelo de efeitos aleatórios pressupõe variabilidade entre as populações dos estudos psicológicos (heterogeneidade real).</p>
+                                <p><strong>Estatísticas de Heterogeneidade:</strong> Avaliadas via $I^2$ (porcentagem de variância devida à heterogeneidade), Teste $Q$ de Cochrane e $\tau^2$ (Tau-quadrado).</p>
+                                <p><strong>Metanálise de Redes & Subgrupos:</strong> Compara simultaneamente múltiplas intervenções psicológicas desconectadas em ensaios diretos.</p>
+                                <p><strong>Viés de Publicação:</strong> Investigado visualmente pelo <em>Funnel Plot</em> (Gráfico de Funil) e formalmente pelo Teste de Regressão de Egger.</p>
+                            </div>
+                        </div>
+
+                        <!-- QUALI -->
+                        <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-slate-900 text-sm border-b border-slate-200 pb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-comments text-emerald-700"></i> Abordagens Qualitativas (Metassíntese)
+                            </h4>
+                            <div class="space-y-2 text-slate-700">
+                                <p><strong>Meta-etnografia (Noblit & Hare):</strong> Tradução recíproca e síntese de conceitos qualitativos primários em interpretações de segunda e terceira ordem.</p>
+                                <p><strong>Síntese Temática (Thomas & Harden):</strong> Codificação linha a linha de achados qualitativos com geração de temas descritivos e analíticos.</p>
+                                <p><strong>Metassíntese JBI SUMARI:</strong> Padronização do Joanna Briggs Institute para agregação de categorias fenomenológicas e qualitativas.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.4 PRÁTICA: CONSTRUTOR DINÂMICO DE PERGUNTA -->
+                <div id="s2-4" class="scroll-mt-20 bg-blue-50/40 border-2 border-blue-200/80 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-blue-200/60">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-clip text-blue-700"></i> 2.4 Prática • Gerador de Pergunta de Pesquisa
+                        </span>
+                        <span class="text-[11px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded">Etapa 2</span>
+                    </div>
+
+                    <!-- Botões de Seletor -->
+                    <div class="flex bg-slate-200 p-1 rounded-lg text-xs font-bold max-w-md">
+                        <button id="btnFrameSPIDER" onclick="setFramework('SPIDER')" class="flex-1 py-1.5 rounded-md transition bg-white text-blue-900 shadow-xs">
+                            SPIDER (Qualitativo / Humanas)
+                        </button>
+                        <button id="btnFramePICO" onclick="setFramework('PICO')" class="flex-1 py-1.5 rounded-md transition text-slate-600 hover:text-slate-900">
+                            PICO (Quantitativo / Clínico)
+                        </button>
+                    </div>
+
+                    <!-- FORM SPIDER -->
+                    <div id="formSPIDER" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">S - Amostra (Sample)</label>
+                            <input type="text" id="spider_s" oninput="updateSpiderData('s', this.value)" placeholder="Ex: Psicólogos atuantes na rede pública" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">PI - Fenômeno de Interesse (Phenomenon of Interest)</label>
+                            <input type="text" id="spider_pi" oninput="updateSpiderData('pi', this.value)" placeholder="Ex: Estresse ocupacional e fadiga por compaixão" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">D - Delineamento de Pesquisa (Design)</label>
+                            <input type="text" id="spider_d" oninput="updateSpiderData('d', this.value)" placeholder="Ex: Entrevistas semiestruturadas ou grupos focais" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">E - Avaliação / Experiência (Evaluation)</label>
+                            <input type="text" id="spider_e" oninput="updateSpiderData('e', this.value)" placeholder="Ex: Percepções de esgotamento e estratégias de enfrentamento" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block font-bold text-slate-800 mb-1">R - Tipo de Pesquisa (Research type)</label>
+                            <input type="text" id="spider_r" oninput="updateSpiderData('r', this.value)" placeholder="Ex: Estudos qualitativos ou de métodos mistos" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                    </div>
+
+                    <!-- FORM PICO -->
+                    <div id="formPICO" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs hidden">
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">P - População (Population)</label>
+                            <input type="text" id="pico_p" oninput="updatePicoData('p', this.value)" placeholder="Ex: Pacientes diagnosticados com depressão maior" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">I - Intervenção (Intervention)</label>
+                            <input type="text" id="pico_i" oninput="updatePicoData('i', this.value)" placeholder="Ex: Terapia Cognitivo-Comportamental em grupo" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">C - Comparador (Comparison)</label>
+                            <input type="text" id="pico_c" oninput="updatePicoData('c', this.value)" placeholder="Ex: Tratamento farmacológico habitual ou lista de espera" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">O - Desfecho (Outcome)</label>
+                            <input type="text" id="pico_o" oninput="updatePicoData('o', this.value)" placeholder="Ex: Redução dos sintomas na escala Hamilton-D" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                    </div>
+
+                    <!-- PREVIEW GERADO -->
+                    <div class="p-4 bg-white border border-blue-200 rounded-xl space-y-1 shadow-xs">
+                        <span class="text-[10px] uppercase font-bold text-blue-800 tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Pergunta Unificada Sintetizada
+                        </span>
+                        <p id="synthesizedQuestionPreview" class="text-xs sm:text-sm font-serif italic text-slate-900 font-medium">
+                            Preencha os campos para visualizar...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Botão Navegação -->
+                <div class="flex justify-between items-center pt-2">
+                    <button onclick="scrollToSection('s1-4')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-bold transition">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar ao Módulo 1
+                    </button>
+                    <button onclick="scrollToSection('s3-1')" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold transition">
+                        Avançar para Módulo 3: Elegibilidade & Bases <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+
+            <!-- ================= MÓDULO 3 ================= -->
+            <section id="m3" class="space-y-8">
+                <div class="border-b-2 border-slate-900 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-blue-800">Módulo 3</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold font-serif text-slate-900">Elegibilidade, Mapeamento e Seletor de Bases</h2>
+                </div>
+
+                <!-- 3.1 TEORIA -->
+                <div id="s3-1" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        3.1 Teoria • Critérios de Inclusão e Exclusão
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">Validade do Estudo e Definição de Limites</h3>
+
+                    <p class="text-slate-700 leading-relaxed text-sm">
+                        Os critérios de elegibilidade devem ser explícitos e objetivos. Eles protegem o estudo contra viés de conveniência. Devem especificar delimitadores populacionais, temporais, linguísticos, conceituais e tipologias de desenho aceitas.
+                    </p>
+                </div>
+
+                <!-- 3.2 TEORIA: MAPEAMENTO DE BASES -->
+                <div id="s3-2" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        3.2 Teoria • Panorama das Bases de Dados
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">A Importância das Bases Regionais e Internacionais</h3>
+
+                    <p class="text-slate-700 leading-relaxed text-sm">
+                        Para pesquisas conduzidas na América Latina e no Brasil, buscar unicamente em bases anglo-saxãs (Scopus/Web of Science) gera viés de publicação geográfico. É indispensável integrar portais nacionais como <strong>PePSIC</strong>, <strong>SciELO</strong> e <strong>LILACS / BVS Psi</strong>.
+                    </p>
+                </div>
+
+                <!-- 3.3 PRÁTICA: SELETOR DE BASES MULTI-CHECKBOX -->
+                <div id="s3-3" class="scroll-mt-20 bg-blue-50/40 border-2 border-blue-200/80 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-blue-200/60">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-clip text-blue-700"></i> 3.3 Prática • Seletor Interativo de Bases de Dados
+                        </span>
+                        <span id="dbCountBadge" class="text-[11px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">
+                            0 selecionadas
+                        </span>
+                    </div>
+
+                    <!-- GRADE DE CHECKBOXES BRASILEIRAS E INTERNACIONAIS -->
+                    <div class="space-y-4">
+                        <!-- NACIONAIS / AMÉRICA LATINA -->
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                <i class="fa-solid fa-earth-americas text-emerald-700"></i> Bases Brasileiras e Latino-Americanas
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-xs" id="dbContainerRegional">
+                                <!-- JS Inject -->
+                            </div>
+                        </div>
+
+                        <!-- INTERNACIONAIS -->
+                        <div class="pt-2 border-t border-blue-100">
+                            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                <i class="fa-solid fa-globe text-blue-700"></i> Bases Internacionais Globais
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-xs" id="dbContainerGlobal">
+                                <!-- JS Inject -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DICAS DINÂMICAS BASEADAS NAS BASES SELECIONADAS -->
+                    <div id="dbTipsBox" class="p-3.5 bg-white border border-blue-200 rounded-xl text-xs space-y-1">
+                        <strong class="text-blue-900 font-bold block">Recomendação Estratégica:</strong>
+                        <p id="dbTipsText" class="text-slate-600">Selecione pelo menos 3 bases de dados para garantir cobertura abrangente.</p>
+                    </div>
+                </div>
+
+                <!-- 3.4 PRÁTICA: FORMULÁRIO DE ELECIBILIDADE E REGISTRO -->
+                <div id="s3-4" class="scroll-mt-20 bg-blue-50/40 border-2 border-blue-200/80 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-blue-200/60">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-clip text-blue-700"></i> 3.4 Prática • Racional, Registro e Elegibilidade
+                        </span>
+                        <span class="text-[11px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded">Etapa 3</span>
+                    </div>
+
+                    <div class="space-y-4 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">Racional Teórico / Justificativa do Estudo *</label>
+                            <textarea id="prot_rationale" oninput="updateProtocolData('rationale', this.value)" rows="3" placeholder="Explique a lacuna de conhecimento. Ex: Ausência de revisões sistemáticas recentes na América Latina..." class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block font-bold text-slate-800 mb-1">Plataforma de Registro Prévio</label>
+                                <select id="prot_registration" onchange="updateProtocolData('registration', this.value)" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600">
+                                    <option value="PROSPERO (International Prospective Register of Systematic Reviews)">PROSPERO (Saúde / Clínica)</option>
+                                    <option value="OSF Registries (Open Science Framework)">OSF Registries (Recomendado Humanas/Quali)</option>
+                                    <option value="SciELO Preprints / Repositório Institucional">SciELO Preprints / Repositório</option>
+                                    <option value="Sem registro público prévio">Sem registro público formal</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block font-bold text-slate-800 mb-1">Data Prevista de Início</label>
+                                <input type="date" id="prot_startDate" onchange="updateProtocolData('startDate', this.value)" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-900 focus:outline-none focus:border-blue-600">
+                            </div>
+
+                            <div>
+                                <label class="block font-bold text-slate-800 mb-1">Data Prevista de Término</label>
+                                <input type="date" id="prot_endDate" onchange="updateProtocolData('endDate', this.value)" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-900 focus:outline-none focus:border-blue-600">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <div>
+                                <label class="block font-bold text-slate-800 mb-1">Critérios de Inclusão * (Um por linha)</label>
+                                <textarea id="prot_inclusionCriteria" oninput="updateProtocolData('inclusionCriteria', this.value)" rows="3" placeholder="- Artigos empíricos em periódicos com revisão por pares&#10;- População de estudantes universitários no Brasil&#10;- Idiomas: Português, Inglês ou Espanhol" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block font-bold text-slate-800 mb-1">Critérios de Exclusão * (Um por linha)</label>
+                                <textarea id="prot_exclusionCriteria" oninput="updateProtocolData('exclusionCriteria', this.value)" rows="3" placeholder="- Literatura cinzenta (capítulos, resenhas, anais de evento)&#10;- Estudos puramente teóricos ou metodológicos sem amostra empírica" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão Navegação -->
+                <div class="flex justify-between items-center pt-2">
+                    <button onclick="scrollToSection('s2-4')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-bold transition">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar ao Módulo 2
+                    </button>
+                    <button onclick="scrollToSection('s4-1')" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold transition">
+                        Avançar para Módulo 4: Busca & Sintaxe <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+
+            <!-- ================= MÓDULO 4 ================= -->
+            <section id="m4" class="space-y-8">
+                <div class="border-b-2 border-slate-900 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-blue-800">Módulo 4</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold font-serif text-slate-900">Estratégia de Busca e Sintaxe Booleana</h2>
+                </div>
+
+                <!-- 4.1 TEORIA -->
+                <div id="s4-1" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        4.1 Teoria • Tesauros, Aspas e Operadores
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">Construindo Buscas Sensíveis e Específicas</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                            <strong class="text-slate-900 font-bold block">Vocabulários Controlados</strong>
+                            <p class="text-slate-600">DeCS/MeSH (saúde), APA Thesaurus (psicologia global) e Terminologia Psi (BVS-PSI Brasil).</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                            <strong class="text-slate-900 font-bold block">Operadores Booleanos</strong>
+                            <p class="text-slate-600"><code>AND</code> (interseção entre blocos PICO), <code>OR</code> (sinônimos) e <code>NOT</code> (exclusão).</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                            <strong class="text-slate-900 font-bold block">Símbolos e Truncamento</strong>
+                            <p class="text-slate-600">Aspas <code>" "</code> para termos exatos e asterisco <code>*</code> para variações do radical (ex: <code>psychol*</code>).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.2 PRÁTICA: STRING E VALIDADOR AUTOMÁTICO -->
+                <div id="s4-2" class="scroll-mt-20 bg-blue-50/40 border-2 border-blue-200/80 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-blue-200/60">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-clip text-blue-700"></i> 4.2 Prática • String de Busca & Validador de Sintaxe
+                        </span>
+                        <span class="text-[11px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded">Etapa 4</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">Palavras-chave em Português</label>
+                            <input type="text" id="prot_keywordsPt" oninput="updateProtocolData('keywordsPt', this.value)" placeholder="Ex: Psicologia, Estresse, Universitários" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">Palavras-chave em Inglês</label>
+                            <input type="text" id="prot_keywordsEn" oninput="updateProtocolData('keywordsEn', this.value)" placeholder="Ex: Psychology, Stress, College Students" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                    </div>
+
+                    <!-- STRING COM VALIDADOR -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1 text-xs">
+                            <label class="font-bold text-slate-800">String de Busca Consolidada Final *</label>
+                            <span id="stringSyntaxBadge" class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+                                Aguardando entrada...
+                            </span>
+                        </div>
+                        <textarea id="prot_searchString" oninput="validateAndUpdateSearchString(this.value)" rows="3" placeholder='Ex: ("Psicologia" OR "Psychology") AND ("Estresse" OR "Stress") AND ("Universitários" OR "Students")' class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-blue-600"></textarea>
+                    </div>
+                </div>
+
+                <!-- Botão Navegação -->
+                <div class="flex justify-between items-center pt-2">
+                    <button onclick="scrollToSection('s3-4')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-bold transition">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar ao Módulo 3
+                    </button>
+                    <button onclick="scrollToSection('s5-1')" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold transition">
+                        Avançar para Módulo 5: Viés & Extração <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+
+            <!-- ================= MÓDULO 5 ================= -->
+            <section id="m5" class="space-y-8">
+                <div class="border-b-2 border-slate-900 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-blue-800">Módulo 5</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold font-serif text-slate-900">Avaliação da Qualidade Metodológica e Extração de Dados</h2>
+                </div>
+
+                <!-- 5.1 TEORIA -->
+                <div id="s5-1" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        5.1 Teoria • Risco de Viés
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">Avaliação Crítica e Ferramentas Padrão</h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                            <strong class="text-slate-900 font-bold block">MMAT 2018</strong>
+                            <p class="text-slate-600">Mixed Methods Appraisal Tool - A melhor opção para revisões em Psicologia com desenhos mistos.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                            <strong class="text-slate-900 font-bold block">JBI Appraisal Tools</strong>
+                            <p class="text-slate-600">Checklists específicos para estudos qualitativos, fenomenológicos e de corte transversal.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
+                            <strong class="text-slate-900 font-bold block">Cochrane RoB 2.0 / ROBINS-I</strong>
+                            <p class="text-slate-600">Padrão-ouro para avaliação de risco de viés em intervenções clínicas aleatorizadas ou não.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5.2 TEORIA -->
+                <div id="s5-2" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-bold border border-blue-100">
+                        5.2 Teoria • Extração Estruturada
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">Matriz de Extração e Resolução de Divergências</h3>
+
+                    <p class="text-slate-700 leading-relaxed text-sm">
+                        A extração deve ser realizada via formulário padronizado (pilotado em 3 estudos iniciais). A triagem e extração em dupla minimiza a perda de dados e o viés individual.
+                    </p>
+                </div>
+
+                <!-- 5.3 PRÁTICA: SELEÇÃO DE FERRAMENTAS -->
+                <div id="s5-3" class="scroll-mt-20 bg-blue-50/40 border-2 border-blue-200/80 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-blue-200/60">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-900 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-clip text-blue-700"></i> 5.3 Prática • Ferramentas & Divergências entre Revisores
+                        </span>
+                        <span class="text-[11px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded">Etapa 5</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">Ferramenta Selecionada para Avaliação Metodológica / Viés</label>
+                            <select id="prot_appraisalTool" onchange="updateProtocolData('appraisalTool', this.value)" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600">
+                                <option value="JBI Critical Appraisal Checklists (Joanna Briggs Institute)">JBI Critical Appraisal Checklists (Qualitativo / Metassíntese)</option>
+                                <option value="MMAT - Mixed Methods Appraisal Tool (2018)">MMAT - Mixed Methods Appraisal Tool (Mistos / Psicologia)</option>
+                                <option value="CASP Checklists (Critical Appraisal Skills Programme)">CASP Checklists (Qualitativo / Coorte)</option>
+                                <option value="Cochrane Risk of Bias Tool (RoB 2.0 / ROBINS-I)">Cochrane RoB 2.0 / ROBINS-I (Ensaio Clínico Quantitativo)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-800 mb-1">Estratégia para Resoluação de Divergências</label>
+                            <input type="text" id="prot_disagreementStrategy" oninput="updateProtocolData('disagreementStrategy', this.value)" placeholder="Ex: Consenso prévio entre a dupla ou parecer de um terceiro revisor sênior." class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão Navegação -->
+                <div class="flex justify-between items-center pt-2">
+                    <button onclick="scrollToSection('s4-2')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-bold transition">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar ao Módulo 4
+                    </button>
+                    <button onclick="scrollToSection('s6-1')" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-xs font-bold transition shadow-xs">
+                        Visualizar Protocolo Final (Módulo 6) <i class="fa-solid fa-file-circle-check"></i>
+                    </button>
+                </div>
+            </section>
+
+
+            <!-- ================= MÓDULO 6 ================= -->
+            <section id="m6" class="space-y-8">
+                <div class="border-b-2 border-slate-900 pb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-800">Módulo 6</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold font-serif text-slate-900">Protocolo Consolidado & Referências Metodológicas</h2>
+                </div>
+
+                <!-- 6.1 PRÁTICA: PAINEL E DOCUMENTO FINAL CONSOLIDADO -->
+                <div id="s6-1" class="scroll-mt-20 space-y-6">
+                    <!-- PAINEL DE AÇÕES -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs no-print space-y-4">
+                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900 font-serif flex items-center gap-2">
+                                    <i class="fa-solid fa-file-contract text-blue-700"></i> Central do Protocolo Consolidado (6.1)
+                                </h3>
+                                <p class="text-xs text-slate-600">Documento estruturado pronto para submissão ou registro no PROSPERO / OSF.</p>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                                <button onclick="copyProtocolMarkdown()" class="px-3.5 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-xs">
+                                    <i class="fa-solid fa-copy"></i> Copiar Markdown
+                                </button>
+
+                                <button onclick="window.print()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-xs">
+                                    <i class="fa-solid fa-print"></i> Imprimir / PDF
+                                </button>
+
+                                <button onclick="exportJSON()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-xs font-semibold transition" title="Exportar Backup JSON">
+                                    <i class="fa-solid fa-download"></i> Backup JSON
+                                </button>
+
+                                <label class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-lg text-xs font-semibold transition cursor-pointer" title="Importar JSON">
+                                    <i class="fa-solid fa-upload"></i> Restaurar
+                                    <input type="file" id="jsonFileInput" onchange="importJSON(event)" accept=".json" class="hidden">
+                                </label>
+
+                                <button onclick="clearProtocolData()" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-lg text-xs font-semibold transition" title="Limpar Tudo">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FOLHA/VISUALIZADOR ACADÊMICO DE IMPRESSÃO -->
+                    <div id="protocolDocumentPreview" class="bg-white border border-slate-200 rounded-2xl p-8 sm:p-12 shadow-sm text-slate-900 space-y-8 container-print">
+                        <div class="border-b-2 border-slate-900 pb-6 text-center space-y-2">
+                            <span class="text-xs font-bold uppercase tracking-widest text-blue-800">Protocolo de Revisão Sistemática da Literatura</span>
+                            <h1 id="doc_title" class="text-2xl sm:text-3xl font-extrabold font-serif text-slate-900">[Título do Protocolo]</h1>
+                            <div class="text-xs text-slate-600 space-x-3 pt-2 font-medium">
+                                <span><strong>Autores:</strong> <span id="doc_authors">[Autores]</span></span>
+                                <span>•</span>
+                                <span><strong>Área:</strong> <span id="doc_subfield">[Subárea]</span></span>
+                            </div>
+                        </div>
+
+                        <!-- 1. Objetivos -->
+                        <div class="space-y-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-1">
+                                1. Identificação, Objetivos & Justificativa
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                    <strong>Objetivo Geral:</strong>
+                                    <p id="doc_objective" class="text-slate-700 mt-1 leading-relaxed">[Objetivo...]</p>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                    <strong>Racional / Justificativa:</strong>
+                                    <p id="doc_rationale" class="text-slate-700 mt-1 leading-relaxed">[Justificativa...]</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3 text-xs pt-1">
+                                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                                    <strong>Plataforma Registro:</strong>
+                                    <p id="doc_registration" class="text-slate-700 mt-0.5">[Registro]</p>
+                                </div>
+                                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                                    <strong>Início Previsto:</strong>
+                                    <p id="doc_startDate" class="text-slate-700 mt-0.5">[Data]</p>
+                                </div>
+                                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                                    <strong>Término Previsto:</strong>
+                                    <p id="doc_endDate" class="text-slate-700 mt-0.5">[Data]</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Pergunta -->
+                        <div class="space-y-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-1">
+                                2. Pergunta de Pesquisa (<span id="doc_frameworkName">SPIDER</span>)
+                            </h3>
+                            <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-200">
+                                <span class="text-xs font-bold text-blue-900 block mb-1">Pergunta Consolidada:</span>
+                                <p id="doc_synthesizedQuestion" class="text-sm font-serif italic text-blue-950 font-medium">[Pergunta...]</p>
+                            </div>
+                            <div id="doc_frameworkTable" class="overflow-x-auto text-xs"></div>
+                        </div>
+
+                        <!-- 3. Fontes -->
+                        <div class="space-y-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-1">
+                                3. Fontes de Informação & String de Busca
+                            </h3>
+                            <div class="text-xs space-y-2">
+                                <div>
+                                    <strong>Bases de Dados Selecionadas:</strong>
+                                    <div id="doc_selectedDatabasesBadges" class="flex flex-wrap gap-1.5 mt-1"></div>
+                                </div>
+                                <div class="bg-slate-100 p-3 rounded-lg border border-slate-200 font-mono text-xs">
+                                    <strong class="text-slate-900 block mb-1 font-sans text-xs">String de Busca Consolidada:</strong>
+                                    <span id="doc_searchString">[String...]</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Elegibilidade -->
+                        <div class="space-y-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-1">
+                                4. Elegibilidade & Avaliação de Viés
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                    <strong class="text-slate-900 block mb-1">Critérios de Inclusão:</strong>
+                                    <div id="doc_inclusionCriteriaList" class="text-slate-700 whitespace-pre-line leading-relaxed">[Inclusão...]</div>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                    <strong class="text-slate-900 block mb-1">Critérios de Exclusão:</strong>
+                                    <div id="doc_exclusionCriteriaList" class="text-slate-700 whitespace-pre-line leading-relaxed">[Exclusão...]</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 text-xs pt-1">
+                                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                                    <strong>Resolução de Divergências:</strong>
+                                    <p id="doc_disagreementStrategy" class="text-slate-700 mt-0.5">[Estratégia...]</p>
+                                </div>
+                                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                                    <strong>Ferramenta de Avaliação Crítica:</strong>
+                                    <p id="doc_appraisalTool" class="text-slate-700 mt-0.5">[Ferramenta...]</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t border-slate-200 flex justify-between items-center text-xs text-slate-400">
+                            <span>Gerado via Construtor de Protocolos RSL em Psicologia</span>
+                            <span id="doc_generatedDate">Data de Emissão: --/--/----</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6.2 TEORIA: REFERÊNCIAS ABNT NBR 6023 -->
+                <div id="s6-2" class="scroll-mt-20 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-800 rounded-full text-xs font-bold border border-slate-200">
+                        6.2 Teoria • Referências Metodológicas (Normas ABNT NBR 6023)
+                    </div>
+                    <h3 class="text-xl font-bold font-serif text-slate-900">Bibliografia Citada no Minicurso</h3>
+
+                    <div class="bibliography-list space-y-2 text-[11px] text-slate-800 leading-relaxed font-sans pt-2">
+                        <div class="bibliography-item">
+                            COOKE, Alison; SMITH, David; BOOTH, Andrew. <a href="https://scholar.google.com/scholar?q=Cooke+Smith+Booth+Beyond+PICO+SPIDER" target="_blank" rel="noopener noreferrer">Beyond PICO: The SPIDER Tool for Qualitative and Mixed Methods Literature Searches</a>. <strong>Qualitative Health Research</strong>, v. 22, n. 10, p. 1435–1443, 2012.
+                        </div>
+
+                        <div class="bibliography-item">
+                            COSTA, Angelo Brandelli; ZOLTOWSKI, Ana Paula Correia. <a href="https://scholar.google.com/scholar?q=Costa+Zoltowski+Como+fazer+uma+revisao+sistematica+de+literatura" target="_blank" rel="noopener noreferrer">Como fazer uma revisão sistemática de literatura</a>. In: KOLLER, Silvia H.; PAULA, Maria Clara P. P. de; HOHENDORFF, Jean Von (Orgs.). <strong>Manual de produção científica</strong>. Porto Alegre: Penso, 2014. p. 55-71.
+                        </div>
+
+                        <div class="bibliography-item">
+                            HIGGINS, Julian P. T.; GREEN, Sally (Eds.). <a href="https://scholar.google.com/scholar?q=Higgins+Green+Cochrane+Handbook+Systematic+Reviews+Interventions" target="_blank" rel="noopener noreferrer"><strong>Cochrane Handbook for Systematic Reviews of Interventions</strong></a>. Version 5.1.0. The Cochrane Collaboration, 2011.
+                        </div>
+
+                        <div class="bibliography-item">
+                            HONG, Quan Nha et al. <a href="https://scholar.google.com/scholar?q=Hong+Mixed+Methods+Appraisal+Tool+MMAT+2018" target="_blank" rel="noopener noreferrer"><strong>Mixed Methods Appraisal Tool (MMAT)</strong></a>, version 2018. Registration of Copyright (#1148552), Canadian Intellectual Property Office, Industry Canada, 2018.
+                        </div>
+
+                        <div class="bibliography-item">
+                            JOANNA BRIGGS INSTITUTE [JBI]. <a href="https://scholar.google.com/scholar?q=Joanna+Briggs+Institute+JBI+Manual+Evidence+Synthesis" target="_blank" rel="noopener noreferrer"><strong>JBI Manual for Evidence Synthesis</strong></a>. Adelaide: JBI, 2020. Disponível em: &lt;https://synthesismanual.jbi.global&gt;. Acesso em: 2026.
+                        </div>
+
+                        <div class="bibliography-item">
+                            KITCHENHAM, Barbara. <a href="https://scholar.google.com/scholar?q=Kitchenham+Procedures+for+Performing+Systematic+Reviews" target="_blank" rel="noopener noreferrer"><strong>Procedures for Performing Systematic Reviews</strong></a>. Keele UK: Keele University Technical Report TR/SE-0401, 2004.
+                        </div>
+
+                        <div class="bibliography-item">
+                            NOBLIT, George W.; HARE, Dwight. <a href="https://scholar.google.com/scholar?q=Noblit+Hare+Meta-ethnography+Synthesizing+Qualitative+Studies" target="_blank" rel="noopener noreferrer"><strong>Meta-ethnography: Synthesizing Qualitative Studies</strong></a>. Newbury Park: SAGE Publications, 1988.
+                        </div>
+
+                        <div class="bibliography-item">
+                            PAGE, Matthew J. et al. <a href="https://scholar.google.com/scholar?q=Page+PRISMA+2020+statement+updated+guideline+systematic+reviews" target="_blank" rel="noopener noreferrer">The PRISMA 2020 statement: An updated guideline for reporting systematic reviews</a>. <strong>BMJ</strong>, v. 372, n. 71, 2021.
+                        </div>
+
+                        <div class="bibliography-item">
+                            THOMAS, James; HARDEN, Angela. <a href="https://scholar.google.com/scholar?q=Thomas+Harden+Methods+thematic+synthesis+qualitative+research+systematic+reviews" target="_blank" rel="noopener noreferrer">Methods for the thematic synthesis of qualitative research in systematic reviews</a>. <strong>BMC Medical Research Methodology</strong>, v. 8, n. 45, p. 1-10, 2008.
+                        </div>
+
+                        <div class="bibliography-item">
+                            ZOLTOWSKI, Ana Paula Correia et al. <a href="https://scholar.google.com/scholar?q=Zoltowski+qualidade+revisoes+sistematicas+burnout+Brasil" target="_blank" rel="noopener noreferrer">A qualidade das revisões sistemáticas sobre burnout no Brasil</a>. <strong>Psico-USF</strong>, v. 19, n. 3, p. 431-443, 2014.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- NOTIFICAÇÃO TOAST -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl text-xs font-medium transition-all duration-300 transform translate-y-20 opacity-0 flex items-center gap-2">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMessage">Operação realizada com sucesso.</span>
+    </div>
+
+    <!-- JAVASCRIPT COMPLETO E SEM SCRIPT INTERRUPTO -->
+    <script>
+        // LISTA EXTENSA DE BASES REGIONAIS E INTERNACIONAIS
+        const BASES_REGIONAL = [
+            { id: 'pepsic', name: 'PePSIC', desc: 'Periódicos Eletrônicos em Psicologia' },
+            { id: 'scielo', name: 'SciELO Brasil', desc: 'Scientific Electronic Library Online' },
+            { id: 'lilacs', name: 'LILACS', desc: 'Literatura Sul-Americana em Saúde' },
+            { id: 'bvspsi', name: 'BVS Psicologia Brasil', desc: 'Biblioteca Virtual em Saúde Psicologia' },
+            { id: 'capes', name: 'Capes Periódicos', desc: 'Portal de Periódicos Capes' },
+            { id: 'redalyc', name: 'Redalyc', desc: 'Red de Revistas Científicas de AL' },
+            { id: 'latindex', name: 'Latindex', desc: 'Sistema de Información en Línea' },
+            { id: 'indexpsi', name: 'Index Psi Periódicos', desc: 'Índice de Periódicos em Psicologia' },
+            { id: 'bdtd', name: 'BDTD (IBICT)', desc: 'Biblioteca Digital de Teses e Dissertações' }
+        ];
+
+        const BASES_GLOBAL = [
+            { id: 'psycinfo', name: 'APA PsycINFO', desc: 'Base Internacional Padrão em Psicologia' },
+            { id: 'pubmed', name: 'PubMed / MEDLINE', desc: 'Saúde Mental, Neuro e Clínica' },
+            { id: 'scopus', name: 'Scopus (Elsevier)', desc: 'Multidisciplinar Global de Alto Impacto' },
+            { id: 'wos', name: 'Web of Science', desc: 'Clarivate Analytics Acervo Global' },
+            { id: 'eric', name: 'ERIC (Education)', desc: 'Recursos Educacionais e Psicologia Escolar' },
+            { id: 'dialnet', name: 'Dialnet', desc: 'Portal Hispanófono de Humanidades' },
+            { id: 'ieee', name: 'IEEE Xplore', desc: 'Tecnologia e Interação Humano-Computador' },
+            { id: 'cochrane', name: 'Cochrane Library', desc: 'Ensaios Clínicos e Intervenções' },
+            { id: 'scholar', name: 'Google Acadêmico', desc: 'Busca Abrangente por Literatura' }
+        ];
+
+        // ESTADO GLOBAL DO PROTOCOLO
+        let protocolData = {
+            title: '',
+            authors: '',
+            subfield: 'Psicologia Clínica e Saúde Mental',
+            objective: '',
+            rationale: '',
+            registration: 'PROSPERO (International Prospective Register of Systematic Reviews)',
+            startDate: '',
+            endDate: '',
+            framework: 'SPIDER',
+            spider: { s: '', pi: '', d: '', e: '', r: '' },
+            pico: { p: '', i: '', c: '', o: '' },
+            selectedDatabases: ['pepsic', 'scielo', 'bvspsi', 'psycinfo'],
+            keywordsPt: '',
+            keywordsEn: '',
+            searchString: '',
+            inclusionCriteria: '',
+            exclusionCriteria: '',
+            disagreementStrategy: 'Consenso entre a dupla de revisores independentes ou parecer de um terceiro revisor sênior.',
+            appraisalTool: 'JBI Critical Appraisal Checklists (Joanna Briggs Institute)'
+        };
+
+        const REQUIRED_FIELDS = [
+            'title', 'authors', 'objective', 'rationale', 'searchString', 'inclusionCriteria', 'exclusionCriteria'
+        ];
+
+        window.onload = function() {
+            loadFromLocalStorage();
+            renderDatabases();
+            updateUI();
+            calculateCompletion();
+            setupIntersectionObserver();
+        };
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('rsl_sober_protocol_v3', JSON.stringify(protocolData));
+                showSaveStatus();
+                calculateCompletion();
+            } catch (err) {
+                console.error("Erro ao salvar", err);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('rsl_sober_protocol_v3');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    protocolData = { ...protocolData, ...parsed };
+                } catch (e) {
+                    console.error("Erro ao carregar", e);
+                }
+            }
+        }
+
+        function showSaveStatus() {
+            const dot = document.getElementById('saveStatusDot');
+            const txt = document.getElementById('saveStatusText');
+            if (dot && txt) {
+                dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+                txt.textContent = "Salvo automaticamente";
+                setTimeout(() => { dot.className = "w-2 h-2 rounded-full bg-emerald-500"; }, 1000);
+            }
+        }
+
+        function calculateCompletion() {
+            let filledCount = 0;
+            REQUIRED_FIELDS.forEach(f => {
+                if (protocolData[f] && protocolData[f].trim() !== '') filledCount++;
+            });
+
+            if (protocolData.framework === 'SPIDER') {
+                if (protocolData.spider.s && protocolData.spider.pi) filledCount++;
+            } else {
+                if (protocolData.pico.p && protocolData.pico.i) filledCount++;
+            }
+
+            const totalTracked = REQUIRED_FIELDS.length + 1;
+            const pct = Math.round((filledCount / totalTracked) * 100);
+
+            document.getElementById('completionBadge').textContent = `${pct}%`;
+            document.getElementById('completedFieldsCount').textContent = `${filledCount} / ${totalTracked}`;
+            document.getElementById('sidebarProgressBar').style.width = `${pct}%`;
+            document.getElementById('topProgressBar').style.width = `${pct}%`;
+        }
+
+        function scrollToSection(id) {
+            const target = document.getElementById(id);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+                setActiveToc(id);
+            }
+        }
+
+        function setActiveToc(id) {
+            document.querySelectorAll('.toc-item').forEach(item => {
+                item.classList.remove('active-toc-item');
+            });
+            const activeLink = document.getElementById(`toc-${id}`);
+            if (activeLink) activeLink.classList.add('active-toc-item');
+        }
+
+        function setupIntersectionObserver() {
+            const sections = document.querySelectorAll('div[id^="s"]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setActiveToc(entry.target.id);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            sections.forEach(sec => observer.observe(sec));
+        }
+
+        // RENDERIZAR BASES
+        function renderDatabases() {
+            const containerReg = document.getElementById('dbContainerRegional');
+            const containerGlo = document.getElementById('dbContainerGlobal');
+
+            if (containerReg) {
+                containerReg.innerHTML = BASES_REGIONAL.map(db => createDbCheckboxHTML(db)).join('');
+            }
+            if (containerGlo) {
+                containerGlo.innerHTML = BASES_GLOBAL.map(db => createDbCheckboxHTML(db)).join('');
+            }
+            updateDbBadgesAndTips();
+        }
+
+        function createDbCheckboxHTML(db) {
+            const isChecked = protocolData.selectedDatabases.includes(db.id);
+            return `
+                <label class="flex items-start gap-2 p-2 rounded-lg bg-white border border-slate-200 cursor-pointer hover:bg-slate-50 transition">
+                    <input type="checkbox" value="${db.id}" ${isChecked ? 'checked' : ''} onchange="toggleDatabase('${db.id}')" class="mt-0.5 rounded text-blue-600 focus:ring-0">
+                    <div>
+                        <strong class="text-slate-900 block font-semibold text-xs">${db.name}</strong>
+                        <span class="text-[10px] text-slate-500 block leading-tight">${db.desc}</span>
+                    </div>
+                </label>
+            `;
+        }
+
+        function toggleDatabase(id) {
+            const idx = protocolData.selectedDatabases.indexOf(id);
+            if (idx > -1) {
+                protocolData.selectedDatabases.splice(idx, 1);
+            } else {
+                protocolData.selectedDatabases.push(id);
+            }
+            saveToLocalStorage();
+            updateDbBadgesAndTips();
+        }
+
+        function updateDbBadgesAndTips() {
+            const badge = document.getElementById('dbCountBadge');
+            const tipsText = document.getElementById('dbTipsText');
+            const count = protocolData.selectedDatabases.length;
+
+            if (badge) badge.textContent = `${count} selecionada(s)`;
+
+            if (tipsText) {
+                const hasRegional = protocolData.selectedDatabases.some(id => BASES_REGIONAL.some(r => r.id === id));
+                const hasGlobal = protocolData.selectedDatabases.some(id => BASES_GLOBAL.some(g => g.id === id));
+
+                if (count === 0) {
+                    tipsText.textContent = "Atenção: Nenhuma base de dados foi selecionada ainda.";
+                } else if (hasRegional && hasGlobal) {
+                    tipsText.textContent = "Excelente escolha! A combinação de bases nacionais/latino-americanas com internacionais previne viés de publicação geográfico.";
+                } else if (hasRegional && !hasGlobal) {
+                    tipsText.textContent = "Você selecionou apenas bases regionais. Considere adicionar ao menos uma base internacional (ex: PsycINFO ou Scopus) para abranger estudos globais.";
+                } else {
+                    tipsText.textContent = "Você selecionou apenas bases internacionais. Recomendamos incluir PePSIC ou SciELO para capturar a literatura em Psicologia na América Latina.";
+                }
+            }
+            renderConsolidatedDocument();
+        }
+
+        function updateProtocolData(field, val) {
+            protocolData[field] = val;
+            saveToLocalStorage();
+            renderConsolidatedDocument();
+        }
+
+        function updateSpiderData(field, val) {
+            protocolData.spider[field] = val;
+            synthesizeQuestion();
+            saveToLocalStorage();
+            renderConsolidatedDocument();
+        }
+
+        function updatePicoData(field, val) {
+            protocolData.pico[field] = val;
+            synthesizeQuestion();
+            saveToLocalStorage();
+            renderConsolidatedDocument();
+        }
+
+        function setFramework(type) {
+            protocolData.framework = type;
+            const btnS = document.getElementById('btnFrameSPIDER');
+            const btnP = document.getElementById('btnFramePICO');
+            const formS = document.getElementById('formSPIDER');
+            const formP = document.getElementById('formPICO');
+
+            if (type === 'SPIDER') {
+                btnS.className = "flex-1 py-1.5 rounded-md transition bg-white text-blue-900 shadow-xs font-bold";
+                btnP.className = "flex-1 py-1.5 rounded-md transition text-slate-600 hover:text-slate-900 font-normal";
+                formS.classList.remove('hidden');
+                formP.classList.add('hidden');
+            } else {
+                btnP.className = "flex-1 py-1.5 rounded-md transition bg-white text-blue-900 shadow-xs font-bold";
+                btnS.className = "flex-1 py-1.5 rounded-md transition text-slate-600 hover:text-slate-900 font-normal";
+                formP.classList.remove('hidden');
+                formS.classList.add('hidden');
+            }
+            synthesizeQuestion();
+            saveToLocalStorage();
+            renderConsolidatedDocument();
+        }
+
+        function synthesizeQuestion() {
+            let q = "";
+            if (protocolData.framework === 'SPIDER') {
+                const { s, pi, d, e, r } = protocolData.spider;
+                const sampleStr = s.trim() ? s : '[Amostra S]';
+                const piStr = pi.trim() ? pi : '[Fenômeno PI]';
+                const designStr = d.trim() ? `através de ${d}` : '';
+                const evalStr = e.trim() ? `para avaliar ${e}` : '';
+                const typeStr = r.trim() ? `em pesquisas do tipo ${r}` : '';
+
+                q = `Como ${sampleStr} vivenciam/percebem ${piStr} ${designStr} ${evalStr} ${typeStr}?`.replace(/\s+/g, ' ');
+            } else {
+                const { p, i, c, o } = protocolData.pico;
+                const popStr = p.trim() ? p : '[População P]';
+                const intStr = i.trim() ? i : '[Intervenção I]';
+                const compStr = c.trim() ? `em comparação a ${c}` : '';
+                const outStr = o.trim() ? `no desfecho de ${o}` : '';
+
+                q = `Em ${popStr}, qual a eficácia de ${intStr} ${compStr} ${outStr}?`.replace(/\s+/g, ' ');
+            }
+
+            const preview = document.getElementById('synthesizedQuestionPreview');
+            if (preview) preview.textContent = `"${q}"`;
+            return q;
+        }
+
+        function validateAndUpdateSearchString(val) {
+            updateProtocolData('searchString', val);
+            const badge = document.getElementById('stringSyntaxBadge');
+            if (!badge) return;
+
+            let openP = (val.match(/\(/g) || []).length;
+            let closeP = (val.match(/\)/g) || []).length;
+
+            if (openP !== closeP) {
+                badge.className = "text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800";
+                badge.textContent = `Aviso: Parênteses desalinhados (${openP} abre / ${closeP} fecha)`;
+            } else if (val.trim().length > 0) {
+                badge.className = "text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800";
+                badge.textContent = "Sintaxe OK (Parênteses pareados)";
+            } else {
+                badge.className = "text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600";
+                badge.textContent = "Aguardando entrada...";
+            }
+        }
+
+        function updateUI() {
+            if (document.getElementById('prot_title')) document.getElementById('prot_title').value = protocolData.title || '';
+            if (document.getElementById('prot_authors')) document.getElementById('prot_authors').value = protocolData.authors || '';
+            if (document.getElementById('prot_subfield')) document.getElementById('prot_subfield').value = protocolData.subfield || 'Psicologia Clínica e Saúde Mental';
+            if (document.getElementById('prot_objective')) document.getElementById('prot_objective').value = protocolData.objective || '';
+
+            if (document.getElementById('prot_rationale')) document.getElementById('prot_rationale').value = protocolData.rationale || '';
+            if (document.getElementById('prot_registration')) document.getElementById('prot_registration').value = protocolData.registration || '';
+            if (document.getElementById('prot_startDate')) document.getElementById('prot_startDate').value = protocolData.startDate || '';
+            if (document.getElementById('prot_endDate')) document.getElementById('prot_endDate').value = protocolData.endDate || '';
+
+            setFramework(protocolData.framework || 'SPIDER');
+            if (document.getElementById('spider_s')) document.getElementById('spider_s').value = protocolData.spider.s || '';
+            if (document.getElementById('spider_pi')) document.getElementById('spider_pi').value = protocolData.spider.pi || '';
+            if (document.getElementById('spider_d')) document.getElementById('spider_d').value = protocolData.spider.d || '';
+            if (document.getElementById('spider_e')) document.getElementById('spider_e').value = protocolData.spider.e || '';
+            if (document.getElementById('spider_r')) document.getElementById('spider_r').value = protocolData.spider.r || '';
+
+            if (document.getElementById('pico_p')) document.getElementById('pico_p').value = protocolData.pico.p || '';
+            if (document.getElementById('pico_i')) document.getElementById('pico_i').value = protocolData.pico.i || '';
+            if (document.getElementById('pico_c')) document.getElementById('pico_c').value = protocolData.pico.c || '';
+            if (document.getElementById('pico_o')) document.getElementById('pico_o').value = protocolData.pico.o || '';
+
+            if (document.getElementById('prot_keywordsPt')) document.getElementById('prot_keywordsPt').value = protocolData.keywordsPt || '';
+            if (document.getElementById('prot_keywordsEn')) document.getElementById('prot_keywordsEn').value = protocolData.keywordsEn || '';
+            if (document.getElementById('prot_searchString')) document.getElementById('prot_searchString').value = protocolData.searchString || '';
+
+            if (document.getElementById('prot_inclusionCriteria')) document.getElementById('prot_inclusionCriteria').value = protocolData.inclusionCriteria || '';
+            if (document.getElementById('prot_exclusionCriteria')) document.getElementById('prot_exclusionCriteria').value = protocolData.exclusionCriteria || '';
+            if (document.getElementById('prot_disagreementStrategy')) document.getElementById('prot_disagreementStrategy').value = protocolData.disagreementStrategy || '';
+            if (document.getElementById('prot_appraisalTool')) document.getElementById('prot_appraisalTool').value = protocolData.appraisalTool || '';
+
+            synthesizeQuestion();
+            renderConsolidatedDocument();
+        }
+
+        function renderConsolidatedDocument() {
+            document.getElementById('doc_title').textContent = protocolData.title || '[Título do Protocolo não informado]';
+            document.getElementById('doc_authors').textContent = protocolData.authors || '[Autores não informados]';
+            document.getElementById('doc_subfield').textContent = protocolData.subfield || 'Psicologia';
+            document.getElementById('doc_objective').textContent = protocolData.objective || 'Objetivo geral não preenchido.';
+            document.getElementById('doc_rationale').textContent = protocolData.rationale || 'Justificativa não preenchida.';
+            document.getElementById('doc_registration').textContent = protocolData.registration || 'Não especificado';
+            document.getElementById('doc_startDate').textContent = protocolData.startDate || 'Não definida';
+            document.getElementById('doc_endDate').textContent = protocolData.endDate || 'Não definida';
+
+            document.getElementById('doc_frameworkName').textContent = protocolData.framework;
+            document.getElementById('doc_synthesizedQuestion').textContent = `"${synthesizeQuestion()}"`;
+
+            const tableContainer = document.getElementById('doc_frameworkTable');
+            if (protocolData.framework === 'SPIDER') {
+                tableContainer.innerHTML = `
+                    <table class="w-full text-left border-collapse border border-slate-200 mt-2">
+                        <thead>
+                            <tr class="bg-slate-100 font-bold text-slate-800">
+                                <th class="p-2 border border-slate-200">Elemento SPIDER</th>
+                                <th class="p-2 border border-slate-200">Descrição Inserida</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-2 border border-slate-200 font-bold">S - Sample (Amostra)</td><td class="p-2 border border-slate-200">${protocolData.spider.s || 'Não preenchido'}</td></tr>
+                            <tr><td class="p-2 border border-slate-200 font-bold">PI - Phenomenon of Interest</td><td class="p-2 border border-slate-200">${protocolData.spider.pi || 'Não preenchido'}</td></tr>
+                            <tr><td class="p-2 border border-slate-200 font-bold">D - Design (Delineamento)</td><td class="p-2 border border-slate-200">${protocolData.spider.d || 'Não preenchido'}</td></tr>
+                            <tr><td class="p-2 border border-slate-200 font-bold">E - Evaluation (Avaliação)</td><td class="p-2 border border-slate-200">${protocolData.spider.e || 'Não preenchido'}</td></tr>
+                            <tr><td class="p-2 border border-slate-200 font-bold">R - Research type (Pesquisa)</td><td class="p-2 border border-slate-200">${protocolData.spider.r || 'Não preenchido'}</td></tr>
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                tableContainer.innerHTML = `
+                    <table class="w-full text-left border-collapse border border-slate-200 mt-2">
+                        <thead>
+                            <tr class="bg-slate-100 font-bold text-slate-800">
+                                <th class="p-2 border border-slate-200">Elemento PICO</th>
+                                <th class="p-2 border border-slate-200">Descrição Inserida</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-2 border border-slate-200 font-bold">P - Population (População)</td><td class="p-2 border border-slate-200">${protocolData.pico.p || 'Não preenchido'}</td></tr>
+                            <tr><td class="p-2 border border-slate-200 font-bold">I - Intervention (Intervenção)</td><td class="p-2 border border-slate-200">${protocolData.pico.i || 'Não preenchido'}</td></tr>
+                            <tr><td class="p-2 border border-slate-200 font-bold">C - Comparison (Comparador)</td><td class="p-2 border border-slate-200">${protocolData.pico.c || 'Não preenchido'}</td></tr>
+                            <tr><td class="p-2 border border-slate-200 font-bold">O - Outcome (Desfecho)</td><td class="p-2 border border-slate-200">${protocolData.pico.o || 'Não preenchido'}</td></tr>
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            const dbBadgesContainer = document.getElementById('doc_selectedDatabasesBadges');
+            const allBases = [...BASES_REGIONAL, ...BASES_GLOBAL];
+            if (protocolData.selectedDatabases.length === 0) {
+                dbBadgesContainer.innerHTML = `<span class="text-slate-400 italic">Nenhuma base selecionada.</span>`;
+            } else {
+                dbBadgesContainer.innerHTML = protocolData.selectedDatabases.map(dbId => {
+                    const dbObj = allBases.find(d => d.id === dbId);
+                    return `<span class="px-2 py-0.5 bg-blue-50 text-blue-900 rounded font-semibold text-[11px] border border-blue-200">${dbObj ? dbObj.name : dbId}</span>`;
+                }).join('');
+            }
+
+            document.getElementById('doc_searchString').textContent = protocolData.searchString || 'String de busca não informada.';
+            document.getElementById('doc_inclusionCriteriaList').textContent = protocolData.inclusionCriteria || 'Nenhum critério informado.';
+            document.getElementById('doc_exclusionCriteriaList').textContent = protocolData.exclusionCriteria || 'Nenhum critério informado.';
+            document.getElementById('doc_disagreementStrategy').textContent = protocolData.disagreementStrategy || 'Não informada';
+            document.getElementById('doc_appraisalTool').textContent = protocolData.appraisalTool || 'Não informada';
+
+            document.getElementById('doc_generatedDate').textContent = `Data de Emissão: ${new Date().toLocaleDateString('pt-BR')}`;
+        }
+
+        function copyProtocolMarkdown() {
+            const allBases = [...BASES_REGIONAL, ...BASES_GLOBAL];
+            const baseNames = protocolData.selectedDatabases.map(id => allBases.find(d => d.id === id)?.name || id).join(', ');
+
+            const md = `# PROTOCOLO DE REVISÃO SISTEMÁTICA DA LITERATURA (RSL)
+## Título: ${protocolData.title || 'Sem título'}
+**Autores:** ${protocolData.authors || 'N/A'}
+**Subárea:** ${protocolData.subfield}
+**Data:** ${new Date().toLocaleDateString('pt-BR')}
+
+---
+
+### 1. OBJETIVOS E RACIONAIS
+* **Objetivo Geral:** ${protocolData.objective}
+* **Justificativa:** ${protocolData.rationale}
+* **Plataforma de Registro:** ${protocolData.registration}
+* **Cronograma:** ${protocolData.startDate} até ${protocolData.endDate}
+
+### 2. PERGUNTA DE PESQUISA (${protocolData.framework})
+**Pergunta Consolidada:** "${synthesizeQuestion()}"
+
+### 3. FONTES E BUSCA
+* **Bases Selecionadas:** ${baseNames}
+* **String de Busca:**
+\`\`\`
+${protocolData.searchString}
+\`\`\`
+
+### 4. ELEGIBILIDADE E QUALIDADE METODOLÓGICA
+* **Inclusão:**
+${protocolData.inclusionCriteria}
+
+* **Exclusão:**
+${protocolData.exclusionCriteria}
+
+* **Resolução de Divergências:** ${protocolData.disagreementStrategy}
+* **Avaliação Crítica de Viés:** ${protocolData.appraisalTool}
+`;
+
+            const ta = document.createElement("textarea");
+            ta.value = md;
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                showToast("Protocolo em Markdown copiado com sucesso!");
+            } catch (err) {
+                showToast("Erro ao copiar.", true);
+            }
+            document.body.removeChild(ta);
+        }
+
+        function exportJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(protocolData, null, 2));
+            const dl = document.createElement('a');
+            dl.setAttribute("href", dataStr);
+            dl.setAttribute("download", `protocolo_rsl_${Date.now()}.json`);
+            document.body.appendChild(dl);
+            dl.click();
+            dl.remove();
+            showToast("Backup JSON baixado!");
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    protocolData = { ...protocolData, ...imported };
+                    saveToLocalStorage();
+                    updateUI();
+                    renderDatabases();
+                    showToast("Protocolo importado!");
+                } catch (err) {
+                    showToast("Erro ao importar JSON.", true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearProtocolData() {
+            if (confirm("Deseja realmente limpar todos os campos do protocolo?")) {
+                localStorage.removeItem('rsl_sober_protocol_v3');
+                location.reload();
+            }
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.textContent = msg;
+            toastIcon.className = isError ? "fa-solid fa-triangle-exclamation text-amber-400" : "fa-solid fa-circle-check text-emerald-400";
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -8,6 +8,22 @@
   var root = document.documentElement;
   var resizer = document.getElementById("sidebar-resizer");
   var sidebarWidthStorage = "arquivo-sidebar-width";
+  var pageQueryParameter = "page";
+
+  function shellUrl(path) {
+    var url = new URL(window.location.href);
+    url.search = "";
+    url.hash = "";
+    url.searchParams.set(pageQueryParameter, path);
+    return url.href;
+  }
+
+  function requestedPagePath() {
+    var path = new URL(window.location.href).searchParams.get(pageQueryParameter);
+    return path && pages.some(function (page) {
+      return page.path === path;
+    }) ? path : "";
+  }
 
   function setSidebarWidth(width) {
     var boundedWidth = Math.max(136, Math.min(window.innerWidth * 0.35, width));
@@ -57,6 +73,9 @@
     });
     link.setAttribute("aria-current", "page");
     frame.src = link.dataset.path;
+    var url = new URL(window.location.href);
+    url.searchParams.set(pageQueryParameter, link.dataset.path);
+    window.history.replaceState(null, "", url.href);
   }
 
   if (!pages.length) {
@@ -68,7 +87,7 @@
   pages.forEach(function (page, index) {
     var link = document.createElement("a");
     link.className = "page-link";
-    link.href = page.path;
+    link.href = shellUrl(page.path);
     link.dataset.path = page.path;
     link.textContent = page.title || page.path;
     link.addEventListener("click", function (event) {
@@ -77,8 +96,16 @@
     });
     list.appendChild(link);
 
-    if (index === 0) {
+    if (page.path === requestedPagePath() || (!requestedPagePath() && index === 0)) {
       selectPage(link);
     }
+  });
+
+  window.addEventListener("popstate", function () {
+    var path = requestedPagePath();
+    var link = Array.from(document.querySelectorAll(".page-link")).find(function (item) {
+      return item.dataset.path === path;
+    });
+    if (link) selectPage(link);
   });
 }());
