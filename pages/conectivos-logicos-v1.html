@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conectivos Lógicos Teoría</title>
+
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --text: #243247;
+      --muted: #64748b;
+      --border: #dbe3ed;
+      --blue: #dceafe;
+      --green: #dcfce7;
+      --yellow: #fef3c7;
+      --purple: #ede9fe;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-top: 36px;
+      font-size: 1.45rem;
+    }
+
+    .intro,
+    .card,
+    .flow-node {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .flowchart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 0;
+    }
+
+    .flow-node {
+      width: min(100%, 520px);
+      text-align: center;
+    }
+
+    .problem {
+      background: var(--yellow);
+    }
+
+    .solution {
+      background: var(--blue);
+    }
+
+    .benefit {
+      background: var(--green);
+    }
+
+    .limitation {
+      background: var(--purple);
+    }
+
+    .arrow {
+      text-align: center;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .connector {
+      display: inline-block;
+      margin: 8px 0;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #e8edf5;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .branches {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      width: min(100%, 650px);
+    }
+
+    .branches .flow-node {
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      margin-top: 16px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      background: #e8edf5;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      background: #eef2f7;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+
+    .rule-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .rule-list .card {
+      padding: 16px;
+    }
+
+    footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+
+    @media (max-width: 600px) {
+      body {
+        padding: 14px;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .branches,
+      .rule-list {
+        grid-template-columns: 1fr;
+      }
+
+      table {
+        font-size: 0.9rem;
+      }
+
+      th,
+      td {
+        padding: 8px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js" defer></script>
+</head>
+
+<body>
+  <main>
+    <header>
+      <h1>Conectivos Lógicos e Fluxos de Informação</h1>
+      <p class="muted">
+        Um modelo para transformar textos científicos em redes
+        de raciocínio navegáveis.
+      </p>
+    </header>
+
+    <section>
+      <h2>1. Texto científico</h2>
+
+      <article class="intro">
+        <p>
+          A <strong>sobrecarga de informação</strong> ocorre quando o volume,
+          a velocidade ou a complexidade das informações recebidas excede
+          a capacidade de um indivíduo de processá-las adequadamente.
+          Esse fenômeno pode dificultar a identificação de informações
+          relevantes, aumentar o esforço cognitivo e comprometer a tomada
+          de decisões. Além disso, a apresentação simultânea de conteúdos
+          pouco relacionados pode fragmentar a atenção e dificultar a
+          construção de uma compreensão integrada.
+        </p>
+
+        <p>
+          <strong>Diante desse problema</strong>, uma solução consiste em
+          organizar as informações em unidades temáticas conectadas por
+          relações lógicas explícitas. Nesse modelo, conectivos discursivos
+          indicam continuidade, contraste, causalidade, analogia e conclusão,
+          permitindo que o leitor reconheça como cada ideia se relaciona
+          com as demais. <strong>Por exemplo</strong>, expressões como
+          “além disso” indicam adição, enquanto “portanto” sinaliza uma
+          conclusão derivada das informações anteriores.
+          <strong>Do mesmo modo</strong>, a representação dessas relações
+          por meio de fluxogramas pode tornar visíveis os caminhos de
+          raciocínio e as dependências entre conceitos.
+        </p>
+
+        <p>
+          <strong>Como resultado</strong>, essa abordagem pode facilitar a
+          navegação pelo conteúdo, reduzir a necessidade de inferir relações
+          implícitas e favorecer a recuperação de informações relevantes.
+          <strong>Entretanto</strong>, sua eficácia depende da qualidade da
+          organização, da complexidade do material e das necessidades do
+          leitor. <strong>Assim</strong>, a combinação entre segmentação
+          temática, conectivos explícitos e representações visuais constitui
+          uma estratégia potencial para tornar a informação complexa mais
+          compreensível e navegável.
+        </p>
+      </article>
+    </section>
+
+    <section>
+      <h2>2. Texto convertido em fluxograma</h2>
+
+      <div class="flowchart">
+        <div class="flow-node problem">
+          <strong>PROBLEMA</strong>
+          <div>Sobrecarga de informação</div>
+          <small>Volume, velocidade ou complexidade excessivos</small>
+        </div>
+
+        <div class="arrow">↓</div>
+        <span class="connector">ALÉM DISSO — ADIÇÃO</span>
+
+        <div class="flow-node">
+          <strong>CONSEQUÊNCIAS</strong>
+          <div>Esforço cognitivo elevado</div>
+          <div>Atenção fragmentada</div>
+          <div>Dificuldade de decisão</div>
+        </div>
+
+        <div class="arrow">↓</div>
+        <span class="connector">DIANTE DESSE PROBLEMA — SOLUÇÃO</span>
+
+        <div class="flow-node solution">
+          <strong>ORGANIZAÇÃO LÓGICA</strong>
+          <div>Segmentação temática</div>
+          <div>Conectivos explícitos</div>
+          <div>Representação em fluxogramas</div>
+        </div>
+
+        <div class="arrow">↓</div>
+        <span class="connector">RAMIFICAÇÃO — BENEFÍCIOS POTENCIAIS</span>
+
+        <div class="branches">
+          <div class="flow-node">
+            <strong>Navegação</strong>
+            <div>Localizar informações</div>
+          </div>
+          <div class="flow-node">
+            <strong>Compreensão</strong>
+            <div>Reconhecer relações</div>
+          </div>
+          <div class="flow-node">
+            <strong>Recuperação</strong>
+            <div>Encontrar dados relevantes</div>
+          </div>
+          <div class="flow-node">
+            <strong>Integração</strong>
+            <div>Conectar conceitos</div>
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+        <span class="connector">ENTRETANTO — RESSALVA</span>
+
+        <div class="flow-node limitation">
+          <strong>LIMITAÇÕES</strong>
+          <div>
+            A eficácia depende do contexto, do material e do leitor.
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+        <span class="connector">ASSIM — CONCLUSÃO</span>
+
+        <div class="flow-node benefit">
+          <strong>RESULTADO ESPERADO</strong>
+          <div>Informação mais compreensível e navegável</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Dicionário de conectivos para fluxos</h2>
+
+      <p>
+        Cada conectivo funciona como uma instrução de transformação.
+        A tradução depende do contexto em que a expressão aparece.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Conectivo</th>
+            <th>Função</th>
+            <th>Fragmento de fluxo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Do mesmo modo</td>
+            <td>Analogia</td>
+            <td><code>A → reaplicar padrão → A′</code></td>
+          </tr>
+          <tr>
+            <td>Além disso</td>
+            <td>Adição</td>
+            <td><code>A → A + B</code></td>
+          </tr>
+          <tr>
+            <td>Paralelamente</td>
+            <td>Desenvolvimento paralelo</td>
+            <td><code>A → {B, C}</code></td>
+          </tr>
+          <tr>
+            <td>Se... então</td>
+            <td>Condicional</td>
+            <td><code>A → decisão → B/C</code></td>
+          </tr>
+          <tr>
+            <td>Portanto / Logo</td>
+            <td>Inferência ou conclusão</td>
+            <td><code>{A, B} → C</code></td>
+          </tr>
+          <tr>
+            <td>Porque / Visto que</td>
+            <td>Justificativa</td>
+            <td><code>Razão A → sustenta B</code></td>
+          </tr>
+          <tr>
+            <td>Entretanto / Porém</td>
+            <td>Contraste</td>
+            <td><code>A → contraste B</code></td>
+          </tr>
+          <tr>
+            <td>Ou / Alternativamente</td>
+            <td>Disjunção</td>
+            <td><code>Escolha → B ou C</code></td>
+          </tr>
+          <tr>
+            <td>Não</td>
+            <td>Negação</td>
+            <td><code>A → ¬A</code></td>
+          </tr>
+          <tr>
+            <td>Se e somente se</td>
+            <td>Equivalência</td>
+            <td><code>A ⇔ B</code></td>
+          </tr>
+          <tr>
+            <td>E / Tanto... quanto</td>
+            <td>Conjunção</td>
+            <td><code>A ∧ B → resultado</code></td>
+          </tr>
+          <tr>
+            <td>Como resultado</td>
+            <td>Consequência</td>
+            <td><code>A → consequência B</code></td>
+          </tr>
+          <tr>
+            <td>Por exemplo</td>
+            <td>Exemplificação</td>
+            <td><code>Conceito → exemplo</code></td>
+          </tr>
+          <tr>
+            <td>Em resumo</td>
+            <td>Síntese</td>
+            <td><code>{A, B, C} → síntese</code></td>
+          </tr>
+          <tr>
+            <td>Enquanto</td>
+            <td>Simultaneidade ou contraste</td>
+            <td><code>A ∥ B</code> ou <code>A ↔ contraste B</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>4. Regras de tradução</h2>
+
+      <div class="rule-list">
+        <article class="card">
+          <h3>Analogia</h3>
+          <code>(do mesmo modo, analogia, replicar, A → A′)</code>
+          <p>Reutilizar uma estrutura de raciocínio em outro contexto.</p>
+        </article>
+
+        <article class="card">
+          <h3>Adição</h3>
+          <code>(além disso, adição, expandir, A → A+B)</code>
+          <p>Acrescentar uma informação ao conjunto atual.</p>
+        </article>
+
+        <article class="card">
+          <h3>Ramificação</h3>
+          <code>(paralelamente, ramificação, abrir, A → {B,C})</code>
+          <p>Criar linhas distintas de análise.</p>
+        </article>
+
+        <article class="card">
+          <h3>Condição</h3>
+          <code>(se... então, condição, bifurcar, A → decisão → B/C)</code>
+          <p>Selecionar o caminho conforme uma condição.</p>
+        </article>
+
+        <article class="card">
+          <h3>Inferência</h3>
+          <code>(portanto, inferência, convergir, {A,B} → C)</code>
+          <p>Derivar uma conclusão de premissas.</p>
+        </article>
+
+        <article class="card">
+          <h3>Contraste</h3>
+          <code>(entretanto, contraste, contrapor, A → oposição(B))</code>
+          <p>Relacionar ideias divergentes ou introduzir uma ressalva.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>5. Modelo conceitual</h2>
+
+      <div class="intro">
+        <p><strong>Conteúdo:</strong> problema, solução, benefícios e limitações.</p>
+        <p><strong>Conectivos:</strong> relações entre as ideias.</p>
+        <p><strong>Fluxos:</strong> representação visual das relações.</p>
+
+        <hr>
+
+        <p>
+          <strong>Objetivo:</strong> transformar uma sequência textual em
+          uma rede de raciocínio navegável, identificando as relações entre
+          frases e aplicando a cada relação um fragmento de fluxo adequado.
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      Observação: os fragmentos apresentados são um modelo conceitual.
+      A palavra isolada não determina sempre o tipo de fluxo; é necessário
+      interpretar a relação semântica entre as frases. Os benefícios
+      descritos são potenciais e dependem do contexto de aplicação.
+    </footer>
+  </main>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estudo de forma</title>
+  <style>
+    :root { --paper: #f6f6f4; --ink: #151515; --line: #d7d7d2; }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; margin: 0; background: var(--paper); color: var(--ink); }
+    body { padding: 22px 4.5vw 5vw; font-family: Arial, Helvetica, sans-serif; }
+    header { display: grid; grid-template-columns: 1fr 2fr; gap: 4vw; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+    h1, h2, p { margin: 0; }
+    h1 { font-size: clamp(21px, 3vw, 43px); font-weight: 400; letter-spacing: -0.07em; line-height: .9; }
+    h2 { max-width: 360px; font-size: 12px; font-weight: 400; line-height: 1.35; }
+    .meta { display: flex; justify-content: space-between; margin: 11px 0 31px; font-size: 9px; text-transform: uppercase; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+    figure { height: min(65vh, 570px); margin: 0; overflow: hidden; position: relative; }
+    .black { background: #0b0b0b; }
+    .black:after { content: "forma / 01"; position: absolute; right: 12%; bottom: 12%; color: #f4f4f1; font-size: clamp(22px, 4vw, 62px); letter-spacing: -.1em; transform: rotate(-48deg); }
+    .rose { background: linear-gradient(155deg, #707a75 0 23%, #b66868 24% 55%, #242323 56%); }
+    .rose:before { content: "estudo"; position: absolute; left: 8%; right: 8%; top: 44%; padding: 9px 0; border-top: 1px solid #f3d2c5; border-bottom: 1px solid #f3d2c5; color: #f3d2c5; font: italic 28px Georgia, serif; text-align: center; }
+    figcaption { position: absolute; bottom: 12px; left: 12px; color: #fff; font-size: 9px; }
+    @media (max-width: 600px) { body { padding: 18px 5vw 8vw; } header { grid-template-columns: 1fr; gap: 16px; } figure { height: 47vh; } }
+  </style>
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>estudo<br>de forma</h1>
+    <h2>Uma coleção de composições, matérias e intervalos. Registro visual de um processo aberto.</h2>
+  </header>
+  <div class="meta"><span>01 — 02</span><span>arquivo / 2026</span></div>
+  <section class="grid">
+    <figure class="black"><figcaption>composição A</figcaption></figure>
+    <figure class="rose"><figcaption>composição B</figcaption></figure>
+  </section>
+</body>
+</html>

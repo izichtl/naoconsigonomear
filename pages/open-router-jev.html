@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Openrouter - JEV
+  </title>
+  <style>
+    :root {
+      --paper: #f6f6f4;
+      --ink: #20201e;
+      --muted: #5d5d58;
+      --border: #a5a59f;
+      --panel: #c4c4be;
+      --accent: #20201e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 13px/1.55 Arial, Helvetica, sans-serif;
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 28px 4vw 56px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) 2fr;
+      gap: 5vw;
+      align-items: end;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 48px);
+      font-weight: 400;
+      letter-spacing: -.07em;
+      line-height: .95;
+    }
+
+    .intro,
+    .note {
+      color: var(--muted);
+    }
+
+    .intro {
+      max-width: 390px;
+      margin: 0;
+      font-size: 12px;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      background: #deded9;
+    }
+
+    legend {
+      padding: 0 8px;
+      color: var(--ink);
+      background: #deded9;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      color: var(--ink);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #85857f;
+      border-radius: 0;
+      outline: 0;
+      color: var(--ink);
+      font: 14px/1.55 Arial, Helvetica, sans-serif;
+      background: #fafaf7;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--ink);
+      box-shadow: inset 3px 0 0 var(--ink);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    textarea.criteria {
+      min-height: 145px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4vw;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 4px 0;
+    }
+
+    button {
+      border: 1px solid var(--accent);
+      border-radius: 0;
+      padding: 10px 14px;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--accent);
+      color: #f3f3f0;
+    }
+
+    button:hover {
+      background: #454541;
+    }
+
+    button.secondary {
+      background: var(--panel);
+      color: var(--ink);
+      border-color: #85857f;
+    }
+
+    button.secondary:hover {
+      background: #bebeb8;
+    }
+
+    #output {
+      min-height: 300px;
+      font: 12px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+      white-space: pre;
+    }
+
+    .api-output {
+      min-height: 220px;
+      font: 12px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+      white-space: pre;
+    }
+
+    .api-help {
+      margin: 0 0 12px;
+    }
+
+    .status {
+      min-height: 1.5em;
+      margin-bottom: 0;
+    }
+
+    code {
+      padding: 2px 4px;
+      background: #c8c8c2;
+      color: var(--ink);
+    }
+
+    @media (max-width: 700px) {
+      main {
+        padding: 22px 18px 42px;
+      }
+
+      header {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js" defer></script>
+</head>
+
+<body>
+  <main>
+    <header>
+      <h1>Montador de<br>request para Jev</h1>
+      <p class="intro">Preencha os campos, gere o JSON com a estrutura <code>model → state → questions</code> e, se
+        quiser, envie-o ao OpenRouter.</p>
+    </header>
+
+    <form id="builder">
+      <fieldset>
+        <legend>Modelo</legend>
+        <label for="model">Identificador do modelo</label>
+        <input id="model" value="~typesafe/jev-latest" required>
+      </fieldset>
+
+      <fieldset>
+        <legend>Contexto da meta-análise — state</legend>
+        <label for="metaTitle">Título da meta-análise</label>
+        <input id="metaTitle" value="Efficacy and safety of ivermectin for the treatment of COVID19" required>
+
+        <div class="grid">
+          <div>
+            <label for="inclusion">Critérios de inclusão (um por linha)</label>
+            <textarea id="inclusion" class="criteria" required>Compared ivermectin to standard of care or a control group receiving placebo
+Included adult COVID-19 inpatients and/or outpatients
+Reported at least one outcome of interest</textarea>
+          </div>
+          <div>
+            <label for="exclusion">Critérios de exclusão (um por linha)</label>
+            <textarea id="exclusion" class="criteria" required>Wrong publication type (reviews, etc.)
+Wrong study design (animal, in vitro, etc.)
+Wrong condition (not COVID-19)
+Wrong drug (does not include ivermectin)
+Non-peer-reviewed articles</textarea>
+          </div>
+        </div>
+
+        <label for="paperTitle">Título do artigo</label>
+        <textarea id="paperTitle" placeholder="Cole aqui o título do artigo..." required></textarea>
+
+        <label for="abstract">Abstract / resumo</label>
+        <textarea id="abstract" placeholder="Cole aqui o resumo do artigo..." required></textarea>
+      </fieldset>
+
+      <fieldset>
+        <legend>Pergunta tipada — questions</legend>
+        <label for="questionInstructions">Instruções da avaliação</label>
+        <textarea id="questionInstructions"
+          required>Screen the scientific paper for inclusion in the specified meta-analysis. Evaluate the title and abstract, focusing on research procedures, study design, population, comparator, outcomes, drug, condition, publication type, and peer-review status. Return INCLUDED only when the available information definitively establishes that all inclusion criteria are met and no exclusion criterion applies. If any criterion is not definitively established, or eligibility is uncertain, return EXCLUDED. Do not infer missing methodological details.</textarea>
+
+        <label for="uncertainty">Como tratar informação insuficiente</label>
+        <select id="uncertainty">
+          <option value="exclude" selected>EXCLUDED se houver incerteza (regra conservadora solicitada)</option>
+          <option value="flag">Manter a regra estrita, mas registrar que faltam informações nas instruções</option>
+        </select>
+      </fieldset>
+
+      <div class="buttons">
+        <button type="submit">Gerar JSON</button>
+        <button type="button" class="secondary" id="copy">Copiar JSON</button>
+        <button type="button" class="secondary" id="download">Baixar .json</button>
+        <button type="reset" class="secondary">Limpar título e abstract</button>
+      </div>
+
+      <fieldset>
+        <legend>Payload gerado</legend>
+        <textarea id="output" readonly spellcheck="false" aria-label="JSON gerado"></textarea>
+        <p id="status" class="status note" role="status"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Enviar para OpenRouter</legend>
+        <p class="note api-help">
+          O JSON gerado será enviado como conteúdo da mensagem para o modelo
+          selecionado. A resposta da API aparece abaixo exatamente como retornada.
+        </p>
+        <p class="security-notice">
+          Segurança: a chave não é armazenada em arquivos, cookies,
+          localStorage ou backend. Ela permanece somente em memória enquanto
+          esta página estiver aberta e é enviada diretamente à OpenRouter.
+          Código do projeto:
+          <a href="https://github.com/izichtl/naoconsigonomear" target="_blank" rel="noopener noreferrer">github.com/izichtl/naoconsigonomear</a>.
+        </p>
+        <label for="openrouterKey">Chave OpenRouter</label>
+        <input id="openrouterKey" type="password" placeholder="sk-or-v1-..." autocomplete="off">
+
+        <label for="openrouterModel">Modelo OpenRouter</label>
+        <input id="openrouterModel" value="openai/gpt-4o-mini">
+
+        <label for="openrouterPrompt">JSON enviado ao OpenRouter</label>
+        <textarea id="openrouterPrompt" class="api-output" spellcheck="false"
+          aria-label="JSON enviado ao OpenRouter"></textarea>
+
+        <div class="buttons">
+          <button type="button" id="generateOpenrouter">Atualizar JSON do OpenRouter</button>
+          <button type="button" id="sendOpenrouter">Enviar para OpenRouter</button>
+        </div>
+
+        <p id="openrouterStatus" class="status note" role="status"></p>
+        <label for="openrouterResponse">Retorno bruto da API</label>
+        <textarea id="openrouterResponse" class="api-output" readonly spellcheck="false"
+          aria-label="Retorno bruto da API"></textarea>
+      </fieldset>
+    </form>
+  </main>
+
+  <script>
+    (() => {
+      const $ = id => document.getElementById(id);
+      const lines = id => $(id).value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+
+      function buildPayload() {
+        let instructions = $('questionInstructions').value.trim();
+        if ($('uncertainty').value === 'flag') {
+          instructions += ' If the title and abstract do not provide enough information to verify a criterion, do not assume it is satisfied; use EXCLUDED under this strict screening rule.';
+        }
+
+        return {
+          model: $('model').value.trim(),
+          state: {
+            meta_analysis_title: $('metaTitle').value.trim(),
+            inclusion_criteria: lines('inclusion'),
+            exclusion_criteria: lines('exclusion'),
+            paper: {
+              title: $('paperTitle').value.trim(),
+              abstract: $('abstract').value.trim()
+            }
+          },
+          questions: {
+            screening_decision: {
+              type: 'choice',
+              instructions,
+              criteria: {
+                INCLUDED: 'All inclusion criteria are definitively satisfied and no exclusion criterion applies.',
+                EXCLUDED: 'Any inclusion criterion is unmet or uncertain, or any exclusion criterion applies.'
+              }
+            }
+          }
+        };
+      }
+
+      function render() {
+        const output = JSON.stringify(buildPayload(), null, 2);
+        $('output').value = output;
+        $('openrouterPrompt').value = output;
+        $('status').textContent = 'JSON atualizado.';
+      }
+
+      function updateOpenrouterPrompt() {
+        $('openrouterPrompt').value = $('output').value || JSON.stringify(buildPayload(), null, 2);
+      }
+
+      async function sendToOpenrouter() {
+        const key = $('openrouterKey').value.trim();
+        const status = $('openrouterStatus');
+        const responseOutput = $('openrouterResponse');
+        let generatedJson;
+
+        if (!key) {
+          status.textContent = 'Informe sua chave OpenRouter antes de enviar.';
+          return;
+        }
+
+        try {
+          generatedJson = JSON.parse($('openrouterPrompt').value);
+        } catch (error) {
+          status.textContent = 'O JSON enviado não é válido. Atualize-o ou corrija-o antes de enviar.';
+          return;
+        }
+
+        const model = $('openrouterModel').value.trim();
+        if (!model) {
+          status.textContent = 'Informe um modelo OpenRouter.';
+          return;
+        }
+
+        responseOutput.value = '';
+        status.textContent = 'Enviando...';
+
+        try {
+          const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${key}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': window.location.href,
+              'X-Title': 'Jev Request Builder'
+            },
+            body: JSON.stringify({
+              model,
+              messages: [{
+                role: 'user',
+                content: JSON.stringify(generatedJson, null, 2)
+              }]
+            })
+          });
+          const rawBody = await response.text();
+          responseOutput.value = rawBody;
+
+          status.textContent = response.ok
+            ? 'Resposta recebida.'
+            : `A API retornou HTTP ${response.status}.`;
+        } catch (error) {
+          responseOutput.value = error.message;
+          status.textContent = 'Não foi possível acessar a API. Verifique a conexão e as permissões de CORS.';
+        }
+      }
+
+      $('builder').addEventListener('submit', event => {
+        event.preventDefault();
+        render();
+      });
+
+      $('copy').addEventListener('click', async () => {
+        render();
+        try {
+          await navigator.clipboard.writeText($('output').value);
+          $('status').textContent = 'JSON copiado para a área de transferência.';
+        } catch {
+          $('output').focus();
+          $('output').select();
+          $('status').textContent = 'Não foi possível copiar automaticamente. O JSON está selecionado; copie com Ctrl+C ou Cmd+C.';
+        }
+      });
+
+      $('download').addEventListener('click', () => {
+        render();
+        const blob = new Blob([$('output').value], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'jev-screening-request.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        $('status').textContent = 'Download do JSON iniciado.';
+      });
+
+      $('generateOpenrouter').addEventListener('click', () => {
+        render();
+        $('openrouterStatus').textContent = 'JSON do OpenRouter atualizado.';
+      });
+
+      $('sendOpenrouter').addEventListener('click', sendToOpenrouter);
+
+      $('builder').addEventListener('reset', () => {
+        setTimeout(() => {
+          $('paperTitle').value = '';
+          $('abstract').value = '';
+          render();
+          $('status').textContent = 'Título e abstract limpos; critérios padrão preservados.';
+        }, 0);
+      });
+
+      ['model', 'metaTitle', 'inclusion', 'exclusion', 'paperTitle', 'abstract', 'questionInstructions', 'uncertainty'].forEach(id => {
+        $(id).addEventListener('input', render);
+        $(id).addEventListener('change', render);
+      });
+      $('openrouterModel').addEventListener('input', updateOpenrouterPrompt);
+      render();
+    })();
+  </script>
+</body>
+
+</html>

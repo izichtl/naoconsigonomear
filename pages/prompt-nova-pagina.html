@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt para nova página</title>
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js" defer></script>
+  <style>
+    .prompt-card {
+      border: 1px solid var(--study-border);
+      padding: 20px;
+      background: var(--study-surface);
+    }
+
+    #prompt {
+      display: block;
+      width: 100%;
+      min-height: 330px;
+      padding: 14px;
+      border: 1px solid var(--study-border);
+      border-radius: 0;
+      background: #fff;
+      color: var(--study-text);
+      font: 14px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace;
+      resize: vertical;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>prompt para<br>nova página</h1>
+      <p class="intro">Edite o prompt, copie e use-o para criar um novo estudo compatível com este arquivo.</p>
+    </header>
+
+    <section class="prompt-card">
+      <h2>Prompt de integração</h2>
+      <textarea id="prompt" spellcheck="false">Crie uma nova página HTML estática para este projeto.
+
+Regras obrigatórias:
+1. Use somente HTML, CSS e JavaScript nativo, sem frameworks, bibliotecas, backend ou dependências.
+2. Salve o arquivo dentro de pages/ e inclua um <title> descritivo.
+3. Mantenha o conteúdo autocontido no próprio HTML e preserve a acessibilidade.
+4. Inclua ../theme.css e ../theme.js depois dos estilos locais para usar o override visual compartilhado.
+5. Organize o topo com título e subtítulo; a página será descoberta automaticamente pelo generate-manifest.sh.
+6. Não altere index.html, app.js, manifest.js ou outras páginas existentes.
+7. Use elementos semânticos, layout responsivo e controles funcionais com JavaScript nativo.
+
+Tema da nova página:
+[descreva aqui o estudo, conteúdo ou ferramenta]</textarea>
+      <div class="actions">
+        <button id="copy" type="button">Copiar prompt</button>
+        <button id="restore" class="secondary" type="button">Restaurar prompt padrão</button>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const prompt = document.getElementById('prompt');
+      const status = document.getElementById('status');
+      const initialPrompt = prompt.value;
+
+      document.getElementById('copy').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(prompt.value);
+          status.textContent = 'Prompt copiado para a área de transferência.';
+        } catch (error) {
+          prompt.focus();
+          prompt.select();
+          status.textContent = 'Não foi possível copiar automaticamente. O prompt foi selecionado para cópia manual.';
+        }
+      });
+
+      document.getElementById('restore').addEventListener('click', () => {
+        prompt.value = initialPrompt;
+        status.textContent = 'Prompt padrão restaurado.';
+      });
+    })();
+  </script>
+</body>
+</html>

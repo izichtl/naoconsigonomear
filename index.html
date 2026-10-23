@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arquivo editorial</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="sidebar" aria-label="Navegação de páginas">
+    <div class="sidebar-resizer" id="sidebar-resizer" role="separator"
+      aria-label="Redimensionar sidebar" aria-orientation="vertical"
+      tabindex="0"></div>
+    <a class="brand" href="index.html" aria-label="Início">arquivo</a>
+    <nav id="page-navigation">
+      <p class="nav-heading">páginas</p>
+      <div id="page-list" class="page-list" aria-live="polite"></div>
+    </nav>
+    <p class="sidebar-footer">coleção<br>2026</p>
+  </aside>
+
+  <main class="content">
+    <iframe id="page-frame" title="Página selecionada" src="pages/estudo%20da%20forma.html"></iframe>
+    <p id="empty-state" class="empty-state" hidden>Nenhuma página HTML foi encontrada.</p>
+  </main>
+
+  <script src="manifest.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

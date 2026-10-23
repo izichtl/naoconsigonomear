@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenRouter — Gerador e editor de imagens</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --panel: #121a2e;
+      --line: #263451;
+      --text: #edf2ff;
+      --muted: #a7b4cf;
+      --accent: #8b9cff;
+      --accent2: #b5c0ff
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at top, #172443 0, #0b1020 55%);
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+      color: var(--text)
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px 18px 56px
+    }
+
+    .eyebrow {
+      color: var(--accent2);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      line-height: 1.12;
+      margin: .5rem 0
+    }
+
+    p {
+      color: var(--muted)
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      margin-top: 24px
+    }
+
+    .panel {
+      background: rgba(18, 26, 46, .92);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      min-width: 0;
+      box-shadow: 0 14px 40px #0002
+    }
+
+    h2 {
+      font-size: 1.05rem;
+      margin: 0 0 14px
+    }
+
+    .field {
+      display: block;
+      margin: 14px 0 6px;
+      font-size: .9rem;
+      font-weight: 650
+    }
+
+    input[type=text],
+    input[type=password],
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #344362;
+      background: #0b1224;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 11px 12px;
+      font: inherit;
+      outline: none
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px #8b9cff22
+    }
+
+    .hint {
+      font-size: .82rem;
+      color: var(--muted);
+      margin: 6px 0
+    }
+
+    .drop {
+      border: 1px dashed #52658d;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      background: #0d1528;
+      cursor: pointer
+    }
+
+    .drop:hover {
+      border-color: var(--accent)
+    }
+
+    .drop input {
+      max-width: 100%;
+      margin-top: 10px
+    }
+
+    .preview {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: 10px;
+      margin-top: 14px;
+      background: #080c16;
+      display: none
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px
+    }
+
+    button,
+    .download {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #10152b;
+      flex: 1
+    }
+
+    .secondary,
+    .download {
+      background: #222e49;
+      color: var(--text);
+      border: 1px solid #3a4a6d
+    }
+
+    .primary:disabled {
+      opacity: .55;
+      cursor: wait
+    }
+
+    .status {
+      white-space: pre-wrap;
+      font-size: .9rem;
+      margin-top: 14px;
+      color: var(--muted)
+    }
+
+    .result {
+      display: none
+    }
+
+    .result img {
+      display: block;
+      width: 100%;
+      max-height: 650px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #080c16
+    }
+
+    .result-meta {
+      font-size: .82rem;
+      color: var(--muted);
+      margin: 10px 0
+    }
+
+    .notice {
+      font-size: .84rem;
+      border-left: 3px solid #d4ad62;
+      padding: 8px 12px;
+      background: #211d17;
+      color: #e8d8b6;
+      border-radius: 0 8px 8px 0;
+      margin-top: 16px
+    }
+
+    @media(max-width:760px) {
+      .layout {
+        grid-template-columns: 1fr
+      }
+
+      main {
+        padding-top: 24px
+      }
+
+      .panel {
+        padding: 16px
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js" defer></script>
+</head>
+
+<body>
+  <main>
+    <div class="eyebrow">Ferramenta local · OpenRouter API</div>
+    <h1>Gerador e editor de imagens</h1>
+    <p>Escolha um modelo, escreva o que deseja e, opcionalmente, envie uma imagem de referência. A resposta aparece aqui
+      e pode ser baixada.</p>
+    <div class="layout">
+      <section class="panel">
+        <h2>1. Configurar e enviar</h2>
+        <label class="field" for="apiKey">Chave da API OpenRouter</label>
+        <input id="apiKey" type="password" placeholder="sk-or-v1-..." autocomplete="off">
+        <p class="security-notice">Segurança: a chave não é armazenada em arquivos, cookies, localStorage ou backend. Ela permanece somente em memória enquanto esta página estiver aberta e é enviada diretamente à OpenRouter. Código do projeto: <a href="https://github.com/izichtl/naoconsigonomear" target="_blank" rel="noopener noreferrer">github.com/izichtl/naoconsigonomear</a>.</p>
+
+        <label class="field" for="model">Modelo OpenRouter</label>
+        <input id="model" type="text" list="models" value="qwen/qwen-image-2.1-turbo"
+          placeholder="provedor/nome-do-modelo">
+        <datalist id="models">
+          <option value="google/gemini-2.5-flash-image-preview"></option>
+          <option value="black-forest-labs/flux.2-klein-4b"></option>
+          <option value="openai/gpt-5-image"></option>
+        </datalist>
+        <p class="hint">Os modelos disponíveis mudam. Informe um ID que aceite geração/edição de imagens na OpenRouter.
+        </p>
+
+        <label class="field" for="prompt">Texto / instruções</label>
+        <textarea id="prompt"
+          placeholder="Ex.: Transforme a imagem em uma ilustração editorial, mantendo a composição e as características principais."></textarea>
+
+        <label class="field">Imagem de referência (opcional)</label>
+        <div class="drop" id="drop">
+          <div>Escolha uma imagem do seu dispositivo</div>
+          <input id="imageFile" type="file" accept="image/*">
+          <img id="inputPreview" class="preview" alt="Prévia da imagem enviada">
+        </div>
+        <p class="hint">A imagem será enviada à OpenRouter para o modelo processar. Modelos diferentes aceitam formatos
+          e edição de imagem diferentes.</p>
+
+        <div class="buttons">
+          <button class="primary" id="runBtn">Gerar imagem</button>
+          <button class="secondary" id="clearBtn" type="button">Limpar</button>
+        </div>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+        <div class="notice">A chamada é feita diretamente do navegador para a OpenRouter. Use esta página apenas no seu
+          computador; não publique nem compartilhe o arquivo com a chave preenchida. Podem ser cobrados créditos pela
+          API.</div>
+      </section>
+
+      <section class="panel">
+        <h2>2. Resultado</h2>
+        <div id="emptyState">
+          <p>A imagem gerada aparecerá aqui.</p>
+        </div>
+        <div class="result" id="result">
+          <img id="outputImage" alt="Imagem gerada pela OpenRouter">
+          <div class="result-meta" id="resultMeta"></div>
+          <div class="buttons">
+            <a id="downloadBtn" class="download" download="imagem-openrouter.png">Baixar imagem</a>
+            <button class="secondary" id="openBtn" type="button">Abrir imagem</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let selectedDataUrl = "";
+    let outputUrl = "";
+
+    function setStatus(text, isError = false) {
+      $("status").textContent = text;
+      $("status").style.color = isError ? "#ff9b9b" : "#a7b4cf";
+    }
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Não foi possível ler o arquivo."));
+        reader.readAsDataURL(file);
+      });
+    }
+    $("imageFile").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      selectedDataUrl = "";
+      $("inputPreview").style.display = "none";
+      if (!file) return;
+      if (!file.type.startsWith("image/")) { setStatus("Selecione um arquivo de imagem.", true); return; }
+      try {
+        selectedDataUrl = await fileToDataUrl(file);
+        $("inputPreview").src = selectedDataUrl;
+        $("inputPreview").style.display = "block";
+        setStatus(`Imagem carregada: ${file.name} (${Math.round(file.size / 1024)} KB).`);
+      } catch (e) { setStatus(e.message, true); }
+    });
+
+    function extractImage(response) {
+      const data = response?.data?.[0];
+      if (data?.b64_json) {
+        const mime = data.media_type || "image/png";
+        return `data:${mime};base64,${data.b64_json}`;
+      }
+      const message = response?.choices?.[0]?.message;
+      const images = message?.images || [];
+      if (images.length) return images[0]?.image_url?.url || images[0]?.imageUrl?.url || "";
+      const content = message?.content;
+      if (Array.isArray(content)) {
+        const item = content.find(x => x.type === "image_url" || x.type === "image");
+        return item?.image_url?.url || item?.url || "";
+      }
+      return "";
+    }
+    function errorMessage(data, status) {
+      return data?.error?.message || data?.message || data?.error || `A API respondeu com HTTP ${status}. Confira o modelo, a chave e os créditos.`;
+    }
+
+    $("runBtn").addEventListener("click", async () => {
+      const key = $("apiKey").value.trim();
+      const model = $("model").value.trim();
+      const prompt = $("prompt").value.trim();
+      if (!key) return setStatus("Informe sua chave da API OpenRouter.", true);
+      if (!model) return setStatus("Informe o ID do modelo.", true);
+      if (!prompt) return setStatus("Escreva as instruções para a imagem.", true);
+
+      $("runBtn").disabled = true;
+      $("runBtn").textContent = "Processando…";
+      $("result").style.display = "none";
+      $("emptyState").style.display = "block";
+      setStatus("Enviando solicitação à OpenRouter. Isso pode levar alguns minutos…");
+      try {
+        let response, data;
+        if (selectedDataUrl) {
+          // Endpoint de edição de imagens: alguns modelos aceitam input_references; a disponibilidade varia por modelo.
+          response = await fetch("https://openrouter.ai/api/v1/images", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model,
+              prompt,
+              input_references: [{
+                type: "image_url",
+                image_url: {
+                  url: selectedDataUrl
+                }
+              }],
+              output_format: "png"
+            })
+          });
+        } else {
+          // Endpoint de geração de imagens via chat para modelos com saída image.
+          response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model,
+              modalities: ["image", "text"],
+              messages: [{ role: "user", content: prompt }]
+            })
+          });
+        }
+        data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(errorMessage(data, response.status));
+        const image = extractImage(data);
+        if (!image) {
+          const text = data?.choices?.[0]?.message?.content;
+          throw new Error("A resposta não trouxe uma imagem. Verifique se o modelo suporta saída de imagem e se o endpoint escolhido é compatível." + (typeof text === "string" && text ? ` Resposta: ${text.slice(0, 500)}` : ""));
+        }
+        outputUrl = image;
+        $("outputImage").src = image;
+        $("downloadBtn").href = image;
+        const mime = image.startsWith("data:image/jpeg") ? "jpg" : image.startsWith("data:image/webp") ? "webp" : "png";
+        $("downloadBtn").download = `imagem-openrouter.${mime}`;
+        $("resultMeta").textContent = `Modelo: ${model}`;
+        $("emptyState").style.display = "none";
+        $("result").style.display = "block";
+        setStatus("Imagem recebida com sucesso.");
+      } catch (error) {
+        setStatus(`Erro: ${error.message}\n\nSe o erro mencionar CORS, o navegador bloqueou a chamada direta. Nesse caso, será necessário usar um pequeno servidor local como intermediário.`, true);
+      } finally {
+        $("runBtn").disabled = false;
+        $("runBtn").textContent = "Gerar imagem";
+      }
+    });
+
+    $("openBtn").addEventListener("click", () => {
+      if (outputUrl) {
+        const w = window.open();
+        if (w) { w.document.write(`<img src="${outputUrl}" style="max-width:100%;height:auto">`); w.document.title = "Imagem OpenRouter"; }
+      }
+    });
+    $("clearBtn").addEventListener("click", () => {
+      $("prompt").value = "";
+      $("imageFile").value = "";
+      selectedDataUrl = "";
+      $("inputPreview").removeAttribute("src");
+      $("inputPreview").style.display = "none";
+      $("result").style.display = "none";
+      $("emptyState").style.display = "block";
+      outputUrl = "";
+      setStatus("");
+    });
+  </script>
+</body>
+
+</html>
+
+input_references: [{
+image_url: selectedDataUrl
+}],

@@ -1,0 +1,241 @@
+/*
+  Tema compartilhado dos estudos.
+  Edite somente estas variáveis para alterar a aparência de todas as páginas.
+*/
+:root {
+  --study-bg: #ffffff;
+  --study-surface: #ffffff;
+  --study-input: #ffffff;
+  --study-structure: #ffffff;
+  --study-text: #111111;
+  --study-muted: #5f5f5f;
+  --study-border: #999999;
+  --study-accent: #111111;
+  --study-radius: 0;
+  --study-font: Arial, Helvetica, sans-serif;
+}
+
+html {
+  background: var(--study-bg) !important;
+  color-scheme: light !important;
+}
+
+body {
+  max-width: none !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 28px 4vw 56px !important;
+  background: var(--study-bg) !important;
+  color: var(--study-text) !important;
+  font-family: var(--study-font) !important;
+}
+
+main {
+  width: min(100%, 1080px) !important;
+  max-width: 1080px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+body > header,
+main > header,
+.study-header {
+  display: grid !important;
+  grid-template-columns: minmax(180px, 1fr) 2fr !important;
+  gap: 4vw !important;
+  align-items: end !important;
+  margin: 0 0 28px !important;
+  padding: 0 0 16px !important;
+  border-bottom: 1px solid var(--study-border) !important;
+}
+
+body > header h1,
+main > header h1,
+.study-header h1 {
+  margin: 0 !important;
+  font-size: clamp(21px, 3vw, 43px) !important;
+  line-height: .9 !important;
+}
+
+body > header h2,
+main > header h2,
+.study-header h2,
+body > header .intro,
+main > header .intro,
+.study-header .intro {
+  max-width: 390px !important;
+  margin: 0 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
+}
+
+.study-header .eyebrow {
+  grid-column: 1 / -1;
+  margin-bottom: -16px;
+}
+
+.security-notice {
+  margin: 12px 0;
+  padding: 10px 12px !important;
+  border: 1px solid var(--study-border);
+  background: var(--study-surface);
+  color: var(--study-text) !important;
+  font-size: 12px;
+}
+
+body > header + *,
+main > header + *,
+.study-header + * {
+  margin-top: 0 !important;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--study-text) !important;
+  font-family: var(--study-font) !important;
+}
+
+h1 {
+  font-weight: 700 !important;
+  letter-spacing: -0.06em !important;
+}
+
+h2 {
+  font-weight: 700 !important;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700 !important;
+}
+
+p,
+.muted,
+.note,
+.hint,
+footer,
+li,
+td,
+th,
+label,
+legend,
+figcaption,
+.eyebrow,
+.field,
+.notice,
+.status,
+.result-meta {
+  color: var(--study-muted) !important;
+  padding-bottom: 3px !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  padding-bottom: 3px !important;
+}
+
+.card,
+.panel,
+.intro,
+.flow-node,
+fieldset,
+.group,
+.drop,
+#diagram,
+table {
+  border: 1px solid var(--study-border) !important;
+  border-radius: var(--study-radius) !important;
+  background: var(--study-surface) !important;
+  color: var(--study-text) !important;
+  box-shadow: none !important;
+}
+
+fieldset {
+  background: var(--study-surface) !important;
+}
+
+legend {
+  color: var(--study-text) !important;
+  background: var(--study-surface) !important;
+}
+
+input,
+textarea,
+select {
+  border: 1px solid var(--study-border) !important;
+  border-radius: var(--study-radius) !important;
+  background: var(--study-input) !important;
+  color: var(--study-text) !important;
+  font-family: var(--study-font) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--study-accent) !important;
+  box-shadow: inset 3px 0 0 var(--study-accent) !important;
+}
+
+button,
+.download {
+  border: 1px solid var(--study-accent) !important;
+  border-radius: var(--study-radius) !important;
+  background: var(--study-accent) !important;
+  color: var(--study-bg) !important;
+  font-family: var(--study-font) !important;
+}
+
+button.secondary,
+.secondary,
+.download {
+  background: var(--study-surface) !important;
+  border-color: var(--study-border) !important;
+  color: var(--study-text) !important;
+}
+
+button:hover,
+.download:hover {
+  opacity: .82;
+}
+
+code,
+th,
+.stats span,
+.connector {
+  border-radius: var(--study-radius) !important;
+  background: #eeeeee !important;
+  color: var(--study-text) !important;
+}
+
+th,
+td {
+  border-color: var(--study-border) !important;
+}
+
+.problem,
+.solution,
+.benefit,
+.limitation {
+  background: var(--study-surface) !important;
+}
+
+@media (max-width: 700px) {
+  body {
+    padding: 22px 18px 42px !important;
+  }
+
+  body > header,
+  main > header,
+  .study-header {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+}

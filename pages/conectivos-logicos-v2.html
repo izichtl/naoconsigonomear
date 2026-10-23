@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conectivos Lógicos Prática</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #243247;
+      --muted: #64748b;
+      --border: #d8e0e9;
+      --accent: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.6 system-ui, sans-serif;
+    }
+
+    main {
+      max-width: 1150px;
+      margin: auto;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      margin-top: 28px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    textarea,
+    input,
+    button {
+      font: inherit;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 155px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      resize: vertical;
+    }
+
+    button {
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    button:hover {
+      opacity: .85;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+    }
+
+    .group {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px;
+      background: white;
+    }
+
+    .group-title {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-weight: 700;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .term {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 3px 0;
+      font-size: .9rem;
+    }
+
+    .term input,
+    .group-title input {
+      margin-top: 5px;
+    }
+
+    #diagram {
+      overflow: auto;
+      min-height: 150px;
+      background: white;
+      border: 1px dashed #94a3b8;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    #relations {
+      padding-left: 20px;
+    }
+
+    .relation {
+      margin: 6px 0;
+    }
+
+    .tag {
+      display: inline-block;
+      border: 1px dashed #94a3b8;
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-size: .8rem;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .stats span {
+      background: #e8edf5;
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: .85rem;
+    }
+
+    @media(max-width:600px) {
+      body {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 1.55rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js" defer></script>
+</head>
+
+<body>
+  <main>
+    <h1>Texto → Fluxos Lógicos</h1>
+    <p class="muted">
+      Interpretador heurístico de conectivos discursivos.
+      Todo o processamento do texto acontece no navegador.
+    </p>
+
+    <section class="card">
+      <h2>1. Texto de entrada</h2>
+      <textarea id="source">A sobrecarga de informação dificulta a compreensão.
+Além disso, prejudica a tomada de decisões.
+Por exemplo, o excesso de notificações fragmenta a atenção.
+Do mesmo modo, sistemas complexos podem apresentar o mesmo problema.
+Entretanto, organizar as informações pode reduzir essa dificuldade.
+Se o conteúdo for dividido em temas, a navegação poderá melhorar.
+Portanto, uma estrutura lógica pode facilitar a compreensão.</textarea>
+      <div class="actions">
+        <button class="primary" id="generate">Gerar fluxograma</button>
+        <button id="selectAll">Ativar todos</button>
+        <button id="selectNone">Desativar todos</button>
+        <button id="reset">Restaurar exemplo</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Conectivos reconhecidos</h2>
+      <p class="muted">
+        Ative os conectivos que deseja considerar.
+        As expressões são comparadas sem diferenciar maiúsculas,
+        minúsculas ou acentos.
+      </p>
+      <div id="filters" class="filters"></div>
+    </section>
+
+    <section class="card">
+      <h2>3. Resultado</h2>
+      <div id="stats" class="stats"></div>
+      <div id="diagram" aria-live="polite"></div>
+    </section>
+
+    <section class="card">
+      <h2>4. Relações identificadas</h2>
+      <p class="muted">
+        Confira as interpretações antes de usá-las como representação
+        científica definitiva.
+      </p>
+      <ol id="relations"></ol>
+    </section>
+
+    <footer class="muted">
+      Protótipo experimental. As relações são hipóteses geradas por
+      regras textuais, não uma validação formal dos argumentos.
+    </footer>
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: "base",
+      themeVariables: {
+        primaryColor: "#ffffff",
+        primaryTextColor: "#243247",
+        primaryBorderColor: "#64748b",
+        lineColor: "#64748b",
+        mainBkg: "#ffffff",
+        clusterBkg: "#ffffff",
+        clusterBorder: "#94a3b8",
+        fontFamily: "Arial"
+      },
+      flowchart: {
+        htmlLabels: false,
+        curve: "linear",
+        useMaxWidth: true
+      }
+    });
+
+    // Cada entrada descreve uma regra de reconhecimento.
+    // As regras mais específicas são testadas primeiro.
+
+    const groups = [
+      {
+        name: "Adição",
+        rules: [
+          ["além disso", "adição"],
+          ["ademais", "adição"],
+          ["também", "adição"],
+          ["adicionalmente", "adição"],
+          ["ainda", "adição"],
+          ["bem como", "adição"],
+          ["do mesmo modo", "analogia"],
+          ["da mesma forma", "analogia"],
+          ["igualmente", "analogia"],
+          ["analogamente", "analogia"],
+          ["de maneira semelhante", "analogia"],
+          ["similarmente", "analogia"]
+        ]
+      },
+      {
+        name: "Causa e justificativa",
+        rules: [
+          ["em virtude de", "causa"],
+          ["devido a", "causa"],
+          ["uma vez que", "justificativa"],
+          ["visto que", "justificativa"],
+          ["tendo em vista que", "justificativa"],
+          ["dado que", "justificativa"],
+          ["porque", "justificativa"],
+          ["pois", "justificativa"],
+          ["já que", "justificativa"],
+          ["por causa de", "causa"],
+          ["em razão de", "causa"]
+        ]
+      },
+      {
+        name: "Consequência e conclusão",
+        rules: [
+          ["como resultado", "consequência"],
+          ["consequentemente", "consequência"],
+          ["por conseguinte", "consequência"],
+          ["portanto", "conclusão"],
+          ["logo", "conclusão"],
+          ["assim", "conclusão"],
+          ["desse modo", "conclusão"],
+          ["dessa forma", "conclusão"],
+          ["diante disso", "conclusão"],
+          ["em consequência", "consequência"],
+          ["por isso", "consequência"],
+          ["daí", "consequência"]
+        ]
+      },
+      {
+        name: "Contraste e concessão",
+        rules: [
+          ["por outro lado", "contraste"],
+          ["em contrapartida", "contraste"],
+          ["apesar disso", "concessão"],
+          ["no entanto", "contraste"],
+          ["entretanto", "contraste"],
+          ["todavia", "contraste"],
+          ["contudo", "contraste"],
+          ["porém", "contraste"],
+          ["mas", "contraste"],
+          ["embora", "concessão"],
+          ["ainda que", "concessão"],
+          ["mesmo que", "concessão"],
+          ["não obstante", "concessão"]
+        ]
+      },
+      {
+        name: "Condição",
+        rules: [
+          ["desde que", "condição"],
+          ["contanto que", "condição"],
+          ["a menos que", "condição"],
+          ["caso", "condição"],
+          ["se", "condição"],
+          ["senão", "alternativa"],
+          ["do contrário", "alternativa"]
+        ]
+      },
+      {
+        name: "Alternativa e disjunção",
+        rules: [
+          ["alternativamente", "alternativa"],
+          ["em vez disso", "alternativa"],
+          ["ou então", "alternativa"],
+          ["ou", "alternativa"]
+        ]
+      },
+      {
+        name: "Exemplificação e explicação",
+        rules: [
+          ["por exemplo", "exemplificação"],
+          ["a título de exemplo", "exemplificação"],
+          ["isto é", "reformulação"],
+          ["ou seja", "reformulação"],
+          ["em outras palavras", "reformulação"],
+          ["a saber", "especificação"],
+          ["especificamente", "especificação"]
+        ]
+      },
+      {
+        name: "Sequência e organização",
+        rules: [
+          ["em primeiro lugar", "sequência"],
+          ["em segundo lugar", "sequência"],
+          ["posteriormente", "sequência"],
+          ["subsequentemente", "sequência"],
+          ["em seguida", "sequência"],
+          ["finalmente", "sequência"],
+          ["antes disso", "sequência"],
+          ["depois disso", "sequência"],
+          ["por fim", "sequência"],
+          ["primeiramente", "sequência"],
+          ["depois", "sequência"],
+          ["então", "sequência"]
+        ]
+      },
+      {
+        name: "Síntese e delimitação",
+        rules: [
+          ["em síntese", "síntese"],
+          ["em resumo", "síntese"],
+          ["em suma", "síntese"],
+          ["em conclusão", "conclusão"],
+          ["em geral", "generalização"],
+          ["em particular", "especificação"],
+          ["em termos gerais", "generalização"],
+          ["em outras palavras", "reformulação"]
+        ]
+      },
+      {
+        name: "Comparação e proporção",
+        rules: [
+          ["em comparação com", "comparação"],
+          ["em relação a", "referência"],
+          ["na mesma medida", "proporção"],
+          ["mais do que", "comparação"],
+          ["menos do que", "comparação"],
+          ["ao contrário", "oposição"],
+          ["diferentemente", "contraste"],
+          ["enquanto", "contraste ou simultaneidade"]
+        ]
+      },
+      {
+        name: "Objetivo e condição final",
+        rules: [
+          ["com a finalidade de", "finalidade"],
+          ["a fim de", "finalidade"],
+          ["com o objetivo de", "finalidade"],
+          ["para que", "finalidade"],
+          ["para", "finalidade"]
+        ]
+      }
+    ];
+
+    const enabled = new Set();
+    const normalize = s => s
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase("pt-BR");
+
+    const allRules = groups.flatMap((g, gi) =>
+      g.rules.map(([phrase, type], ri) => ({
+        id: `${gi}-${ri}`,
+        group: g.name,
+        phrase,
+        type
+      }))
+    );
+
+    // Remover duplicatas de frases mantendo a primeira regra.
+    // Evita que a mesma expressão seja interpretada de duas formas.
+    const uniqueRules = [
+      ...new Map(
+        allRules.map(r => [normalize(r.phrase), r])
+      ).values()
+    ].sort((a, b) => b.phrase.length - a.phrase.length);
+
+    function buildFilters() {
+      const root = document.getElementById("filters");
+      root.innerHTML = "";
+
+      groups.forEach((group, gi) => {
+        const box = document.createElement("div");
+        box.className = "group";
+
+        const title = document.createElement("label");
+        title.className = "group-title";
+
+        const master = document.createElement("input");
+        master.type = "checkbox";
+        master.checked = true;
+        master.dataset.group = gi;
+
+        title.append(master, document.createTextNode(group.name));
+        box.append(title);
+
+        group.rules.forEach(([phrase, type], ri) => {
+          const key = `${gi}-${ri}`;
+          enabled.add(key);
+
+          const label = document.createElement("label");
+          label.className = "term";
+
+          const input = document.createElement("input");
+          input.type = "checkbox";
+          input.checked = true;
+          input.dataset.rule = key;
+
+          input.addEventListener("change", () => {
+            input.checked ? enabled.add(key) : enabled.delete(key);
+            updateMaster(gi);
+          });
+
+          label.append(
+            input,
+            document.createTextNode(`${phrase} — ${type}`)
+          );
+          box.append(label);
+        });
+
+        master.addEventListener("change", () => {
+          group.rules.forEach((_, ri) => {
+            const key = `${gi}-${ri}`;
+            const input = box.querySelector(
+              `[data-rule="${key}"]`
+            );
+
+            input.checked = master.checked;
+            master.checked ? enabled.add(key) : enabled.delete(key);
+          });
+        });
+
+        root.append(box);
+      });
+    }
+
+    function updateMaster(gi) {
+      const master = document.querySelector(
+        `[data-group="${gi}"]`
+      );
+      const group = groups[gi];
+
+      master.checked = group.rules.every((_, ri) =>
+        enabled.has(`${gi}-${ri}`)
+      );
+
+      master.indeterminate = group.rules.some((_, ri) =>
+        enabled.has(`${gi}-${ri}`)
+      ) && !master.checked;
+    }
+
+    function getActiveRules() {
+      return uniqueRules.filter(rule => enabled.has(rule.id));
+    }
+
+    function splitSentences(text) {
+      // Divisão simples; não pretende resolver todas as abreviações.
+      return (text.match(/[^.!?\n]+(?:[.!?]+|$)/g) || [])
+        .map(s => s.trim())
+        .filter(Boolean);
+    }
+
+    function findConnector(sentence, rules) {
+      const normalized = normalize(sentence);
+
+      for (const rule of rules) {
+        const phrase = normalize(rule.phrase);
+        const escaped = phrase.replace(
+          /[.*+?^${}()|[\]\\]/g, "\\$&"
+        );
+
+        const regex = new RegExp(
+          `(^|[^a-z0-9])(${escaped})(?=$|[^a-z0-9])`,
+          "i"
+        );
+
+        const match = regex.exec(normalized);
+
+        if (match) {
+          return {
+            ...rule,
+            index: match.index + match[1].length,
+            matchedText: match[2]
+          };
+        }
+      }
+
+      return null;
+    }
+
+    function escapeLabel(text) {
+      // Mermaid usa aspas para delimitar rótulos.
+      // Neutraliza caracteres que poderiam quebrar o diagrama.
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "#quot;")
+        .replace(/\[/g, "(")
+        .replace(/\]/g, ")")
+        .replace(/[{}]/g, "")
+        .replace(/\n/g, " ")
+        .replace(/\|/g, "/");
+    }
+
+    function shortLabel(text, max = 105) {
+      return text.length > max
+        ? text.slice(0, max - 1) + "…"
+        : text;
+    }
+
+    function edgeOperator(type) {
+      if (type === "analogia") return "-.->";
+      if (type === "alternativa") return "-.->";
+      if (type === "contraste" || type === "concessão") return "-->";
+      if (type === "condição") return "-->";
+      return "-->";
+    }
+
+    function createDiagram(sentences, relations) {
+      let graph = "flowchart TD\n";
+
+      sentences.forEach((sentence, i) => {
+        graph += `N${i}["${escapeLabel(shortLabel(sentence))}"]\n`;
+      });
+
+      relations.forEach((relation, i) => {
+        const operator = edgeOperator(relation.type);
+        const label = escapeLabel(relation.connector || "continuidade");
+        graph += `N${i} ${operator}|${label}| N${i + 1}\n`;
+      });
+
+      // Agrupamento interpretativo com contorno tracejado.
+      // Os nós permanecem sem preenchimento colorido.
+      graph += "\nclassDef idea fill:#ffffff,stroke:#64748b,color:#243247;\n";
+      graph += "class " +
+        sentences.map((_, i) => `N${i}`).join(",") +
+        " idea;\n";
+
+      graph +=
+        "linkStyle default stroke:#64748b,stroke-width:1.4px;\n";
+
+      return graph;
+    }
+
+    let renderCount = 0;
+
+    async function generate() {
+      const text = document.getElementById("source").value.trim();
+      const diagram = document.getElementById("diagram");
+      const list = document.getElementById("relations");
+      const stats = document.getElementById("stats");
+
+      if (!text) {
+        diagram.textContent = "Insira um texto para começar.";
+        list.replaceChildren();
+        stats.replaceChildren();
+        return;
+      }
+
+      const sentences = splitSentences(text);
+      const rules = getActiveRules();
+
+      const detected = sentences.map((sentence, index) => ({
+        sentence,
+        index,
+        connector: findConnector(sentence, rules)
+      }));
+
+      const relations = detected.map((item, index) => {
+        const connector = item.connector;
+
+        return {
+          from: index,
+          to: index + 1,
+          connector: connector?.phrase || "continuidade",
+          type: connector?.type || "continuidade",
+          sentence: item.sentence,
+          detected: Boolean(connector)
+        };
+      }).slice(0, Math.max(0, sentences.length - 1));
+
+      // Os conectivos da primeira frase são reconhecidos e exibidos,
+      // mesmo quando ainda não existe um nó anterior no texto.
+      const first = detected[0]?.connector;
+      const visibleRelations = relations;
+
+      stats.replaceChildren();
+
+      [
+        `Frases: ${sentences.length}`,
+        `Conectivos ativos: ${rules.length}`,
+        `Relações detectadas: ${detected.filter(d => d.connector).length}`
+      ].forEach(value => {
+        const span = document.createElement("span");
+        span.textContent = value;
+        stats.append(span);
+      });
+
+      list.replaceChildren();
+
+      detected.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.className = "relation";
+
+        const connector = item.connector;
+        li.textContent = connector
+          ? `"${connector.phrase}" → ${connector.type}: ${item.sentence}`
+          : `Continuidade sugerida: ${item.sentence}`;
+
+        list.append(li);
+      });
+
+      if (first) {
+        const note = document.createElement("p");
+        note.className = "muted";
+        note.textContent =
+          `A primeira frase também contém o conectivo "${first.phrase}" ` +
+          `(${first.type}), mas não possui uma frase anterior no texto.`;
+        list.prepend(note);
+      }
+
+      if (sentences.length === 1) {
+        diagram.textContent =
+          "Uma única frase foi identificada. Adicione outras frases para criar conexões.";
+        return;
+      }
+
+      const graph = createDiagram(sentences, visibleRelations);
+      const id = `logic-graph-${++renderCount}`;
+
+      try {
+        const result = await mermaid.render(id, graph);
+        diagram.innerHTML = result.svg;
+      } catch (error) {
+        diagram.textContent =
+          "Não foi possível desenhar o diagrama. Verifique o texto de entrada.";
+        console.error(error);
+      }
+    }
+
+    document.getElementById("generate")
+      .addEventListener("click", generate);
+
+    document.getElementById("selectAll")
+      .addEventListener("click", () => {
+        allRules.forEach(rule => enabled.add(rule.id));
+        document.querySelectorAll("[data-rule]").forEach(
+          input => input.checked = true
+        );
+        groups.forEach((_, i) => updateMaster(i));
+        generate();
+      });
+
+    document.getElementById("selectNone")
+      .addEventListener("click", () => {
+        enabled.clear();
+        document.querySelectorAll("[data-rule]").forEach(
+          input => input.checked = false
+        );
+        groups.forEach((_, i) => updateMaster(i));
+        generate();
+      });
+
+    document.getElementById("reset")
+      .addEventListener("click", () => {
+        document.getElementById("source").value =
+          "A sobrecarga de informação dificulta a compreensão.\n" +
+          "Além disso, prejudica a tomada de decisões.\n" +
+          "Por exemplo, o excesso de notificações fragmenta a atenção.\n" +
+          "Do mesmo modo, sistemas complexos podem apresentar o mesmo problema.\n" +
+          "Entretanto, organizar as informações pode reduzir essa dificuldade.\n" +
+          "Se o conteúdo for dividido em temas, a navegação poderá melhorar.\n" +
+          "Portanto, uma estrutura lógica pode facilitar a compreensão.";
+
+        enabled.clear();
+        allRules.forEach(rule => enabled.add(rule.id));
+
+        document.querySelectorAll("[data-rule]").forEach(
+          input => input.checked = true
+        );
+        groups.forEach((_, i) => updateMaster(i));
+        generate();
+      });
+
+    buildFilters();
+    generate();
+  </script>
+</body>
+
+</html>
