@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenRouter — Leitor de PDF</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --panel: #121a2e;
+      --line: #263451;
+      --text: #edf2ff;
+      --muted: #a7b4cf;
+      --accent: #8b9cff;
+    }
+
+    * { box-sizing: border-box }
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at top, #172443 0, var(--bg) 55%);
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+      color: var(--text);
+    }
+    main { max-width: 1000px; margin: 0 auto; padding: 32px 18px 56px }
+    .eyebrow {
+      color: #b5c0ff;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1 { font-size: clamp(1.8rem, 4vw, 2.7rem); line-height: 1.12; margin: .5rem 0 }
+    p { color: var(--muted) }
+    .layout { display: grid; gap: 18px; margin-top: 24px; }
+    .panel {
+      min-width: 0;
+      padding: 20px;
+      background: rgba(18, 26, 46, .92);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 14px 40px #0002;
+    }
+    h2 { font-size: 1.05rem; margin: 0 0 14px }
+    .field { display: block; margin: 14px 0 6px; font-size: .9rem; font-weight: 650 }
+    input[type=text], input[type=password], textarea {
+      width: 100%;
+      border: 1px solid #344362;
+      border-radius: 10px;
+      background: #0b1224;
+      color: var(--text);
+      padding: 11px 12px;
+      font: inherit;
+      outline: none;
+    }
+    textarea { min-height: 140px; resize: vertical }
+    #researchContext { min-height: 220px }
+    #prompt { min-height: 520px }
+    input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px #8b9cff22 }
+    .hint { margin: 6px 0; color: var(--muted); font-size: .82rem }
+    .drop {
+      padding: 20px;
+      border: 1px dashed #52658d;
+      border-radius: 14px;
+      background: #0d1528;
+      text-align: center;
+    }
+    .drop input { max-width: 100%; margin-top: 10px }
+    .file-name { margin: 10px 0 0; color: var(--text); font-size: .86rem; overflow-wrap: anywhere }
+    .buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px }
+    button, .download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .primary { flex: 1; background: var(--accent); color: #10152b }
+    .secondary, .download { background: #222e49; color: var(--text); border: 1px solid #3a4a6d }
+    .primary:disabled { opacity: .55; cursor: wait }
+    .status { min-height: 22px; white-space: pre-wrap; font-size: .9rem; margin-top: 14px; color: var(--muted) }
+    .result { display: none }
+    .result-meta { margin: 0 0 10px; color: var(--muted); font-size: .82rem }
+    .output {
+      min-height: 360px;
+      max-height: 65vh;
+      overflow: auto;
+      margin: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: #0b1224;
+      color: var(--text);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font: 14px/1.6 system-ui, sans-serif;
+    }
+    .notice {
+      margin-top: 16px;
+      padding: 8px 12px;
+      border-left: 3px solid #d4ad62;
+      border-radius: 0 8px 8px 0;
+      background: #211d17;
+      color: #e8d8b6;
+      font-size: .84rem;
+    }
+    @media(max-width:760px) {
+      main { padding-top: 24px }
+      .panel { padding: 16px }
+    }
+  </style>
+  <link rel="stylesheet" href="../theme.css">
+  <script src="../theme.js" defer></script>
+</head>
+
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Ferramenta local · OpenRouter API</div>
+      <h1>Leitor de PDF em linguagem natural</h1>
+      <p>Envie um PDF, informe o contexto da sua pesquisa e receba uma análise acadêmica rastreável em linguagem natural.</p>
+    </header>
+    <div class="layout">
+      <section class="panel">
+        <h2>Configuração</h2>
+        <label class="field" for="apiKey">Chave da API OpenRouter</label>
+        <input id="apiKey" type="password" placeholder="sk-or-v1-..." autocomplete="off">
+        <p class="security-notice">Segurança: a chave não é armazenada em arquivos, cookies, localStorage ou backend. Ela permanece somente em memória enquanto esta página estiver aberta e é enviada diretamente à OpenRouter.</p>
+
+        <label class="field" for="model">Modelo OpenRouter</label>
+        <select id="model" data-openrouter-model data-default-model="google/gemini-2.5-flash"></select>
+        <p class="hint">Use um modelo que aceite entrada de arquivos/PDF na OpenRouter. A disponibilidade pode mudar.</p>
+
+      </section>
+
+      <section class="panel">
+        <h2>Contexto da sua pesquisa</h2>
+        <p class="hint">Substitua o exemplo abaixo pelos dados da sua pesquisa. Esse contexto será enviado junto com o prompt.</p>
+        <label class="field" for="researchContext">Dados da pesquisa</label>
+        <textarea id="researchContext">A pesquisa investiga o uso de modelos de linguagem pequenos (SLMs) e modelos de linguagem grandes (LLMs) no apoio à triagem de estudos em Revisões Sistemáticas da Literatura (RSL). A proposta considera três datasets, três áreas do conhecimento, três modelos distintos, três escopos experimentais, referência humana e avaliação comparativa de desempenho, concordância e custo. Não presuma que o artigo analisado utiliza essa mesma configuração.</textarea>
+      </section>
+
+      <section class="panel">
+        <h2>Prompt</h2>
+        <p class="hint">O prompt abaixo é editável. As instruções são combinadas com o contexto da sua pesquisa antes do envio.</p>
+        <label class="field" for="prompt">Instruções de análise</label>
+        <textarea id="prompt"></textarea>
+        <label class="field" for="pdfFile">Arquivo PDF</label>
+        <div class="drop">
+          <div>Escolha um PDF do seu dispositivo</div>
+          <input id="pdfFile" type="file" accept="application/pdf,.pdf">
+          <div id="fileName" class="file-name">Nenhum arquivo selecionado.</div>
+        </div>
+        <p class="hint">O arquivo é convertido em base64 somente para a solicitação e não é salvo por esta página.</p>
+        <div class="buttons">
+          <button class="primary" id="runBtn" type="button">Ler PDF</button>
+          <button class="secondary" id="clearBtn" type="button">Limpar</button>
+        </div>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+        <div class="notice">A chamada é feita diretamente do navegador para a OpenRouter. Não publique esta página com uma chave preenchida. Podem ser cobrados créditos pela API.</div>
+      </section>
+
+      <section class="panel">
+        <h2>Resposta</h2>
+        <div id="emptyState"><p>A resposta sobre o PDF aparecerá aqui.</p></div>
+        <div class="result" id="result">
+          <p class="result-meta" id="resultMeta"></p>
+          <pre id="output" class="output"></pre>
+          <div class="buttons">
+            <button class="secondary" id="copyBtn" type="button">Copiar texto</button>
+            <a id="downloadBtn" class="download" download="resposta-pdf.txt">Baixar .txt</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let selectedDataUrl = "";
+    let selectedFileName = "";
+    const responseStorageKey = "openrouter-pdf-responses-v1";
+    const defaultResearchContext = "A pesquisa investiga o uso de modelos de linguagem pequenos (SLMs) e modelos de linguagem grandes (LLMs) no apoio à triagem de estudos em Revisões Sistemáticas da Literatura (RSL). A proposta considera três datasets, três áreas do conhecimento, três modelos distintos, três escopos experimentais, referência humana e avaliação comparativa de desempenho, concordância e custo. Não presuma que o artigo analisado utiliza essa mesma configuração.";
+    const defaultPrompt = `Atue como pesquisador acadêmico especializado em Revisões Sistemáticas da Literatura, avaliação empírica de modelos de linguagem e análise metodológica de estudos científicos.
+
+Analise integralmente o artigo fornecido em PDF e produza uma resposta estruturada, baseada exclusivamente nas evidências do artigo. O objetivo é extrair evidências para comparação sistemática e redigir uma síntese acadêmica para a seção de Trabalhos Relacionados, não apenas resumir o texto.
+
+Regras obrigatórias:
+- Não invente informações, modelos, datasets, métricas, resultados ou páginas.
+- Quando uma informação não estiver disponível, escreva “Não informado no artigo”.
+- Quando não for possível determinar algo, escreva “Não foi possível determinar a partir do texto disponível”.
+- Diferencie evidência, interpretação e relação com a pesquisa atual.
+- Para cada informação relevante, informe a página, seção, tabela ou figura. Não invente localização.
+- Diferencie ausência de informação, item fora do escopo e limitação metodológica.
+
+Organize a resposta exatamente nesta ordem:
+### A. Identificação bibliográfica
+Título, autores, ano, veículo, DOI/URL, objetivo, problema, tipo de estudo, área e contribuição declarada, sempre com localização da evidência.
+
+### B. Tabela de extração
+Inclua os 18 critérios abaixo, sem omissões. Use as colunas: Critério; Resposta objetiva; Detalhamento metodológico; Evidência e localização; Relação com a pesquisa atual.
+1. Modelos avaliados.
+2. Classificação como LLM, SLM ou outra categoria.
+3. Modelos proprietários, open-source, pesos abertos e forma de acesso.
+4. Área do conhecimento e domínio dos datasets.
+5. Número, origem e finalidade dos datasets.
+6. Total de instâncias por dataset, classe, filtro e etapa.
+7. Métricas, definições, fórmulas e agregações.
+8. Comparação com decisões ou consenso humano, ground truth e adjudicação.
+9. Comitê de modelos, agentes, avaliadores ou especialistas.
+10. Regra de agregação, empates, abstenções, inválidos e discordâncias.
+11. Comparação entre áreas do conhecimento.
+12. Comparação direta entre SLMs e LLMs e fatores de confusão.
+13. Comparação entre modelos, datasets, prompts, parâmetros, agentes, votação, áreas e custos.
+14. Variáveis independentes, dependentes, de controle e caracterização.
+15. Técnicas de engenharia de prompt efetivamente utilizadas.
+16. Custos financeiros e operacionais, tokens, tempo, memória e computação.
+17. Human-in-the-loop e suas etapas de participação.
+18. Reprodutibilidade: bem documentada, parcial ou limitada pelas evidências.
+
+### C. Síntese metodológica
+Explique em sequência o problema, datasets, modelos, preparação, prompts, cenários, decisões, referência humana, métricas, análise, custos, recursos disponíveis e limitações.
+
+### D. Resultados e limitações
+Separe principais resultados, limitações declaradas pelos autores, limitações metodológicas identificáveis e implicações para a pesquisa atual. Associe valores às métricas, cenários e localizações.
+
+### E. Comparação com a pesquisa atual
+Compare diversidade de datasets e áreas, modelos e categorias, SLMs/LLMs, escopos, referência humana, avaliação individual/agregada, métricas, variáveis, custos e reprodutibilidade. Para cada eixo, informe o que o artigo realizou, o que a pesquisa atual propõe, a semelhança/diferença e a implicação metodológica.
+
+### F. Texto para Trabalhos Relacionados
+Redija dois ou três parágrafos acadêmicos, objetivos e formais, contendo apresentação do estudo, abordagem, resultados, relação com a pesquisa atual, limitação documentada e posicionamento da pesquisa atual. Não invente citações ou novidade.
+
+### G. Informações não encontradas e verificações necessárias
+Liste ausências, ambiguidades, divergências internas e dados que precisam de conferência manual.
+
+Antes de concluir, verifique se os 18 critérios foram respondidos, se cada afirmação possui evidência ou foi marcada como não informada, se os resultados estão associados aos cenários corretos e se nenhuma hipótese foi apresentada como fato.`;
+
+    $("researchContext").value = defaultResearchContext;
+    $("prompt").value = defaultPrompt;
+
+    function setStatus(text, isError = false) {
+      $("status").textContent = text;
+      $("status").style.color = isError ? "#ff9b9b" : "#a7b4cf";
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Não foi possível ler o PDF."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function responseText(data) {
+      const content = data?.choices?.[0]?.message?.content;
+      if (typeof content === "string") return content.trim();
+      if (Array.isArray(content)) {
+        return content
+          .filter((part) => part?.type === "text" && typeof part.text === "string")
+          .map((part) => part.text)
+          .join("\n")
+          .trim();
+      }
+      return "";
+    }
+
+    function errorMessage(data, status) {
+      return data?.error?.message || data?.message || data?.error ||
+        `A API respondeu com HTTP ${status}. Confira o modelo, a chave e os créditos.`;
+    }
+
+    function saveResponseVersion(response) {
+      const saved = JSON.parse(window.localStorage.getItem(responseStorageKey) || "[]");
+      const nextVersion = saved.reduce((highest, item) => Math.max(highest, Number(item.version) || 0), 0) + 1;
+      saved.push({
+        version: nextVersion,
+        savedAt: new Date().toISOString(),
+        fileName: selectedFileName,
+        model: $("model").value.trim(),
+        response
+      });
+      window.localStorage.setItem(responseStorageKey, JSON.stringify(saved));
+      return nextVersion;
+    }
+
+    function getSavedResponseVersions() {
+      return JSON.parse(window.localStorage.getItem(responseStorageKey) || "[]");
+    }
+
+    $("pdfFile").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      selectedDataUrl = "";
+      selectedFileName = "";
+      $("fileName").textContent = "Nenhum arquivo selecionado.";
+      if (!file) return;
+      if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+        setStatus("Selecione um arquivo PDF.", true);
+        $("pdfFile").value = "";
+        return;
+      }
+      try {
+        selectedDataUrl = await fileToDataUrl(file);
+        selectedFileName = file.name;
+        $("fileName").textContent = `${file.name} (${Math.ceil(file.size / 1024)} KB)`;
+        setStatus("PDF carregado. Você pode enviar a pergunta.");
+      } catch (error) {
+        setStatus(error.message, true);
+      }
+    });
+
+    $("runBtn").addEventListener("click", async () => {
+      const key = $("apiKey").value.trim();
+      const model = $("model").value.trim();
+      const prompt = $("prompt").value.trim();
+      const researchContext = $("researchContext").value.trim();
+      if (!key) return setStatus("Informe sua chave da API OpenRouter.", true);
+      if (!model) return setStatus("Informe o ID do modelo.", true);
+      if (!selectedDataUrl) return setStatus("Selecione um arquivo PDF.", true);
+      if (!prompt) return setStatus("Escreva o que você quer saber sobre o PDF.", true);
+      if (!researchContext) return setStatus("Preencha o contexto da sua pesquisa.", true);
+
+      $("runBtn").disabled = true;
+      $("runBtn").textContent = "Processando…";
+      $("result").style.display = "none";
+      $("emptyState").style.display = "block";
+      setStatus("Enviando o PDF à OpenRouter. Isso pode levar alguns minutos…");
+      try {
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${key}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model,
+            messages: [{
+              role: "user",
+              content: [
+                { type: "file", file: { filename: selectedFileName, file_data: selectedDataUrl } },
+                { type: "text", text: `Contexto da pesquisa atual:\n${researchContext}\n\nPrompt de análise:\n${prompt}` }
+              ]
+            }]
+          })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(errorMessage(data, response.status));
+        const text = responseText(data);
+        if (!text) throw new Error("A resposta não trouxe texto. Verifique se o modelo aceita PDFs e tente novamente.");
+        const version = saveResponseVersion(text);
+        $("output").textContent = text;
+        $("resultMeta").textContent = `Arquivo: ${selectedFileName} · Modelo: ${model}`;
+        $("downloadBtn").href = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+        $("emptyState").style.display = "none";
+        $("result").style.display = "block";
+        setStatus(`Resposta recebida com sucesso e salva como versão ${version}.`);
+      } catch (error) {
+        setStatus(`Erro: ${error.message}\n\nSe o erro mencionar CORS, o navegador bloqueou a chamada direta. Nesse caso, será necessário usar um pequeno servidor local como intermediário.`, true);
+      } finally {
+        $("runBtn").disabled = false;
+        $("runBtn").textContent = "Ler PDF";
+      }
+    });
+
+    $("copyBtn").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText($("output").textContent);
+        setStatus("Texto copiado.");
+      } catch {
+        setStatus("Não foi possível copiar automaticamente.", true);
+      }
+    });
+
+    $("clearBtn").addEventListener("click", () => {
+      $("researchContext").value = defaultResearchContext;
+      $("prompt").value = defaultPrompt;
+      $("pdfFile").value = "";
+      selectedDataUrl = "";
+      selectedFileName = "";
+      $("fileName").textContent = "Nenhum arquivo selecionado.";
+      $("result").style.display = "none";
+      $("emptyState").style.display = "block";
+      $("output").textContent = "";
+      $("downloadBtn").removeAttribute("href");
+      setStatus("");
+    });
+  </script>
+</body>
+
+</html>

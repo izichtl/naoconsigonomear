@@ -298,7 +298,7 @@ Non-peer-reviewed articles</textarea>
         <input id="openrouterKey" type="password" placeholder="sk-or-v1-..." autocomplete="off">
 
         <label for="openrouterModel">Modelo OpenRouter</label>
-        <input id="openrouterModel" value="openai/gpt-4o-mini">
+        <select id="openrouterModel" data-openrouter-model data-default-model="openai/gpt-4o-mini"></select>
 
         <label for="openrouterPrompt">JSON enviado ao OpenRouter</label>
         <textarea id="openrouterPrompt" class="api-output" spellcheck="false"
@@ -468,7 +468,7 @@ Non-peer-reviewed articles</textarea>
         $(id).addEventListener('input', render);
         $(id).addEventListener('change', render);
       });
-      $('openrouterModel').addEventListener('input', updateOpenrouterPrompt);
+      $('openrouterModel').addEventListener('change', updateOpenrouterPrompt);
       render();
     })();
   </script>

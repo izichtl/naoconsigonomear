@@ -7,6 +7,18 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="access-modal" id="access-modal">
+    <form class="access-box" id="access-form">
+      <h1>Validação de acesso</h1>
+      <p>Responda à pergunta para continuar.</p>
+      <label for="access-answer">Qual meu apelido?</label>
+      <input id="access-answer" type="text" autocomplete="off" autofocus>
+      <div class="access-error" id="access-error" role="alert"></div>
+      <button type="submit">Continuar</button>
+    </form>
+  </div>
+
+  <div class="site-shell">
   <aside class="sidebar" aria-label="Navegação de páginas">
     <div class="sidebar-resizer" id="sidebar-resizer" role="separator"
       aria-label="Redimensionar sidebar" aria-orientation="vertical"
@@ -20,10 +32,51 @@
   </aside>
 
   <main class="content">
-    <iframe id="page-frame" title="Página selecionada" src="pages/estudo%20da%20forma.html"></iframe>
+    <iframe id="page-frame" title="Página selecionada"></iframe>
     <p id="empty-state" class="empty-state" hidden>Nenhuma página HTML foi encontrada.</p>
   </main>
+  </div>
 
+  <script>
+    (function () {
+      "use strict";
+
+      var authStorageKey = "arquivo-root-auth-v1";
+      var authDuration = 24 * 60 * 60 * 1000;
+      var expectedAnswer = "desenhocasinha";
+      var modal = document.getElementById("access-modal");
+      var form = document.getElementById("access-form");
+      var input = document.getElementById("access-answer");
+      var error = document.getElementById("access-error");
+
+      function isAuthenticated() {
+        var saved = Number(window.localStorage.getItem(authStorageKey));
+        return Number.isFinite(saved) && saved > 0 && Date.now() - saved < authDuration;
+      }
+
+      function grantAccess() {
+        window.localStorage.setItem(authStorageKey, String(Date.now()));
+        window.location.reload();
+      }
+
+      if (isAuthenticated()) {
+        modal.remove();
+        document.body.classList.add("access-granted");
+      } else {
+        window.localStorage.removeItem(authStorageKey);
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          var answer = input.value.trim().toLocaleLowerCase("pt-BR");
+          if (answer !== expectedAnswer) {
+            error.textContent = "Resposta incorreta. Tente novamente.";
+            input.select();
+            return;
+          }
+          grantAccess();
+        });
+      }
+    }());
+  </script>
   <script src="manifest.js?v=20261023"></script>
   <script src="app.js"></script>
 </body>

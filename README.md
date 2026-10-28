@@ -6,8 +6,8 @@ preserva a navegação.
 
 ## Segurança das chaves OpenRouter
 
-As páginas que usam a OpenRouter, como `open-router-jev.html` e
-`open-router-img.html`, não armazenam a API key em arquivos, cookies,
+As páginas que usam a OpenRouter, como `open-router-jev.html`,
+`open-router-img.html` e `open-router-pdf.html`, não armazenam a API key em arquivos, cookies,
 `localStorage`, banco de dados ou backend. A chave fica somente na memória da
 página enquanto ela está aberta e é enviada diretamente do navegador para a
 OpenRouter por uma requisição `fetch`.
@@ -85,3 +85,11 @@ ser digitada novamente. Ela não é incluída no prompt JSON. O envio é feito
 diretamente do navegador para `https://openrouter.ai/api/v1/chat/completions`;
 por isso, a disponibilidade depende de conexão, CORS e das permissões da chave.
 Não publique uma cópia do projeto com uma chave preenchida.
+
+## Usar o leitor de PDF
+
+Abra a página **OpenRouter — Leitor de PDF** pela sidebar. Informe a chave e
+um modelo compatível com entrada de arquivos, selecione um PDF e escreva o que
+quer saber sobre ele. A página envia o arquivo diretamente à OpenRouter e
+exibe a resposta em linguagem natural, com opções para copiar ou baixar o
+texto. O PDF também permanece somente em memória enquanto a página está aberta.

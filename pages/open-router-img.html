@@ -248,13 +248,7 @@
         <p class="security-notice">Segurança: a chave não é armazenada em arquivos, cookies, localStorage ou backend. Ela permanece somente em memória enquanto esta página estiver aberta e é enviada diretamente à OpenRouter. Código do projeto: <a href="https://github.com/izichtl/naoconsigonomear" target="_blank" rel="noopener noreferrer">github.com/izichtl/naoconsigonomear</a>.</p>
 
         <label class="field" for="model">Modelo OpenRouter</label>
-        <input id="model" type="text" list="models" value="qwen/qwen-image-2.1-turbo"
-          placeholder="provedor/nome-do-modelo">
-        <datalist id="models">
-          <option value="google/gemini-2.5-flash-image-preview"></option>
-          <option value="black-forest-labs/flux.2-klein-4b"></option>
-          <option value="openai/gpt-5-image"></option>
-        </datalist>
+        <select id="model" data-openrouter-model data-default-model="qwen/qwen-image-2.1-turbo"></select>
         <p class="hint">Os modelos disponíveis mudam. Informe um ID que aceite geração/edição de imagens na OpenRouter.
         </p>
 

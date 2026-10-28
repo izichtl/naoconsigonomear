@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+  if (!document.body.classList.contains("access-granted")) return;
+
   var pages = Array.isArray(window.PAGE_MANIFEST) ? window.PAGE_MANIFEST : [];
   var list = document.getElementById("page-list");
   var frame = document.getElementById("page-frame");

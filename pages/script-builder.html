@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gerador de comandos Bash</title>
+<link rel="stylesheet" href="../theme.css">
+<style>
+  .builder-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+  .builder-panel { border: 1px solid var(--study-border); padding: 18px; }
+  .builder-panel h2 { margin: 0 0 16px; font-size: 16px; }
+  .builder-field { margin-bottom: 15px; }
+  .builder-field label { display: block; margin-bottom: 5px; color: var(--study-text) !important; font-weight: 700; }
+  .builder-field input,
+  .builder-field textarea { width: 100%; }
+  .builder-field textarea { min-height: 210px; }
+  .builder-help { margin: 5px 0 0; font-size: 12px; }
+  .builder-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .builder-output { min-height: 360px; margin: 0; padding: 14px; border: 1px solid var(--study-border); background: var(--study-input); color: var(--study-text); white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .builder-output-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+  .builder-output-title label { color: var(--study-text) !important; font-weight: 700; }
+  .builder-status { min-height: 20px; margin-top: 10px; font-size: 12px; }
+  .builder-note { margin-top: 18px; padding: 12px; border-left: 3px solid var(--study-accent); background: var(--study-surface); font-size: 12px; }
+  @media (max-width: 760px) { .builder-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Gerador de comandos Bash</h1>
+  <p class="intro">Digite comandos, gere um arquivo executável e acompanhe cada etapa com um identificador de tarefa.</p>
+</header>
+
+<main>
+  <div class="builder-grid">
+    <section class="builder-panel">
+      <h2>Comandos</h2>
+      <div class="builder-field">
+        <label for="name">Nome da tarefa</label>
+        <input id="name" value="teste" pattern="[A-Za-z_][A-Za-z0-9_-]*">
+      </div>
+      <div class="builder-field">
+        <label for="commands">Lista de comandos, um por linha</label>
+        <textarea id="commands" spellcheck="false">echo "teste"
+date</textarea>
+        <p class="builder-help">Linhas vazias e iniciadas com # são ignoradas. Os comandos são executados em ordem.</p>
+      </div>
+      <div class="builder-actions">
+        <button id="generate" type="button">Gerar .sh</button>
+        <button id="example" class="secondary" type="button">Exemplo</button>
+      </div>
+      <div id="status" class="builder-status" aria-live="polite"></div>
+    </section>
+
+    <section class="builder-panel">
+      <div class="builder-output-title">
+        <label for="script">Script Bash gerado</label>
+        <button class="secondary" type="button" data-copy="script">Copiar</button>
+      </div>
+      <pre id="script" class="builder-output">Clique em “Gerar .sh”.</pre>
+      <div class="builder-output-title" style="margin-top:18px">
+        <label for="install">Como usar</label>
+        <button class="secondary" type="button" data-copy="install">Copiar</button>
+      </div>
+      <pre id="install" class="builder-output">As instruções aparecerão aqui.</pre>
+    </section>
+  </div>
+
+  <p class="builder-note">
+    Cada execução registra <strong>TASK:nome</strong>. Cada comando registra
+    <strong>EX:comando - data/hora</strong>. Esta página apenas gera o arquivo;
+    ela não executa comandos.
+  </p>
+</main>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  function shellQuote(value) {
+    return "'" + value.replace(/'/g, "'\\''") + "'";
+  }
+
+  function validName(value) {
+    return /^[A-Za-z_][A-Za-z0-9_-]*$/.test(value);
+  }
+
+  function generate() {
+    const name = $('name').value.trim();
+    const commands = $('commands').value
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'));
+
+    if (!validName(name)) {
+      $('status').textContent = 'Nome inválido. Use letras, números, _ ou -.'; 
+      return;
+    }
+    if (!commands.length) {
+      $('status').textContent = 'Digite pelo menos um comando.';
+      return;
+    }
+
+    const commandLines = commands.map((command) => `COMMAND=${shellQuote(command)}
+printf 'TASK:%s - %s\\n' "$TASK" "$(date -Is)"
+printf 'EX:%s - %s\\n' "$COMMAND" "$(date -Is)"
+if bash -lc "$COMMAND"; then
+  status=0
+else
+  status=$?
+fi
+printf 'EX:%s - exit=%s - %s\\n' "$COMMAND" "$status" "$(date -Is)"
+if [[ "$status" -ne 0 ]]; then
+  exit "$status"
+fi`).join('\n\n');
+
+    const script = `#!/usr/bin/env bash
+set -Eeuo pipefail
+
+TASK=${shellQuote(name)}
+printf '[TASK:%s] start - %s\\n' "$TASK" "$(date -Is)"
+
+${commandLines}
+
+printf '[TASK:%s] success - %s\\n' "$TASK" "$(date -Is)"
+`;
+
+    $('script').textContent = script;
+    $('install').textContent = `# Salve o conteúdo como ${name}.sh
+chmod +x ${name}.sh
+./${name}.sh`;
+    $('status').textContent = `Arquivo gerado para a tarefa "${name}" com ${commands.length} comando(s).`;
+  }
+
+  $('generate').addEventListener('click', generate);
+  $('example').addEventListener('click', () => {
+    $('name').value = 'teste';
+    $('commands').value = 'echo "teste"\ndate';
+    generate();
+  });
+
+  document.querySelectorAll('[data-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText($(button.dataset.copy).textContent);
+        $('status').textContent = 'Conteúdo copiado.';
+      } catch {
+        $('status').textContent = 'Não foi possível copiar automaticamente.';
+      }
+    });
+  });
+</script>
+</body>
+</html>
