@@ -69,11 +69,36 @@
     });
   }
 
+  var shell = document.querySelector(".site-shell");
+  var menuToggle = document.getElementById("menu-toggle");
+  var backdrop = document.getElementById("sidebar-backdrop");
+  var mobileTitle = document.getElementById("mobile-title");
+
+  function setMenuOpen(open) {
+    shell.classList.toggle("sidebar-open", open);
+    menuToggle.setAttribute("aria-expanded", String(open));
+    menuToggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+  }
+
+  menuToggle.addEventListener("click", function () {
+    setMenuOpen(!shell.classList.contains("sidebar-open"));
+  });
+
+  backdrop.addEventListener("click", function () {
+    setMenuOpen(false);
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") setMenuOpen(false);
+  });
+
   function selectPage(link) {
     document.querySelectorAll(".page-link").forEach(function (item) {
       item.removeAttribute("aria-current");
     });
     link.setAttribute("aria-current", "page");
+    mobileTitle.textContent = link.textContent;
+    setMenuOpen(false);
     frame.src = link.dataset.path;
     var url = new URL(window.location.href);
     url.searchParams.set(pageQueryParameter, link.dataset.path);

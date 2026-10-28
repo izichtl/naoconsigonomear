@@ -19,7 +19,16 @@
   </div>
 
   <div class="site-shell">
-  <aside class="sidebar" aria-label="Navegação de páginas">
+  <header class="mobile-topbar">
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Abrir menu"
+      aria-expanded="false" aria-controls="sidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="mobile-title" id="mobile-title">arquivo</span>
+  </header>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <aside class="sidebar" id="sidebar" aria-label="Navegação de páginas">
     <div class="sidebar-resizer" id="sidebar-resizer" role="separator"
       aria-label="Redimensionar sidebar" aria-orientation="vertical"
       tabindex="0"></div>
