@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor de artigo tutorial — Protocolo de RSL</title>
+<style>
+:root{--ink:#202938;--muted:#687386;--line:#dce2e9;--paper:#fff;--bg:#f2f4f7;--accent:#244b70;--accent2:#eaf1f7;--gold:#b17b36}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);border-radius:8px;padding:9px 13px;background:#fff;color:var(--ink)}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button:hover{filter:brightness(.97)}
+.topbar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:12px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:750;margin-right:auto;color:var(--accent)}
+.layout{display:grid;grid-template-columns:minmax(300px,430px) minmax(0,1fr);gap:20px;max-width:1600px;margin:20px auto;padding:0 20px;align-items:start}
+.editor{display:flex;flex-direction:column;gap:12px}
+.intro{background:var(--accent2);border:1px solid #d4e0eb;padding:14px 16px;border-radius:10px;font-size:13px;color:#34475a}
+.field{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px}
+.field label{display:block;font-size:13px;font-weight:750;margin-bottom:7px;color:#31465c}
+.field small{display:block;color:var(--muted);font-size:11px;margin-top:5px}
+textarea{width:100%;min-height:125px;resize:vertical;border:1px solid #d8dee6;border-radius:7px;padding:10px 11px;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;color:#263244;background:#fcfdff}
+textarea:focus{outline:2px solid #9cb8d2;border-color:#7898b8}
+textarea.short{min-height:65px}
+textarea.tall{min-height:220px}
+.preview-wrap{min-width:0}
+.preview-label{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.paper{background:var(--paper);max-width:900px;margin:0 auto;padding:66px 76px;box-shadow:0 4px 22px #1d2a3a12;border:1px solid #e5e8ed;min-height:1100px}
+.paper .journal{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:34px}
+.paper h1{font:700 29px/1.2 Georgia,serif;color:#182a3b;margin:0 0 15px}
+.paper .authors{font-size:13px;color:#4d5c6d;margin-bottom:25px}
+.paper h2{font:700 18px/1.3 Georgia,serif;color:#1f3d59;margin:30px 0 10px;padding-bottom:5px;border-bottom:1px solid #e6ebf0}
+.paper h3{font:700 15px Georgia,serif;margin:18px 0 7px}
+.paper p{font:15px/1.72 Georgia,"Times New Roman",serif;text-align:justify;margin:0 0 11px;white-space:pre-wrap}
+.paper .abstract{background:#f7f9fb;border-left:3px solid #9ab0c5;padding:14px 17px;margin:12px 0 20px}
+.paper .abstract p{font-size:13px}
+.paper .keywords{font:12px/1.6 Georgia,serif;margin:8px 0 20px}
+.paper ul{font:14px/1.65 Georgia,serif;padding-left:23px;margin:6px 0 14px}
+.paper li{margin:3px 0}
+.paper .note{font:12px/1.55 ui-sans-serif,system-ui,sans-serif;color:#6a7481;background:#fff9ef;border:1px solid #f0dfc5;padding:11px 13px;border-radius:6px;margin:18px 0}
+.paper .references p{font-size:12px;text-align:left;padding-left:24px;text-indent:-24px;line-height:1.55;margin-bottom:8px}
+.paper .placeholder{color:#9a6b28}
+.status{font-size:12px;color:var(--muted)}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.paper{padding:38px 30px}}
+@media print{
+ @page{size:A4;margin:2.2cm}
+ body{background:#fff}
+ .topbar,.editor,.preview-label{display:none!important}
+ .layout{display:block;margin:0;padding:0;max-width:none}
+ .preview-wrap{width:100%}
+ .paper{border:0;box-shadow:none;max-width:none;min-height:0;padding:0;margin:0}
+ .paper h1{font-size:22pt}
+ .paper h2{font-size:14pt;break-after:avoid}
+ .paper h3{break-after:avoid}
+ .paper p,.paper li{orphans:3;widows:3}
+ .paper .note{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+ <div class="brand">Caderno de artigo · RSL</div>
+ <button id="btnPreview" class="primary">Atualizar prévia</button>
+ <button id="btnPrint">Imprimir / PDF</button>
+ <button id="btnLatex">Copiar LaTeX</button>
+ <button id="btnDownloadTex">Baixar .tex</button>
+ <button id="btnReset">Restaurar exemplo</button>
+ <span class="status" id="status">Edições salvas automaticamente neste navegador.</span>
+</div>
+
+<div class="layout">
+ <aside class="editor">
+  <div class="intro"><strong>Como usar.</strong> Edite os campos à esquerda. A prévia à direita é atualizada automaticamente. O texto inicial é um exemplo de trabalho, não um relato de pesquisa já executada. Substitua os trechos entre colchetes e confirme cada decisão metodológica antes de submeter ou divulgar.</div>
+  <div id="fields"></div>
+ </aside>
+ <main class="preview-wrap">
+  <div class="preview-label"><span>Pré-visualização do artigo</span><span>Versão de trabalho</span></div>
+  <article class="paper" id="paper"></article>
+ </main>
+</div>
+
+<script>
+const modelo = [
+{ id:"titulo", label:"Título", short:true, value:"Um protocolo introdutório para revisões sistemáticas da literatura em Psicologia Clínica e Saúde Mental: fundamentação metodológica e desenvolvimento de uma aplicação web" },
+{ id:"autores", label:"Autoria e afiliação", short:true, value:"[Nome do(a) autor(a)] · [Instituição] · [e-mail]" },
+{ id:"resumo", label:"Resumo", value:"As revisões sistemáticas da literatura (RSLs) permitem identificar, avaliar e sintetizar estudos relevantes sobre uma questão de investigação mediante procedimentos explícitos e reproduzíveis. Entretanto, o planejamento e a execução de uma RSL envolvem decisões metodológicas que podem ser difíceis para pesquisadores em formação. Este artigo apresenta a proposta de um protocolo introdutório voltado à condução de RSLs em Psicologia Clínica e Saúde Mental e descreve sua tradução para uma aplicação web de apoio ao planejamento. A proposta foi estruturada a partir da leitura e da síntese de diretrizes e referências metodológicas, incluindo orientações para formulação da pergunta, busca, seleção, extração, avaliação crítica e síntese dos estudos. A estratégia SPIDER é adotada como referência para estruturar perguntas que envolvam experiências, percepções e fenômenos de interesse, admitindo estudos qualitativos e de métodos mistos. Como artefato, apresenta-se uma aplicação destinada a registrar os componentes do protocolo e apoiar sua organização. O texto tem caráter tutorial e descritivo; a demonstração da ferramenta não deve ser interpretada, por si só, como validação de sua eficácia. São discutidos o escopo introdutório da proposta, suas limitações e os cuidados necessários para sua utilização em revisões efetivas." },
+{ id:"palavras", label:"Palavras-chave", short:true, value:"Revisão Sistemática da Literatura; Psicologia Clínica; Saúde Mental; SPIDER; Protocolo de pesquisa; Aplicação web." },
+{ id:"introducao", label:"1. Introdução", value:"A produção científica em Psicologia cresce continuamente, tornando necessária a utilização de procedimentos capazes de integrar resultados produzidos por diferentes estudos. As revisões sistemáticas da literatura permitem organizar esse conhecimento por meio de critérios explícitos, pesquisa estruturada e síntese crítica da evidência. Diferentemente de uma revisão narrativa não sistematizada, uma RSL deve tornar transparentes as decisões que orientam a identificação, a seleção e a análise dos estudos (Camilo & Garrido, 2019).\n\nApesar de sua relevância, a condução de uma RSL exige decisões sobre a pergunta de investigação, os critérios de elegibilidade, as fontes de informação, as estratégias de busca, a seleção dos estudos, a extração dos dados, a avaliação crítica e a síntese. A multiplicidade de orientações e instrumentos pode representar uma dificuldade para estudantes e pesquisadores que estão iniciando nesse tipo de investigação.\n\nDiante desse contexto, este trabalho apresenta um protocolo introdutório direcionado a revisões sobre fenômenos relacionados à Psicologia Clínica e à Saúde Mental. O protocolo foi organizado a partir da leitura e da sistematização de referências metodológicas, procurando converter recomendações dispersas em uma sequência operacional adequada a uma atividade formativa de curta duração. Como apoio à sua utilização, foi desenvolvida uma aplicação web para coletar e organizar os elementos do planejamento.\n\nO objetivo deste artigo é documentar a fundamentação, a organização e a aplicação didática do protocolo, bem como descrever a ferramenta web concebida para apoiar seu preenchimento. Não se pretende substituir manuais especializados ou apresentar uma diretriz universal para todos os tipos de revisão, mas oferecer um ponto de partida estruturado, cujas decisões devem ser aprofundadas conforme a pergunta e o delineamento da revisão." },
+{ id:"fundamentacao", label:"2. Fundamentação teórica", value:"Uma revisão sistemática caracteriza-se pela definição prévia de objetivos e critérios de elegibilidade, pela adoção de uma metodologia explícita e reproduzível, pela busca sistemática de estudos, pela avaliação da validade ou qualidade dos estudos incluídos e pela síntese organizada de suas características e resultados (Higgins & Green, 2011, apud Camilo & Garrido, 2019). A transparência desses procedimentos permite que leitores avaliem a abrangência da busca e compreendam como as conclusões foram produzidas.\n\nNa Psicologia, a pergunta de investigação deve orientar as decisões subsequentes. Estratégias estruturadas, como PICO/PICOS e SPIDER, podem auxiliar na identificação dos componentes centrais da pergunta. Enquanto PICO/PICOS é frequentemente associado a questões quantitativas e de intervenção, SPIDER foi proposto para apoiar sínteses de evidências qualitativas e pode contemplar pesquisas qualitativas, quantitativas e de métodos mistos (Cooke, Smith & Booth, 2012, apud Camilo & Garrido, 2019).\n\nO SPIDER compreende Sample (amostra), Phenomenon of Interest (fenômeno de interesse), Design (desenho), Evaluation (avaliação) e Research type (tipo de pesquisa). Sua utilização é pertinente quando a revisão busca compreender experiências, percepções, comportamentos ou outros fenômenos que não se limitam à avaliação de efeitos de uma intervenção.\n\nAs orientações PRISMA contribuem principalmente para o relato transparente de revisões sistemáticas, incluindo itens de apresentação dos métodos e resultados e um diagrama de fluxo da seleção dos estudos. Portanto, PRISMA não deve ser tratado como substituto de um método completo de condução da revisão (Moher et al., 2009, apud Camilo & Garrido, 2019).\n\nA literatura também destaca a importância de critérios de elegibilidade claros, estratégias de busca documentadas, seleção por mais de um revisor quando viável, extração padronizada, avaliação crítica adequada ao delineamento e síntese coerente com os dados disponíveis. Camilo e Garrido (2019) discutem essas etapas especificamente no contexto da Psicologia e apresentam instrumentos e desafios associados a cada uma delas." },
+{ id:"metodos", label:"3. Procedimentos metodológicos", value:"Este trabalho possui caráter metodológico e tutorial, pois sistematiza recomendações encontradas na literatura e apresenta sua operacionalização em uma ferramenta computacional. A organização do artefato é orientada por princípios da Design Science Research (DSR), entendida aqui como uma referência para relacionar a identificação de uma necessidade, a definição dos objetivos da solução, o projeto do artefato, sua demonstração e sua avaliação. A adoção formal da DSR deverá ser confirmada conforme as atividades efetivamente realizadas e documentadas.\n\nA construção do protocolo partiu da leitura de referências sobre revisões sistemáticas, incluindo orientações associadas a Kitchenham, Cochrane, PRISMA, SPIDER e instrumentos de formulação de perguntas, como PICO e EECA/EEECA. Os elementos identificados foram organizados por função no processo de revisão: formulação do problema, planejamento da busca, seleção, extração, avaliação crítica, síntese e relato.\n\nEm seguida, foram definidos campos para registrar os componentes do planejamento na aplicação web. A ferramenta foi concebida para apoiar a organização das decisões, e não para substituir o julgamento dos revisores ou executar automaticamente todas as atividades de uma RSL.\n\n[Completar com: como as referências foram selecionadas; período e critérios da leitura; como foram resolvidas diferenças entre recomendações; quais funcionalidades já estão implementadas; ambiente e tecnologias utilizadas. Não declarar uma busca bibliográfica sistemática se ela não foi realizada.]" },
+{ id:"protocolo", label:"4. Construção e sistematização do protocolo", value:"O protocolo proposto delimita como contexto de aplicação revisões sobre fenômenos investigados no campo da Psicologia Clínica e da Saúde Mental. Seu propósito é identificar, mapear e sintetizar evidências empíricas relacionadas às experiências, percepções e características da população estudada. A sequência apresentada é introdutória e deve ser ajustada à pergunta específica de cada revisão.\n\n4.1 Formulação da pergunta de investigação\n\nA pergunta deve ser construída com apoio da estratégia SPIDER, registrando amostra, fenômeno de interesse, desenho, avaliação e tipo de pesquisa. A pergunta e seus componentes devem delimitar o escopo da revisão e orientar os critérios de elegibilidade.\n\n4.2 Critérios de elegibilidade\n\nComo configuração inicial, propõe-se considerar estudos empíricos publicados em periódicos revisados por pares, nos idiomas português, inglês e espanhol. Os critérios relativos à população, fenômeno, desenho e resultados de interesse devem ser definidos de forma operacional. A delimitação temporal, os tipos específicos de publicação e eventuais exclusões adicionais permanecem decisões a serem preenchidas pelo pesquisador.\n\n4.3 Fontes de informação e estratégia de busca\n\nA proposta considera PePSIC, SciELO, BVS Psicologia Brasil e APA PsycINFO. A busca deverá combinar descritores e termos livres em português e inglês, organizados em grupos conceituais e combinados por operadores booleanos. As estratégias completas devem ser adaptadas à sintaxe de cada base, registrando data da busca, campos pesquisados e filtros utilizados.\n\n4.4 Seleção dos estudos\n\nOs registros recuperados devem ser organizados, deduplicados e submetidos à triagem de títulos e resumos, seguida da avaliação dos textos completos. A proposta prevê dois revisores independentes e resolução de divergências por consenso ou terceiro avaliador. Devem ser registrados os quantitativos de cada etapa e os motivos de exclusão na leitura integral, permitindo a construção do fluxograma de seleção.\n\n4.5 Extração dos dados\n\nPara cada estudo incluído, propõe-se coletar dados bibliográficos, ano e local de publicação, objetivo, características da amostra, delineamento, instrumentos, procedimentos, fenômeno investigado e principais resultados. O formulário de extração deve ser testado e ajustado antes de sua aplicação definitiva.\n\n4.6 Avaliação crítica da qualidade metodológica\n\nPropõe-se utilizar instrumentos do Joanna Briggs Institute (JBI) correspondentes ao delineamento de cada estudo. Não se deve aplicar indiscriminadamente um único checklist a todos os desenhos. A escolha do instrumento, a interpretação dos itens e a forma de apresentar os resultados precisam ser explicitadas.\n\n4.7 Síntese dos resultados\n\nOs dados extraídos podem ser organizados em quadros comparativos e submetidos a síntese narrativa e, quando adequado, temática. A análise deve procurar padrões, convergências, divergências, lacunas e tendências, sem combinar resultados incompatíveis. Camilo e Garrido (2019) descrevem a síntese como uma atividade analítica que pode envolver examinar, avaliar, estabelecer relações, comparar e argumentar (EEECA, conforme a apresentação dos autores).\n\n4.8 Relato e transparência\n\nO relato deverá descrever as decisões tomadas e apresentar os resultados da seleção, a caracterização dos estudos, a avaliação crítica e a síntese. O PRISMA pode ser utilizado como orientação de relato e para organizar o fluxograma, observando-se a versão e a extensão pertinentes ao tipo de revisão." },
+{ id:"aplicacao", label:"5. Desenvolvimento da aplicação web", value:"A aplicação web foi concebida como um artefato de apoio ao planejamento e à documentação do protocolo. Sua finalidade é reunir, em uma interface estruturada, as informações necessárias para descrever a pergunta de investigação, os critérios de elegibilidade, as fontes de informação, a estratégia de busca e as demais decisões previstas pelo construtor.\n\nA ferramenta procura reduzir a dispersão das informações de planejamento e facilitar a transformação das decisões metodológicas em um documento consultável. Os campos disponibilizados refletem o escopo atualmente implementado no sistema; portanto, etapas ainda não contempladas pela interface devem ser identificadas como complementações metodológicas e não como funcionalidades já existentes.\n\n[Completar com tecnologias, arquitetura, telas, campos realmente disponíveis, validações, formato de exportação, armazenamento e limitações técnicas. Inserir capturas de tela ou diagrama da aplicação.]" },
+{ id:"tutorial", label:"6. Tutorial de aplicação do protocolo", value:"Esta seção apresenta um exemplo didático de preenchimento do protocolo para uma revisão hipotética sobre [definir fenômeno específico em Psicologia Clínica e Saúde Mental]. O exemplo deve ser entendido como demonstração de uso da estrutura, não como uma revisão efetivamente executada.\n\nPasso 1 — Delimitar o fenômeno e a amostra. Descrever a população ou grupo de interesse e o fenômeno psicológico que se pretende investigar.\n\nPasso 2 — Formular a pergunta com SPIDER. Preencher os cinco componentes e verificar se eles representam adequadamente o escopo da pergunta.\n\nPasso 3 — Definir elegibilidade. Registrar desenhos aceitos, idiomas, tipo de publicação, período e critérios de inclusão e exclusão.\n\nPasso 4 — Planejar a busca. Selecionar as bases previstas, identificar descritores e sinônimos, construir combinações booleanas e adaptar a sintaxe a cada fonte.\n\nPasso 5 — Planejar seleção e extração. Definir revisores, etapas de triagem, tratamento de divergências e campos de extração.\n\nPasso 6 — Planejar avaliação crítica e síntese. Escolher checklists compatíveis com os delineamentos esperados e indicar como os resultados serão organizados e interpretados.\n\n[Inserir imagens da aplicação e um exemplo preenchido com dados fictícios ou de um tema demonstrativo claramente identificado.]" },
+{ id:"avaliacao", label:"7. Demonstração e avaliação da solução", value:"A demonstração deve mostrar a aplicação sendo utilizada para registrar um protocolo completo ou um cenário representativo, percorrendo os campos disponíveis e apresentando o documento ou resultado gerado. A demonstração permite verificar se o artefato pode ser utilizado no cenário previsto, mas não comprova, isoladamente, validade metodológica, usabilidade ou eficácia.\n\nUma avaliação futura ou complementar poderá examinar a completude dos campos em relação às etapas do protocolo, a consistência entre os dados inseridos e o documento gerado, a compreensão das instruções por usuários e a identificação de erros durante o preenchimento. Caso sejam realizados testes com participantes, devem ser descritos participantes, tarefas, instrumentos, procedimentos e aspectos éticos pertinentes.\n\n[Registrar somente testes realmente executados. Se ainda não houve avaliação empírica, renomear a seção para “Demonstração do artefato” e declarar essa limitação.]" },
+{ id:"discussao", label:"8. Discussão", value:"A principal contribuição da proposta consiste em organizar recomendações metodológicas provenientes de diferentes referências em um percurso introdutório, acompanhado de uma ferramenta para registrar as decisões do planejamento. A sistematização procura facilitar a compreensão das etapas sem sugerir que exista uma única sequência universal ou que todas as revisões devam adotar exatamente os mesmos instrumentos.\n\nA utilização do SPIDER é coerente com perguntas voltadas a experiências e fenômenos de interesse e com a possibilidade de incluir estudos qualitativos e de métodos mistos. Entretanto, a estratégia de formulação deve ser escolhida de acordo com a natureza da pergunta; outras estruturas podem ser mais adequadas a revisões centradas em intervenções ou resultados quantitativos.\n\nHá limites importantes. A seleção de quatro fontes de informação pode não cobrir toda a produção relevante, especialmente em temas interdisciplinares. Os critérios de elegibilidade, as strings e os filtros precisam ser testados e justificados para cada pergunta. A avaliação crítica deve respeitar o delineamento dos estudos. Além disso, um minicurso de 1h30 oferece uma introdução, mas não substitui a formação metodológica e o trabalho de uma equipe necessários para conduzir uma revisão sistemática completa.\n\n[Acrescentar comparação explícita com protocolos, ferramentas ou tutoriais existentes e discutir quais decisões representam adaptação, síntese ou contribuição própria.]" },
+{ id:"conclusao", label:"9. Considerações finais", value:"Este artigo apresentou a proposta de um protocolo introdutório para apoiar o planejamento de revisões sistemáticas da literatura em Psicologia Clínica e Saúde Mental, bem como a concepção de uma aplicação web destinada a organizar suas informações. A proposta articula referências sobre formulação da pergunta, busca, seleção, extração, avaliação crítica, síntese e relato.\n\nO protocolo deve ser compreendido como uma sistematização didática e adaptável, não como substituto de diretrizes especializadas. Sua aplicação em revisões concretas requer detalhamento das decisões, adequação dos instrumentos aos delineamentos e documentação transparente de todas as etapas.\n\nComo trabalhos futuros, destacam-se a ampliação da ferramenta, a avaliação de sua usabilidade, a demonstração em uma revisão real e a análise da correspondência entre os campos implementados e as recomendações metodológicas adotadas." },
+{ id:"referencias", label:"Referências", tall:true, value:"CAMILO, Cláudia; GARRIDO, Margarida Vaz. A revisão sistemática de literatura em psicologia: desafios e orientações. Análise Psicológica, v. 37, n. 4, p. 535–552, 2019. DOI: https://doi.org/10.14417/ap.1546.\n\nCOOKE, Alison; SMITH, Debbie; BOOTH, Andrew. Beyond PICO: the SPIDER tool for qualitative evidence synthesis. Qualitative Health Research, v. 22, p. 1435–1443, 2012. DOI: https://doi.org/10.1177/1049732312452938.\n\nHIGGINS, Julian P. T.; GREEN, Sally (ed.). Cochrane handbook for systematic reviews of interventions. Version 5.1.0, 2011. Disponível em: https://training.cochrane.org/handbook/archive/v5.1/.\n\nLIBERATI, Alessandro et al. The PRISMA statement for reporting systematic reviews and meta-analyses of studies that evaluate health care interventions: explanation and elaboration. PLoS Medicine, v. 6, e1000100, 2009. DOI: https://doi.org/10.1371/journal.pmed.1000100.\n\nMOHER, David et al. Preferred reporting items for systematic reviews and meta-analyses: the PRISMA Statement. PLoS Medicine, v. 6, e1000097, 2009. DOI: https://doi.org/10.1371/journal.pmed.1000097.\n\n[Adicionar a referência completa de Kitchenham e das versões/diretrizes específicas do JBI efetivamente consultadas. Incluir Peffers et al. (2007) somente se a DSR for adotada formalmente e a obra original for consultada.]" }
+];
+
+const fields = document.getElementById("fields");
+const paper = document.getElementById("paper");
+const status = document.getElementById("status");
+const storageKey = "editor_artigo_rsl_psicologia_v1";
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function inline(s){return escapeHtml(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/`(.+?)`/g,"<code>$1</code>");}
+function textToHtml(value){
+ const lines=value.split(/\r?\n/); let out="", list=false;
+ for(const line of lines){
+  if(line.trim().startsWith("- ")){
+   if(!list){out+="<ul>";list=true;} out+="<li>"+inline(line.trim().slice(2))+"</li>";
+  }else{
+   if(list){out+="</ul>";list=false;}
+   if(!line.trim()){continue;}
+   const m=line.match(/^(\d+(?:\.\d+)*\s+[^\n]+)$/);
+   if(m) out+="<h3>"+inline(line)+"</h3>";
+   else out+="<p>"+inline(line)+"</p>";
+  }
+ }
+ if(list)out+="</ul>";
+ return out;
+}
+function montarCampos(){
+ const salvo=JSON.parse(localStorage.getItem(storageKey)||"null");
+ modelo.forEach((f)=>{
+  const wrap=document.createElement("section");wrap.className="field";
+  const label=document.createElement("label");label.htmlFor=f.id;label.textContent=f.label;wrap.appendChild(label);
+  const area=document.createElement("textarea");area.id=f.id;area.value=(salvo&&salvo[f.id]!==undefined)?salvo[f.id]:f.value;
+  if(f.short)area.classList.add("short");if(f.tall)area.classList.add("tall");
+  area.addEventListener("input",()=>{salvar();renderizar();});
+  wrap.appendChild(area);
+  const hint=document.createElement("small");hint.textContent="Campo editável · alterações salvas localmente";wrap.appendChild(hint);
+  fields.appendChild(wrap);
+ });
+}
+function valor(id){return document.getElementById(id).value;}
+function salvar(){
+ const dados={};modelo.forEach(f=>dados[f.id]=valor(f.id));
+ localStorage.setItem(storageKey,JSON.stringify(dados));status.textContent="Salvo automaticamente · "+new Date().toLocaleTimeString("pt-BR");
+}
+function renderizar(){
+ let h='<div class="journal">Artigo tutorial · Protocolo de revisão sistemática da literatura</div>';
+ h+='<h1>'+inline(valor("titulo"))+'</h1><div class="authors">'+inline(valor("autores"))+'</div>';
+ h+='<h2>Resumo</h2><div class="abstract">'+textToHtml(valor("resumo"))+'</div>';
+ h+='<div class="keywords"><strong>Palavras-chave:</strong> '+inline(valor("palavras"))+'</div>';
+ const secoes=[["introducao","1. Introdução"],["fundamentacao","2. Fundamentação teórica"],["metodos","3. Procedimentos metodológicos"],["protocolo","4. Construção e sistematização do protocolo"],["aplicacao","5. Desenvolvimento da aplicação web"],["tutorial","6. Tutorial de aplicação do protocolo"],["avaliacao","7. Demonstração e avaliação da solução"],["discussao","8. Discussão"],["conclusao","9. Considerações finais"],["referencias","Referências"]];
+ secoes.forEach(([id,titulo])=>{h+='<section'+(id==="referencias"?' class="references"':'')+'><h2>'+titulo+'</h2>'+textToHtml(valor(id))+'</section>';});
+ h+='<div class="note"><strong>Nota de edição:</strong> este documento contém texto-modelo e pontos de complementação. Antes de submissão, confira as referências originais, atualize as diretrizes vigentes e substitua todas as instruções entre colchetes.</div>';
+ paper.innerHTML=h;
+}
+function latexEscape(s){
+ return String(s).replace(/\\/g,"\\textbackslash{}").replace(/([#$%&_{}])/g,"\\$1").replace(/\^/g,"\\textasciicircum{}").replace(/~/g,"\\textasciitilde{}");
+}
+function latexText(s){
+ return s.split(/\r?\n/).map(line=>{
+  if(!line.trim())return "";
+  if(/^\d+(?:\.\d+)*\s+/.test(line))return "\\subsection{"+latexEscape(line)+"}";
+  if(line.trim().startsWith("- "))return "\\begin{itemize}\\item "+latexEscape(line.trim().slice(2))+"\\end{itemize}";
+  return latexEscape(line)+"\\par";
+ }).join("\n");
+}
+function gerarLatex(){
+ const sec=[["introducao","Introdução"],["fundamentacao","Fundamentação teórica"],["metodos","Procedimentos metodológicos"],["protocolo","Construção e sistematização do protocolo"],["aplicacao","Desenvolvimento da aplicação web"],["tutorial","Tutorial de aplicação do protocolo"],["avaliacao","Demonstração e avaliação da solução"],["discussao","Discussão"],["conclusao","Considerações finais"],["referencias","Referências"]];
+ let t="\\documentclass[12pt,a4paper]{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage[T1]{fontenc}\n\\usepackage[brazil]{babel}\n\\usepackage{geometry}\n\\usepackage{setspace}\n\\usepackage{hyperref}\n\\geometry{margin=2.5cm}\n\\onehalfspacing\n\\title{"+latexEscape(valor("titulo"))+"}\n\\author{"+latexEscape(valor("autores"))+"}\n\\date{}\n\\begin{document}\n\\maketitle\n\\begin{abstract}\n"+latexText(valor("resumo"))+"\n\\end{abstract}\n\\noindent\\textbf{Palavras-chave:} "+latexEscape(valor("palavras"))+"\\par\n";
+ sec.forEach(([id,title])=>t+="\\section{"+title+"}\n"+latexText(valor(id))+"\n");
+ t+="\\end{document}";
+ return t;
+}
+async function copiar(texto){
+ try{await navigator.clipboard.writeText(texto);status.textContent="Conteúdo copiado para a área de transferência.";}
+ catch(e){const ta=document.createElement("textarea");ta.value=texto;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();status.textContent="Conteúdo copiado.";}
+}
+montarCampos();renderizar();
+document.getElementById("btnPreview").onclick=()=>{renderizar();status.textContent="Prévia atualizada.";};
+document.getElementById("btnPrint").onclick=()=>{renderizar();window.print();};
+document.getElementById("btnLatex").onclick=()=>copiar(gerarLatex());
+document.getElementById("btnDownloadTex").onclick=()=>{
+ const blob=new Blob([gerarLatex()],{type:"application/x-tex;charset=utf-8"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="artigo-tutorial-rsl.tex";a.click();URL.revokeObjectURL(a.href);
+};
+document.getElementById("btnReset").onclick=()=>{
+ if(!confirm("Restaurar o exemplo inicial? Isso substituirá as edições salvas neste navegador."))return;
+ localStorage.removeItem(storageKey);fields.innerHTML="";montarCampos();renderizar();status.textContent="Exemplo inicial restaurado.";
+};
+</script>
+</body>
+</html>
