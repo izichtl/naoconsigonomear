@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Inteligência de mercado 2026 — Nordeste e Sudeste</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F2F4F0;
+      --surface: #FFFFFF;
+      --ink: #18232B;
+      --muted: #55636B;
+      --line: #D5DBD6;
+      --mar: #0F5E63;
+      --sertao: #A87512;
+      --azulejo: #2B4C9B;
+      --tijolo: #9C3A2C;
+      --ok: #2E7047;
+      --chip-ne: #F4E6C8;
+      --chip-se: #DCE4F6;
+      --chip-br: #D6EAE8;
+      --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+      --text: "Source Serif 4", Georgia, "Times New Roman", serif;
+      color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --paper: #11181C;
+        --surface: #182228;
+        --ink: #E4EBE8;
+        --muted: #9AA8AE;
+        --line: #2B3940;
+        --mar: #5FB3B0;
+        --sertao: #D9AE55;
+        --azulejo: #93A9E6;
+        --tijolo: #E08A7A;
+        --ok: #7CC496;
+        --chip-ne: #3A3020;
+        --chip-se: #232E48;
+        --chip-br: #1F3634;
+        color-scheme: dark;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --paper: #11181C;
+      --surface: #182228;
+      --ink: #E4EBE8;
+      --muted: #9AA8AE;
+      --line: #2B3940;
+      --mar: #5FB3B0;
+      --sertao: #D9AE55;
+      --azulejo: #93A9E6;
+      --tijolo: #E08A7A;
+      --ok: #7CC496;
+      --chip-ne: #3A3020;
+      --chip-se: #232E48;
+      --chip-br: #1F3634;
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    :root {
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
+
+    html {
+      scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 72px)
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--text);
+      font-size: 17px;
+      line-height: 1.6
+    }
+
+    a {
+      color: var(--azulejo)
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid var(--sertao);
+      outline-offset: 2px
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: var(--display);
+      line-height: 1.15;
+      margin: 0
+    }
+
+    p {
+      margin: .5em 0 .9em;
+      max-width: 72ch
+    }
+
+    small,
+    .muted {
+      color: var(--muted)
+    }
+
+    /* topo */
+    .bar {
+      position: sticky;
+      top: env(safe-area-inset-top, 0px);
+      z-index: 20;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line)
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0 0 auto;
+      height: env(safe-area-inset-top, 0px);
+      z-index: 30;
+      background: var(--paper)
+    }
+
+    .bar-in {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: .6rem 1rem;
+      display: flex;
+      gap: .75rem;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .brand {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: -.01em;
+      margin-right: auto
+    }
+
+    .seg {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--surface)
+    }
+
+    .seg button {
+      font: 600 .85rem var(--display);
+      border: 0;
+      background: none;
+      color: var(--ink);
+      padding: .4rem .8rem;
+      cursor: pointer
+    }
+
+    .seg button[aria-pressed="true"] {
+      background: var(--mar);
+      color: #fff
+    }
+
+    .btn {
+      font: 600 .85rem var(--display);
+      border: 1px solid var(--ink);
+      background: none;
+      color: var(--ink);
+      padding: .4rem .85rem;
+      border-radius: 6px;
+      cursor: pointer
+    }
+
+    .btn.solid {
+      background: var(--ink);
+      color: var(--paper)
+    }
+
+    /* layout */
+    .wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 2.5rem
+    }
+
+    nav.toc {
+      position: sticky;
+      top: 76px;
+      align-self: start;
+      padding: 1.5rem 0;
+      font-family: var(--display);
+      font-size: .92rem
+    }
+
+    nav.toc ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      counter-reset: p
+    }
+
+    nav.toc li {
+      counter-increment: p
+    }
+
+    nav.toc a {
+      display: flex;
+      gap: .6rem;
+      padding: .35rem .5rem;
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--muted)
+    }
+
+    nav.toc a::before {
+      content: counter(p, upper-roman);
+      min-width: 2.2em;
+      font-weight: 600;
+      color: var(--sertao)
+    }
+
+    nav.toc li.extra a::before {
+      content: "+"
+    }
+
+    nav.toc a[aria-current="true"] {
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: 600
+    }
+
+    main {
+      min-width: 0;
+      padding-bottom: 6rem
+    }
+
+    /* hero */
+    .hero {
+      padding: 3rem 0 2rem;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 2rem
+    }
+
+    .hero .q {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(1.9rem, 4.2vw, 3.4rem);
+      letter-spacing: -.025em;
+      line-height: 1.05;
+      max-width: 22ch;
+      margin: 0
+    }
+
+    .hero .lede {
+      font-size: 1.08rem;
+      max-width: 64ch;
+      margin-top: 1.2rem
+    }
+
+    .facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.6rem;
+      margin-top: 1.6rem;
+      font-family: var(--display);
+      font-size: .9rem
+    }
+
+    .facts div b {
+      display: block;
+      font-size: 1.05rem
+    }
+
+    .placar {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0;
+      border-top: 1px solid var(--line)
+    }
+
+    .placar .it {
+      padding: .9rem .9rem .9rem 0;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .placar .pos {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 2.4rem;
+      line-height: 1;
+      color: var(--mar)
+    }
+
+    .placar .nm {
+      font-family: var(--display);
+      font-weight: 600;
+      font-size: .95rem;
+      margin-top: .3rem
+    }
+
+    .placar .sc {
+      font-size: .85rem;
+      color: var(--muted)
+    }
+
+    /* seções */
+    section.part {
+      padding: 2.2rem 0 1rem;
+      border-bottom: 1px solid var(--line)
+    }
+
+    section.part>header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap
+    }
+
+    section.part>header .num {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 2.6rem;
+      color: var(--sertao);
+      line-height: 1
+    }
+
+    section.part>header h2 {
+      font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+      letter-spacing: -.015em
+    }
+
+    .note {
+      border-left: 4px solid var(--sertao);
+      background: var(--surface);
+      padding: .8rem 1rem;
+      margin: 1rem 0;
+      max-width: 80ch
+    }
+
+    .note.warn {
+      border-color: var(--tijolo)
+    }
+
+    .note.good {
+      border-color: var(--ok)
+    }
+
+    /* chips */
+    .chip {
+      display: inline-block;
+      font: 600 .74rem var(--display);
+      padding: .12rem .5rem;
+      border-radius: 4px;
+      white-space: nowrap
+    }
+
+    .r-NE {
+      background: var(--chip-ne);
+      color: var(--ink)
+    }
+
+    .r-SE {
+      background: var(--chip-se);
+      color: var(--ink)
+    }
+
+    .r-BR,
+    .r-NESE {
+      background: var(--chip-br);
+      color: var(--ink)
+    }
+
+    .c-Alta {
+      color: var(--ok);
+      font-weight: 700
+    }
+
+    .c-Média {
+      color: var(--sertao);
+      font-weight: 700
+    }
+
+    .c-Baixa {
+      color: var(--tijolo);
+      font-weight: 700
+    }
+
+    /* tabelas */
+    .scroll {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      margin: 1rem 0
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: .88rem;
+      line-height: 1.45
+    }
+
+    th,
+    td {
+      padding: .55rem .65rem;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left
+    }
+
+    th {
+      font-family: var(--display);
+      font-weight: 600;
+      font-size: .8rem;
+      background: var(--paper);
+      position: sticky;
+      top: 0
+    }
+
+    td.idc {
+      font-family: var(--display);
+      font-weight: 800;
+      color: var(--mar);
+      white-space: nowrap
+    }
+
+    .wide td {
+      min-width: 150px
+    }
+
+    .wide td.idc {
+      min-width: auto
+    }
+
+    .tools {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: .6rem 0
+    }
+
+    .tools input[type=search],
+    .tools select {
+      font: inherit;
+      font-size: .92rem;
+      padding: .4rem .6rem;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink)
+    }
+
+    /* panorama */
+    .pano {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem 2rem
+    }
+
+    .pano article {
+      border-top: 3px solid var(--mar);
+      padding-top: .7rem
+    }
+
+    .pano article.ne {
+      border-color: var(--sertao)
+    }
+
+    .pano article.se {
+      border-color: var(--azulejo)
+    }
+
+    .pano h3 {
+      font-size: 1.05rem;
+      margin-bottom: .35rem
+    }
+
+    .pano .imp {
+      font-size: .92rem;
+      color: var(--muted)
+    }
+
+    .pano .imp b {
+      color: var(--ink)
+    }
+
+    /* oportunidades */
+    details.opp {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin: .7rem 0
+    }
+
+    details.opp>summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 1rem 1.1rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: center
+    }
+
+    details.opp>summary::-webkit-details-marker {
+      display: none
+    }
+
+    details.opp .oid {
+      font-family: var(--display);
+      font-weight: 800;
+      color: var(--mar);
+      font-size: 1.1rem
+    }
+
+    details.opp .ot {
+      font-family: var(--display);
+      font-weight: 600;
+      font-size: 1.05rem
+    }
+
+    details.opp .os {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1.5rem;
+      text-align: right;
+      line-height: 1
+    }
+
+    details.opp .os small {
+      display: block;
+      font-weight: 600;
+      font-size: .72rem
+    }
+
+    details.opp[open]>summary {
+      border-bottom: 1px solid var(--line)
+    }
+
+    .ogrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: .4rem 1.6rem;
+      padding: 1rem 1.1rem
+    }
+
+    .ogrid div h4 {
+      font-size: .82rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: .5rem
+    }
+
+    .ogrid div p {
+      margin: .2rem 0 .4rem;
+      font-size: .95rem
+    }
+
+    .ogrid .full {
+      grid-column: 1/-1
+    }
+
+    /* matriz */
+    .matrix input[type=number] {
+      width: 3.2em;
+      font: inherit;
+      font-size: .9rem;
+      padding: .2rem;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--paper);
+      color: var(--ink);
+      text-align: center
+    }
+
+    .matrix td.tot {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1rem
+    }
+
+    .cls {
+      font: 600 .75rem var(--display);
+      padding: .15rem .45rem;
+      border-radius: 4px;
+      white-space: nowrap
+    }
+
+    .cls.p1 {
+      background: var(--ok);
+      color: #fff
+    }
+
+    .cls.p2 {
+      background: var(--mar);
+      color: #fff
+    }
+
+    .cls.p3 {
+      background: var(--sertao);
+      color: #fff
+    }
+
+    .cls.p4 {
+      background: var(--tijolo);
+      color: #fff
+    }
+
+    .cls.p5 {
+      background: var(--muted);
+      color: #fff
+    }
+
+    .bar-mini {
+      height: 6px;
+      background: var(--line);
+      border-radius: 3px;
+      margin-top: 4px;
+      min-width: 60px
+    }
+
+    .bar-mini span {
+      display: block;
+      height: 100%;
+      background: var(--mar);
+      border-radius: 3px
+    }
+
+    /* enxutas */
+    .lean {
+      border-left: 3px solid var(--azulejo);
+      padding: .2rem 0 .2rem 1rem;
+      margin: 1.6rem 0
+    }
+
+    .lean h3 {
+      font-size: 1.15rem
+    }
+
+    .lean dl {
+      display: grid;
+      grid-template-columns: minmax(150px, 220px) 1fr;
+      gap: .3rem 1rem;
+      margin: .6rem 0;
+      font-size: .93rem
+    }
+
+    .lean dt {
+      font-family: var(--display);
+      font-weight: 600;
+      color: var(--muted)
+    }
+
+    .lean dd {
+      margin: 0
+    }
+
+    /* regiões */
+    .reg {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.4rem
+    }
+
+    .reg h3 {
+      font-size: 1.1rem;
+      padding-bottom: .4rem;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: .6rem
+    }
+
+    .reg ul {
+      margin: 0;
+      padding-left: 1.1rem
+    }
+
+    .reg li {
+      margin: .45rem 0;
+      font-size: .95rem
+    }
+
+    /* validação */
+    .plan {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      margin: 1rem 0
+    }
+
+    .plan h3 {
+      font-size: 1.15rem
+    }
+
+    .weeks {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: .8rem
+    }
+
+    .weeks h4 {
+      font-size: .9rem;
+      color: var(--mar);
+      margin-bottom: .3rem
+    }
+
+    .weeks label {
+      display: flex;
+      gap: .5rem;
+      align-items: flex-start;
+      font-size: .9rem;
+      margin: .3rem 0;
+      cursor: pointer
+    }
+
+    .weeks input {
+      margin-top: .3rem
+    }
+
+    .prog {
+      height: 8px;
+      background: var(--line);
+      border-radius: 4px;
+      margin: .6rem 0
+    }
+
+    .prog span {
+      display: block;
+      height: 100%;
+      background: var(--ok);
+      border-radius: 4px;
+      transition: width .2s
+    }
+
+    .kpi {
+      margin-top: .8rem;
+      font-size: .9rem
+    }
+
+    .kpi table td input {
+      width: 5em;
+      font: inherit;
+      padding: .15rem .3rem;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--paper);
+      color: var(--ink)
+    }
+
+    .verdict {
+      font-family: var(--display);
+      font-weight: 600
+    }
+
+    /* calculadora */
+    .calc {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: .8rem 1.2rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1rem 1.1rem
+    }
+
+    .calc label {
+      font-family: var(--display);
+      font-size: .85rem;
+      font-weight: 600;
+      display: block
+    }
+
+    .calc input,
+    .calc select {
+      width: 100%;
+      font: inherit;
+      padding: .35rem .5rem;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--paper);
+      color: var(--ink);
+      margin-top: .2rem
+    }
+
+    .calc .out {
+      grid-column: 1/-1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      border-top: 1px solid var(--line);
+      padding-top: .8rem
+    }
+
+    .calc .out div b {
+      display: block;
+      font-family: var(--display);
+      font-size: 1.5rem
+    }
+
+    /* conclusão */
+    .qa dt {
+      font-family: var(--display);
+      font-weight: 600;
+      margin-top: 1.1rem
+    }
+
+    .qa dd {
+      margin: .3rem 0 0;
+      max-width: 78ch
+    }
+
+    .verdict-box {
+      border: 2px solid var(--ink);
+      padding: 1.2rem 1.3rem;
+      margin: 1.5rem 0;
+      max-width: 82ch
+    }
+
+    .verdict-box h3 {
+      font-size: 1.3rem;
+      margin-bottom: .4rem
+    }
+
+    @media (max-width:900px) {
+      .wrap {
+        grid-template-columns: 1fr;
+        gap: 0
+      }
+
+      nav.toc {
+        position: static;
+        padding: .6rem 0;
+        border-bottom: 1px solid var(--line)
+      }
+
+      nav.toc ol {
+        display: flex;
+        overflow-x: auto;
+        gap: .2rem
+      }
+
+      nav.toc a {
+        white-space: nowrap
+      }
+
+      .lean dl {
+        grid-template-columns: 1fr
+      }
+
+      details.opp>summary {
+        grid-template-columns: auto 1fr;
+      }
+
+      details.opp .os {
+        grid-column: 1/-1;
+        text-align: left
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important
+      }
+    }
+
+    @media print {
+
+      .bar,
+      nav.toc,
+      .tools,
+      .noprint {
+        display: none !important
+      }
+
+      .wrap {
+        display: block
+      }
+
+      body {
+        background: #fff;
+        color: #000;
+        font-size: 11pt
+      }
+
+      details.opp {
+        break-inside: avoid
+      }
+
+      details.opp>summary {
+        border-bottom: 1px solid #ccc
+      }
+
+      .scroll {
+        overflow: visible;
+        border: 0
+      }
+
+      section.part {
+        break-before: page
+      }
+
+      section.part:first-of-type {
+        break-before: auto
+      }
+
+      th {
+        position: static
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bar">
+    <div class="bar-in">
+      <span class="brand">Inteligência de mercado NE + SE · 2026</span>
+      <div class="seg" role="group" aria-label="Filtrar por região" id="regionSeg">
+        <button type="button" data-r="ALL" aria-pressed="true">Tudo</button>
+        <button type="button" data-r="NE" aria-pressed="false">Nordeste</button>
+        <button type="button" data-r="SE" aria-pressed="false">Sudeste</button>
+      </div>
+      <button type="button" class="btn" id="themeBtn" aria-label="Alternar tema claro e escuro">Tema</button>
+      <button type="button" class="btn solid" id="printBtn">Salvar como PDF</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <nav class="toc" aria-label="Partes do relatório">
+      <ol id="toc">
+        <li><a href="#panorama">Panorama 2026</a></li>
+        <li><a href="#problemas">Problemas</a></li>
+        <li><a href="#oportunidades">Oportunidades</a></li>
+        <li><a href="#ranking">Matriz e ranking</a></li>
+        <li><a href="#enxutas">Equipes enxutas</a></li>
+        <li><a href="#regioes">Regiões</a></li>
+        <li><a href="#validacao">Validação 30 dias</a></li>
+        <li><a href="#conclusao">Conclusão</a></li>
+        <li class="extra"><a href="#mercado">Calculadora de mercado</a></li>
+        <li class="extra"><a href="#fontes">Fontes e método</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <p class="q">Onde há dinheiro sendo gasto, perdido ou deixado na mesa por falta de uma solução boa o bastante?
+        </p>
+        <p class="lede">Investigação de problemas reais de empresas e pessoas no Nordeste e no Sudeste em 2026, com
+          corroboração em fontes publicadas até 30 de outubro de 2026. As notas da matriz são editáveis: ao mudar uma
+          nota, o ranking abaixo e o da Parte IV se recalculam.</p>
+        <div class="facts">
+          <div><b>30/10/2026</b>data de referência</div>
+          <div><b>22 problemas</b>com evidência (meta de 30 não atingida com honestidade)</div>
+          <div><b>15 oportunidades</b>avaliadas</div>
+          <div><b>Nenhuma ≥ 85</b>nenhuma é “prioritária comprovada”</div>
+        </div>
+        <div class="placar" id="placar" aria-live="polite"></div>
+      </header>
+
+      <!-- PARTE I -->
+      <section class="part" id="panorama">
+        <header><span class="num">I</span>
+          <h2>Panorama econômico de 2026</h2>
+        </header>
+        <p>Cada bloco liga um fato de 2026 a um problema ou oportunidade. Onde o dado é nacional, isso está dito; não há
+          extrapolação automática para os estados.</p>
+        <div class="pano" id="panoGrid"></div>
+        <div class="note warn"><b>Lacunas declaradas.</b> Não foram encontrados, em 2026, dados por setor e por estado
+          para Alagoas, Sergipe, Piauí e Espírito Santo que permitissem diagnósticos estaduais próprios. Também não há
+          levantamento regional sobre o efeito do fim da escala 6x1 em pequenas empresas do Nordeste, como reconhece
+          reportagem de outubro de 2026 (fonte S60).</div>
+      </section>
+
+      <!-- PARTE II -->
+      <section class="part" id="problemas">
+        <header><span class="num">II</span>
+          <h2>Inventário de problemas identificados</h2>
+        </header>
+        <p>O pedido era de pelo menos 30 problemas. Com fontes de 2026 verificáveis, sustentam-se 22. Os demais
+          candidatos foram descartados por terem apenas dados de anos anteriores ou relatos isolados.</p>
+        <div class="tools">
+          <input type="search" id="pSearch" placeholder="Buscar problema, setor ou público"
+            aria-label="Buscar problemas">
+          <select id="pConf" aria-label="Filtrar por confiança">
+            <option value="">Qualquer confiança</option>
+            <option>Alta</option>
+            <option>Média</option>
+            <option>Baixa</option>
+          </select>
+          <span class="muted" id="pCount"></span>
+        </div>
+        <div class="scroll">
+          <table class="wide" id="pTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Problema</th>
+                <th>Descrição</th>
+                <th>Público afetado</th>
+                <th>Segmento</th>
+                <th>Região</th>
+                <th>Frequência</th>
+                <th>Consequência econômica</th>
+                <th>Como é resolvido hoje</th>
+                <th>Disposição de pagamento</th>
+                <th>Fontes 2026</th>
+                <th>Confiança</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="muted">Níveis de disposição de pagamento: N1 = há reclamação; N2 = procuram solução ou contratam
+          alternativas; N3 = já pagam por soluções ou têm despesa recorrente ligada ao problema.</p>
+      </section>
+
+      <!-- PARTE III -->
+      <section class="part" id="oportunidades">
+        <header><span class="num">III</span>
+          <h2>Quinze oportunidades comerciais</h2>
+        </header>
+        <p>Cada oportunidade parte de um problema do inventário. Preços sugeridos são hipóteses de teste, não dados de
+          mercado. Clique para abrir.</p>
+        <div id="oppList"></div>
+      </section>
+
+      <!-- PARTE IV -->
+      <section class="part" id="ranking">
+        <header><span class="num">IV</span>
+          <h2>Matriz de pontuação e ranking</h2>
+        </header>
+        <p>Nota final = soma de (nota ÷ 5 × peso). Altere notas ou pesos para testar suas próprias premissas. A soma dos
+          pesos precisa dar 100 para que a escala de classificação faça sentido.</p>
+        <div class="tools noprint">
+          <button type="button" class="btn" id="resetScores">Restaurar notas originais</button>
+          <button type="button" class="btn" id="exportScores">Exportar notas (JSON)</button>
+          <label class="btn" for="importScores">Importar notas<input type="file" id="importScores"
+              accept="application/json" hidden></label>
+          <span class="muted" id="wSum"></span>
+        </div>
+        <div class="scroll matrix">
+          <table id="mTable">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <h3 style="margin-top:1.6rem">Top 10</h3>
+        <div class="scroll">
+          <table class="wide" id="rTable">
+            <thead>
+              <tr>
+                <th>Pos.</th>
+                <th>Oportunidade</th>
+                <th>Segmento</th>
+                <th>Região</th>
+                <th>Cliente pagador</th>
+                <th>Problema principal</th>
+                <th>Evidência comercial</th>
+                <th>Monetização</th>
+                <th>Nota</th>
+                <th>Confiança</th>
+                <th>Principal risco</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div id="whyTop"></div>
+      </section>
+
+      <!-- PARTE V -->
+      <section class="part" id="enxutas">
+        <header><span class="num">V</span>
+          <h2>Para uma pessoa desenvolvedora ou equipe de até cinco</h2>
+        </header>
+        <div class="note">Um MVP tecnicamente simples não é um negócio comercialmente simples. Em quase todos os casos
+          abaixo, o gargalo é vender e dar suporte, não programar.</div>
+        <div id="leanList"></div>
+      </section>
+
+      <!-- PARTE VI -->
+      <section class="part" id="regioes">
+        <header><span class="num">VI</span>
+          <h2>Oportunidades por região</h2>
+        </header>
+        <div class="reg" id="regGrid"></div>
+      </section>
+
+      <!-- PARTE VII -->
+      <section class="part" id="validacao">
+        <header><span class="num">VII</span>
+          <h2>Plano de validação comercial em 30 dias</h2>
+        </header>
+        <p>Para as cinco primeiras do ranking original. Marque as tarefas e preencha os indicadores: o veredito muda
+          conforme os números. O progresso fica só nesta aba; use “Exportar progresso” para guardar.</p>
+        <div class="tools noprint">
+          <button type="button" class="btn" id="exportPlan">Exportar progresso (JSON)</button>
+          <label class="btn" for="importPlan">Importar progresso<input type="file" id="importPlan"
+              accept="application/json" hidden></label>
+        </div>
+        <div id="planList"></div>
+      </section>
+
+      <!-- PARTE VIII -->
+      <section class="part" id="conclusao">
+        <header><span class="num">VIII</span>
+          <h2>Conclusão e recomendação</h2>
+        </header>
+        <dl class="qa" id="qaList"></dl>
+        <div class="verdict-box" id="verdict"></div>
+      </section>
+
+      <!-- EXTRA: calculadora -->
+      <section class="part" id="mercado">
+        <header><span class="num">+</span>
+          <h2>Calculadora de mercado (bottom-up)</h2>
+        </header>
+        <p>Não foi encontrado, em fontes de 2026, o número de empresas por segmento e estado necessário para um TAM
+          confiável. Esta calculadora mostra o método; os valores iniciais são hipóteses ilustrativas que devem ser
+          trocadas por dados do Cadastro Central de Empresas (IBGE), da Receita Federal (dados abertos de CNPJ por CNAE
+          e UF) ou de entidades setoriais.</p>
+        <div class="calc">
+          <div><label for="cPreset">Ponto de partida</label><select id="cPreset"></select></div>
+          <div><label for="cN">Empresas no segmento (N)</label><input id="cN" type="number" min="0" step="1"></div>
+          <div><label for="cPct">% com o problema</label><input id="cPct" type="number" min="0" max="100" step="1">
+          </div>
+          <div><label for="cPrice">Preço mensal (R$)</label><input id="cPrice" type="number" min="0" step="1"></div>
+          <div><label for="cSam">% alcançável (região e canal)</label><input id="cSam" type="number" min="0" max="100"
+              step="1"></div>
+          <div><label for="cSom">% conquistável em 24 meses</label><input id="cSom" type="number" min="0" max="100"
+              step="0.1"></div>
+          <div class="out">
+            <div><span class="muted">TAM anual</span><b id="oTam">—</b></div>
+            <div><span class="muted">SAM anual</span><b id="oSam">—</b></div>
+            <div><span class="muted">SOM anual</span><b id="oSom">—</b></div>
+            <div><span class="muted">Clientes no SOM</span><b id="oCli">—</b></div>
+          </div>
+        </div>
+        <p class="muted" id="cNote"></p>
+      </section>
+
+      <!-- EXTRA: fontes -->
+      <section class="part" id="fontes">
+        <header><span class="num">+</span>
+          <h2>Fontes e método</h2>
+        </header>
+        <div class="note warn"><b>Limitações desta pesquisa.</b> A coleta foi feita por buscas na web em 30/10/2026. A
+          maior parte das páginas foi lida a partir dos trechos indexados da página original; somente parte foi aberta
+          na íntegra (marcadas como “lida na íntegra”). Não houve acesso a dados estruturados do Reclame Aqui,
+          Consumidor.gov.br, Procons estaduais, Reddit ou grupos de Facebook com recorte por estado. Vários estudos de
+          2026 trazem dados de 2025, o que está indicado na coluna “período dos dados”. Fontes de empresas que vendem a
+          solução (ex.: V360, Conclínica, Jettax) foram usadas como sinal, nunca como prova isolada.</div>
+        <div class="tools"><input type="search" id="sSearch" placeholder="Buscar fonte" aria-label="Buscar fontes">
+        </div>
+        <div class="scroll">
+          <table class="wide" id="sTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Publicação</th>
+                <th>Título</th>
+                <th>Publicado</th>
+                <th>Período dos dados</th>
+                <th>Tipo</th>
+                <th>Sustenta</th>
+                <th>Limitações</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    "use strict";
+    /* ========================= FONTES ========================= */
+    const S = {
+      S01: { pub: "Agência Brasil", t: "Reforma tributária põe em risco crédito de 66,2% das notas fiscais", d: "06/07/2026", p: "NF-e processadas pela V360 (2026; período exato não informado)", u: "https://agenciabrasil.ebc.com.br/economia/noticia/2026-07/reforma-tributaria-poe-em-risco-credito-de-662-das-notas-fiscais", ty: "Reportagem sobre estudo empresarial (lida na íntegra)", s: "64,4% das notas sem campos IBS/CBS; 1,8% com divergência; só 35,8% de 139 mil fornecedores adequados", l: "Base própria de um fornecedor de automação fiscal; não representa todas as empresas" },
+      S02: { pub: "Jornal Contábil", t: "Reforma Tributária e notas fiscais: mudanças a partir de agosto", d: "2026", p: "Levantamento com 4,5 mil empresas do regime normal", u: "https://jornalcontabil.com.br/noticia/reforma-tributaria-e-notas-fiscais-mudancas-a-partir-de-agosto/amp/", ty: "Notícia setorial", s: "93% dos produtos com inconsistência cadastral ou tributária na transição", l: "Autor do levantamento não identificado no trecho lido" },
+      S03: { pub: "Diário do Comércio (MG) / Sebrae", t: "O que os pequenos negócios precisam saber sobre os novos impostos na nota fiscal", d: "2026 (ago.)", p: "Regras vigentes em 2026", u: "https://diariodocomercio.com.br/?p=616580", ty: "Orientação institucional", s: "Simples Nacional obrigado aos campos IBS/CBS a partir de 1/1/2027; atenção à regularidade dos fornecedores", l: "Orientação, não pesquisa" },
+      S04: { pub: "Band", t: "Reforma Tributária: o que muda para pequenas empresas com IBS e CBS em 2026", d: "17/09/2026", p: "2026", u: "https://www.band.com.br/economia/reforma-tributaria-o-que-muda-para-pequenas-empresas-com-ibs-e-cbs-em-2026", ty: "Reportagem", s: "Pequenas empresas revendo cadastros, parametrizações e faturamento", l: "Qualitativa" },
+      S05: { pub: "Reformatributaria.com / Portal Contábeis", t: "56% dos contadores não têm plano de ação para a reforma tributária (pesquisa Omie)", d: "jul/2026", p: "Coleta 18/03 a 08/05/2026; n=149", u: "https://www.reformatributaria.com/56-dos-contadores-nao-tem-plano-de-acao-para-a-reforma-tributaria-diz-pesquisa/", ty: "Pesquisa de empresa de software", s: "56% sem plano; 43% esperam forte sobrecarga; 21% seguros para identificar créditos", l: "Amostra pequena e online; patrocinada por fornecedor de ERP" },
+      S06: { pub: "Agência Sebrae", t: "CNPJ obrigatório para produtores rurais, autônomos e prestadores é adiado para janeiro de 2027", d: "jul/2026", p: "Decreto 13.075, de 21/07/2026", u: "https://agenciasebrae.com.br/?p=41486", ty: "Institucional (norma)", s: "Autônomos acima de R$ 40,5 mil/ano e produtores rurais acima de R$ 3,6 mi passam a precisar de CNPJ em 1/1/2027", l: "Regras para produtores menores ainda a detalhar" },
+      S07: { pub: "Fenacon", t: "Donos de imóveis alugados terão CNPJ para emissão de notas fiscais a partir de 2027", d: "21/07/2026", p: "Regulamentação 2026", u: "https://fenacon.org.br/?p=53190", ty: "Notícia de entidade", s: "Locadores pessoa física entram na exigência de CNPJ em 2027", l: "Apenas o título foi verificado; detalhes de faixa de receita não lidos" },
+      S08: { pub: "Mundo Logística (orientações CNT)", t: "Fim da escala 6x1: o que empresas de transporte devem fazer", d: "out/2026", p: "EC 141/2026", u: "https://mundologistica.com.br/noticias/fim-escala-6x1-medidas-empresas-transporte-cnt", ty: "Notícia setorial", s: "EC 141 promulgada em 16/10/2026; 42h a partir de 16/12/2026; 40h em 16/12/2027", l: "Datas de vigência variam em 1 dia entre veículos (15 ou 16/12)" },
+      S09: { pub: "Correio (BA)", t: "Como fica o trabalho no comércio? Entenda o fim da escala 6x1", d: "out/2026", p: "2026", u: "https://www.correio24horas.com.br/economia/como-fica-o-trabalho-no-comercio-entenda-o-fim-da-escala-6x1-aprovado-por-75-votos-a-1-no-senado-1026", ty: "Reportagem regional (BA)", s: "Comércio de bairro com 2 a 5 funcionários tem pouca margem para girar escalas", l: "Qualitativa" },
+      S10: { pub: "Gazeta do Povo", t: "Fim da escala 6x1 pode aumentar folha de pagamento de pequenas empresas", d: "out/2026", p: "Estimativas de empresários, 2026", u: "https://www.gazetadopovo.com.br/economia/fim-da-escala-6x1-ameaca-elevar-custos-de-pequenos-negocios-em-125percent/", ty: "Reportagem", s: "Alta de até 12,5% no custo de pessoal; padarias e pizzarias precisam reorganizar escalas", l: "Estimativa de parte interessada" },
+      S11: { pub: "Jornal de Brasília", t: "Empresários criticam transição mais curta para fim da 6x1", d: "2026", p: "2026", u: "https://jornaldebrasilia.com.br/noticias/economia/empresarios-criticam-transicao-mais-curta-para-fim-da-6x1-e-preveem-aumento-de-custos/", ty: "Reportagem", s: "Comércio projeta ampliar quadros em até 20%", l: "Projeção de entidades patronais" },
+      S12: { pub: "Times Brasil (CNBC)", t: "Indústria e comércio alertam para impactos econômicos do fim da escala 6×1", d: "14/10/2026", p: "Pesquisa citada pela reportagem, 2026", u: "https://timesbrasil.com.br/brasil/industria-e-comercio-alertam-para-impactos-economicos-do-fim-da-escala-6x1/", ty: "Reportagem", s: "Evidência contrária: 51% dos donos de MPE e MEI acham que a mudança não afetará o negócio", l: "Autoria da pesquisa não identificada no trecho" },
+      S13: { pub: "Portal Contábeis / O Povo", t: "Sebrae cria simulador para reorganizar escala de trabalho", d: "21–23/10/2026", p: "Lançamento em 21/10/2026", u: "https://www.contabeis.com.br/noticias/80271/sebrae-cria-simulador-para-reorganizar-escala-de-trabalho/", ty: "Notícia", s: "Concorrente gratuito: simulador Escala Sebrae (distribuição de equipe, custos, freelancers, horas extras)", l: "Ferramenta de simulação; não opera a escala no dia a dia" },
+      S14: { pub: "Exame", t: "Governo avalia crédito para empresas afetadas pelo fim da escala 6x1", d: "16/10/2026", p: "2026", u: "https://exame.com/brasil/governo-avalia-credito-para-empresas-afetadas-pelo-fim-da-escala-6x1-diz-durigan/", ty: "Reportagem", s: "Ministro diz que cerca de 70% dos trabalhadores já estão em 5x2", l: "Declaração oficial, sem recorte regional" },
+      S15: { pub: "Gironews (Abrasel)", t: "Bares e restaurantes projetam faturamento de R$ 540 bi em 2026", d: "2026", p: "Pesquisa de conjuntura, julho/2026", u: "https://gironews.com/food-service/bares-e-restaurantes-projetam-faturamento-de-r-540-bi-em-2026/", ty: "Pesquisa setorial", s: "42% com lucro e 20% no prejuízo em julho; apps somam 58% das vendas de delivery", l: "Nacional" },
+      S16: { pub: "Portal N10 (RN)", t: "Pesquisa expõe aperto no RN: 33% dos bares e restaurantes já operam no prejuízo", d: "2026", p: "Fevereiro de 2026", u: "https://portaln10.com.br/brasil/nordeste/rn/pesquisa-expoe-aperto-no-rn-33-dos-bares-e-restaurantes-ja-operam-no-prejuizo-327495/", ty: "Reportagem regional sobre pesquisa Abrasel", s: "33% no prejuízo em fev/2026, ante 25% em jan", l: "Um estado, um mês" },
+      S18: { pub: "Estado de Minas", t: "Restaurante cheio, equipe enxuta", d: "jul/2026", p: "Dez/2024 a nov/2025", u: "https://www.em.com.br/networking-e-negocios/2026/07/7465042-restaurante-cheio-equipe-enxuta-o-metodo-gula-menu-para-bares-e-restaurantes.html", ty: "Conteúdo de negócios citando Abrasel", s: "Rotatividade de 73,49% em 12 meses; custo de mão de obra +20% estimado com fim da 6x1", l: "Dados de 2025; texto com viés comercial" },
+      S19: { pub: "Correio Braziliense", t: "'Sou a favor do fim da escala 6x1, mas abri mão do meu negócio pelos custos'", d: "out/2026", p: "2026", u: "https://www.correiobraziliense.com.br/mundo/2026/10/7521095-sou-a-favor-do-fim-da-escala-6x1-mas-abri-mao-do-meu-negocio-pelos-custos-a-preocupacao-de-empresarios-que-precisarao-contratar-mais-pessoas.html", ty: "Reportagem com relato de empresário (Abrasel-PE)", s: "Custo de mão de obra +10% a 25%; dificuldade de contratar por concorrência com apps", l: "Relato individual" },
+      S20: { pub: "Serasa Experian", t: "Novo recorde: inadimplência das empresas chegou a 9,3 milhões em agosto", d: "20/10/2026", p: "Agosto de 2026", u: "https://www.serasaexperian.com.br/sala-de-imprensa/indicadores/novo-recorde-inadimplencia-das-empresas-chegou-a-93-milhoes-em-agosto-revela-serasa-experian/", ty: "Indicador de bureau de crédito", s: "9,3 mi CNPJs; MPE 8,8 mi com 61,4 mi de dívidas que somam R$ 211 bi", l: "Recorte por UF só em gráfico" },
+      S21: { pub: "Brasil 61 (Serasa)", t: "Inadimplência das empresas segue em nível recorde", d: "jul/2026", p: "Maio de 2026", u: "https://brasil61.com/q/BRAS2616661", ty: "Agência de notícias", s: "MG com 887 mil e RJ com 869 mil empresas inadimplentes", l: "SP não aparece no trecho lido" },
+      S22: { pub: "Banco Safra (O Especialista)", t: "Pix Automático e pagamento de contas recorrentes", d: "2026", p: "Ago/2025 a ago/2026", u: "https://oespecialista.safra.com.br/pix-automatico-pagamento-contas-recorrentes/", ty: "Análise de banco", s: "Empresas recebendo por Pix Automático: de 275 para cerca de 14 mil; resultados reportados pela Bemobi", l: "Resultados de fornecedor; não é base oficial do BC" },
+      S24: { pub: "Sebrae / FGV IBRE", t: "Sondagem MEI e MPE — Impactos das fraudes digitais nas empresas", d: "jul/2026", p: "Coleta 01 a 30/06/2026; 4.466 respondentes", u: "https://datasebrae.com.br/wp-content/uploads/2026/07/Apresentacao-Quesito-Especial-SEBRAE-MEI-MPE-e-PN-Jun26-V2.pdf", ty: "Pesquisa institucional", s: "44% sofreram tentativa; 31% das vítimas com prejuízo; boleto falso 38%; NE 27,2% e SE 31,8% de vítimas com prejuízo", l: "Autodeclaração; leitura regional feita a partir de gráfico" },
+      S25: { pub: "O Tempo (Sebrae Minas)", t: "Quase metade dos empreendedores já foi alvo de tentativa de golpes", d: "15/09/2026", p: "Pesquisa de jun/2026", u: "https://www.otempo.com.br/economia/2026/9/15/quase-metade-dos-empreendedores-ja-foi-alvo-de-tentativa-de-golpes-saiba-como-se-proteger", ty: "Reportagem", s: "Só 17% dos pequenos negócios têm proteção estruturada, contra 72% das médias e grandes", l: "Mesma base de S24" },
+      S26: { pub: "Exame Insight", t: "Do Einstein à OpenAI: quem está no novo conselho da startup Rivio", d: "2026", p: "Observatório Anahp 2026, dados de 2025", u: "https://exame.com/insight/do-einstein-a-openai-quem-esta-no-novo-conselho-da-startup-rivio/p", ty: "Reportagem", s: "Hospitais levaram 77,4 dias para receber em 2025; margem Ebitda caiu de 11,7% para 11,1%; existe startup focada no problema", l: "Dados de 2025; hospitais Anahp (grandes)" },
+      S27: { pub: "Legismap (Anahp)", t: "Alerta: hospitais fecham 2025 com glosas e prazos de recebimento em patamares críticos", d: "2026", p: "2025", u: "https://legismap.com.br/conteudos/artigos-e-noticias/alerta-hospitais-fecham-2025-com-glosas-e-prazos-de-recebimento-ainda-em-patamares-criticos", ty: "Reprodução de balanço setorial", s: "Prazo médio de 77,35 dias e glosas iniciais de 15,93% em 2025", l: "Dados de 2025" },
+      S28: { pub: "Guia do Investidor", t: "Como a Rede D'Or pode se favorecer do início fraco no setor hospitalar em 2026", d: "2026", p: "Janeiro de 2026", u: "https://guiadoinvestidor.com.br/?p=383010", ty: "Análise de mercado", s: "Jan/2026: ocupação 73,44%, prazo de recebimento 87 dias, glosas em 1,54% do faturamento", l: "Métrica de glosa diferente da “glosa inicial”: os números não são comparáveis" },
+      S29: { pub: "Rondônia Dinâmica", t: "Suspensão de atendimentos da Geap em grandes hospitais acende alerta", d: "jul/2026", p: "2026", u: "https://www.rondoniadinamica.com/noticias/2026/07/suspensao-de-atendimentos-da-geap-em-grandes-hospitais-acende-alerta-em-rondonia,250111.shtml", ty: "Reportagem", s: "HC-USP relatou pagamentos parciais, descontos não contratuais e glosas consideradas indevidas", l: "Veículo fora da região; fato em SP" },
+      S30: { pub: "Conjur", t: "Brasil tem 668 operadoras de plano de saúde e 53 milhões de beneficiários", d: "12/06/2026", p: "2025", u: "https://www.conjur.com.br/2026-jun-12/brasil-tem-668-operadoras-de-plano-de-saude-e-53-milhoes-de-beneficiarios/", ty: "Anuário jurídico", s: "Cerca de 4.200 hospitais privados; R$ 275 bi pagos a prestadores em 2025", l: "Dados de 2025" },
+      S31: { pub: "Acontecendo Aqui", t: "Falta de pacientes pode comprometer até 32% da agenda de clínicas", d: "25/01/2026", p: "Dados de mercado não datados", u: "https://acontecendoaqui.com.br/empreendedorismo/alerta-falta-de-pacientes-pode-comprometer-ate-32-da-agenda-de-clinicas-no-pais/", ty: "Notícia sobre ferramenta de fornecedor", s: "No-show pode chegar a 32% em algumas clínicas", l: "Fonte comercial; número é teto, não média" },
+      S32: { pub: "Gazeta do Povo", t: "IA reduz faltas em consultas e melhora gestão na saúde", d: "jun/2026", p: "Panorama Doctoralia/Feegow 2024", u: "https://www.gazetadopovo.com.br/vozes/parana-sa/ia-reduz-faltas-consultas-gestao-saude/", ty: "Conteúdo patrocinado/negócios", s: "31% das instituições com faltas acima de 11%; existem soluções de IA de voz no mercado", l: "Dados de 2024" },
+      S33: { pub: "Diário de Suzano", t: "Alto Tietê contabiliza 137 mil faltas a consultas marcadas em 8 meses", d: "2026", p: "Períodos de 2026 (jan–ago)", u: "https://www.diariodesuzano.com.br/regiao/faltas-a-consultas-passam-de-137-mil/95992/", ty: "Reportagem com dados municipais", s: "Itaquaquecetuba 26,26% de absenteísmo (era 22,5% em 2025); Mogi 18% a 26%", l: "Recorte de uma região de SP" },
+      S34: { pub: "Prefeitura de Jundiaí", t: "Falta em consultas e exames prejudica as filas na saúde", d: "27/10/2026", p: "2026", u: "https://jundiai.sp.gov.br/noticias/?p=390297", ty: "Dado oficial municipal", s: "Ausências acima de 28% em ortopedia, endoscopia e ultrassom; 33% em angiologia", l: "Um município" },
+      S35: { pub: "Portal Contábeis", t: "NR-1 entra em fase de fiscalização e pressiona empresas a partir de 26 de maio", d: "2026", p: "2026", u: "https://www.contabeis.com.br/noticias/76472/nr-1-entra-em-fase-de-fiscalizacao-e-pressiona-empresas/", ty: "Notícia", s: "Riscos psicossociais no GRO a partir de 26/05/2026; MTE publicou manual em março", l: "—" },
+      S36: { pub: "Exame (coluna)", t: "Os efeitos tributários da nova NR-1", d: "2026", p: "2026", u: "https://exame.com/colunistas/dr-faustino-junior/os-efeitos-tributarios-da-nova-nr-1/", ty: "Opinião especializada", s: "Fiscalização punitiva desde 26/05/2026; afastamentos encarecem a contribuição previdenciária", l: "Opinião" },
+      S37: { pub: "Sindicomis", t: "2026 chegou: como a NR-1 transformou riscos psicossociais em passivo real", d: "fev/2026", p: "2026", u: "https://sindicomis.com.br/wp-content/uploads/2026/02/Cerebro-10.pdf", ty: "Material de entidade", s: "Multas citadas de até R$ 6.708,08 por trabalhador exposto", l: "Valor não conferido diretamente na norma" },
+      S38: { pub: "Panrotas", t: "Booking.com implementa nova comissão de 18%; hotelaria aciona Cade", d: "mai–jul/2026", p: "2026", u: "https://www.panrotas.com.br/noticias/hotelaria/distribuicao", ty: "Imprensa especializada", s: "Comissão elevada a 18% no Brasil; entidades pediram suspensão ao Cade; impacto maior em hotéis menores", l: "Lido a partir da listagem de manchetes" },
+      S39: { pub: "Correio Braziliense", t: "Balanço da hotelaria brasileira no primeiro semestre de 2026", d: "jul/2026", p: "1º semestre de 2026", u: "https://www.correiobraziliense.com.br/turismo/2026/07/7456276-balanco-da-hotelaria-brasileira-no-primeiro-semestre-de-2026.html", ty: "Coluna especializada", s: "Hotelaria independente sofre com falta de sucessão familiar e tende a ceder espaço a redes", l: "Opinião" },
+      S40: { pub: "Paraíba Business", t: "Meta põe preço na IA do WhatsApp e muda o custo do atendimento", d: "13/07/2026", p: "2026", u: "https://paraibabusiness.com.br/whatsapp-muda-cobranca-e-pressiona-empresas-na-paraiba/", ty: "Reportagem regional (lida na íntegra)", s: "81% dos pequenos negócios da PB vendem pelo WhatsApp; agente da Meta cobrado desde 1/8/2026; mensagens de serviço cobradas desde 1/10/2026", l: "Pesquisa Sebrae/PB sem amostra informada" },
+      S41: { pub: "Agência CBIC", t: "Escassez de mão de obra desafia construção civil", d: "07/07/2026", p: "2026", u: "https://cbic.org.br/escassez-de-mao-de-obra-desafia-construcao-civil-e-reforca-agenda-de-qualificacao-e-inovacao/", ty: "Institucional", s: "Escassez em funções operacionais e engenheiros; ManpowerGroup: 8 em 10 empregadores com dificuldade", l: "Nacional" },
+      S42: { pub: "Agência iNFRA", t: "CBIC reduz projeção de crescimento na construção para 1,2% em 2026", d: "07/05/2026", p: "2026", u: "https://agenciainfra.com/blog/?p=40727", ty: "Imprensa especializada", s: "Juros, escassez de mão de obra e custos explicam adiamento de pequenas obras e reformas", l: "Nacional" },
+      S43: { pub: "Correio Popular / Estadão Conteúdo", t: "Condições financeiras da indústria da construção se mantêm negativas no 2º trimestre", d: "23/07/2026", p: "2º trimestre de 2026", u: "https://correio.rac.com.br/agenciaestado/condic-es-financeiras-da-industria-da-construc-o-se-mantem-negativas-no-2-trimestre-diz-cni-1.1832370", ty: "Sondagem CNI/CBIC", s: "Falta ou alto custo de mão de obra não qualificada citado por 28,9% dos empresários", l: "Nacional" },
+      S44: { pub: "AmdJus", t: "Construção civil cresce no 1º tri, mas custos altos diminuem projeções", d: "2026", p: "12 meses até mar/2026", u: "https://amdjus.com.br/?p=33353", ty: "Portal secundário (cita FGV)", s: "INCC 5,84% e mão de obra +8,82% em 12 meses", l: "Fonte secundária" },
+      S45: { pub: "BP Money", t: "Fim da escala 6x1: construção pode precisar de 288 mil operários", d: "out/2026", p: "Projeção CBIC", u: "https://bpmoney.com.br/economia/fim-escala-6x1-construcao-288-mil-operarios/", ty: "Reportagem", s: "CBIC projeta 288 mil contratações a mais a partir de 2027", l: "Projeção de entidade" },
+      S46: { pub: "Canal Solar", t: "Cortes de geração solar aumentam 21% nos oito primeiros meses de 2026", d: "2026", p: "Jan–ago/2026 (dados ONS)", u: "https://canalsolar.com.br/cortes-de-geracao-solar-aumentam/", ty: "Imprensa especializada", s: "Nordeste concentrou cerca de 83% do curtailment nacional", l: "—" },
+      S47: { pub: "Movimento Econômico", t: "Justiça nega ressarcimento por cortes que tiraram R$ 6 bi de eólicas e solares", d: "14/09/2026", p: "2026", u: "https://movimentoeconomico.com.br/economia/energia/2026/09/14/justica-nega-ressarcimento-por-cortes-que-tiraram-r-6-bi-de-eolicas-e-solares/", ty: "Reportagem regional", s: "Pedido de ressarcimento integral negado", l: "—" },
+      S48: { pub: "O Povo", t: "Curtailment: cortes de energia renovável", d: "17/09/2026", p: "2023–2026", u: "https://mais.opovo.com.br/jornal/economia/2026/09/17/curtailment-cortes-de-energia-renovavel-dariam-para-abastecer-fortaleza-sao-paulo-e-rio-de-janeiro.html", ty: "Reportagem regional", s: "Prejuízo estimado entre R$ 8,6 bi e R$ 13,1 bi (Volt Robotics); 95% dos cortes no NE segundo Abeeólica", l: "Parte do setor contesta o conceito de prejuízo" },
+      S49: { pub: "SBT News (Etene/BNB)", t: "Nordeste e Sul lideram crescimento econômico, diz estudo", d: "out/2026", p: "Ago/2025 a jul/2026", u: "https://sbtnews.sbt.com.br/noticia/economia/nordeste-e-sul-lideram-crescimento-economico-diz-estudo", ty: "Reportagem sobre estudo oficial", s: "NE +2,5% contra 1,5% do Brasil; desaceleração desde abril (3%); RN 2,1%, CE 1,7%, MA 1,6%, BA 1,4%", l: "Índice de atividade, não PIB oficial" },
+      S50: { pub: "BNB / Etene", t: "Informe Macroeconômico — março de 2026", d: "mar/2026", p: "Jan/2026", u: "https://www.bnb.gov.br/s482-dspace/bitstream/123456789/2410/1/2026_INMA_3.pdf", ty: "Relatório oficial", s: "Indústria é o ponto frágil do NE (−0,4% em jan/2026); consumo resiliente com crédito restrito", l: "—" },
+      S51: { pub: "Folha de Pernambuco", t: "Pernambuco tem melhor desempenho regional", d: "out/2026", p: "12 meses até jul/2026", u: "https://www.folhape.com.br/economia/pernambuco-tem-melhor-desempenho-regional-e-nordeste-lidera/517001/", ty: "Reportagem", s: "PE cresce 3,6%", l: "—" },
+      S52: { pub: "Sebrae / Meta Instituto de Pesquisa (via compilação)", t: "Transformação Digital nos Pequenos Negócios 2026", d: "jul–ago/2026", p: "Coleta 24/03 a 08/05/2026; 7.182 entrevistas", u: "https://viniensina.com.br/estatisticas-ia-pequenos-negocios/", ty: "Compilação de pesquisa institucional", s: "52% usaram IA nas duas semanas anteriores; 90% não mudaram quadro por causa da IA", l: "Lido por site que compila os dados; original no DataSebrae" },
+      S53: { pub: "Diário do Comércio (MG)", t: "Inteligência Artificial avança nos pequenos negócios de Minas", d: "2026", p: "Mar/2026; n=304", u: "https://diariodocomercio.com.br/negocios/ia-pequenos-negocios-minas/", ty: "Pesquisa Sebrae Minas", s: "56% dos pequenos negócios mineiros já usam IA; uso ainda inicial", l: "Amostra pequena" },
+      S54: { pub: "Rev. Bras. de Direito e Gestão Pública (UFCG)", t: "A chamada pública como alternativa para a agricultura familiar em São João do Rio do Peixe (PB)", d: "abr–jun/2026", p: "Estudo de caso", u: "https://www.gvaa.com.br/revista/index.php/RDGP/article/download/12130/14210/62929", ty: "Artigo acadêmico", s: "Intermediários capturam a maior parte do valor; chamada pública como alternativa", l: "Um município" },
+      S55: { pub: "Rondônia Dinâmica", t: "Contrata+Brasil facilita compra de R$ 22,7 milhões da agricultura familiar", d: "mai/2026", p: "2026", u: "https://www.rondoniadinamica.com/noticias/2026/05/rondonia-contrata-brasil-facilita-compra-de-r-227-milhoes-da-agricultura-familiar-para-merenda-escolar,244346.shtml", ty: "Reportagem", s: "Concorrente público: módulo do Contrata+Brasil integrado ao PAA", l: "Fato fora da região, ferramenta nacional" },
+      S56: { pub: "Exame", t: "Brasileiro atrasa taxa de condomínio para pagar cartão de crédito", d: "data não verificada", p: "Não verificado", u: "https://exame.com/invest/minhas-financas/brasileiro-atrasa-taxa-de-condominio-para-pagar-cartao-de-credito-veja-os-riscos/", ty: "Reportagem", s: "Inadimplência condominial: NE 12,71%, SE 12,28%", l: "Data e período não confirmados — usar com cautela" },
+      S57: { pub: "O Antagonista", t: "Quem não paga o condomínio está financiado pelos vizinhos", d: "data não verificada", p: "Não verificado", u: "https://oantagonista.com.br/?p=1925624", ty: "Reportagem", s: "Cerca de 520 mil condomínios; menos de 20% com síndico profissional", l: "Data não confirmada" },
+      S59: { pub: "COAD (Dieese)", t: "Fim da 6x1: saiba quando entra em vigor nova jornada de trabalho", d: "out/2026", p: "2026", u: "https://www.coad.com.br/home/noticias-detalhe/140239/fim-da-6x1-saiba-quando-entra-em-vigor-nova-jornada-de-trabalho", ty: "Notícia citando Dieese", s: "26,8 milhões de trabalhadores beneficiados", l: "Nacional" },
+      S60: { pub: "Movimento Econômico", t: "Escala 5x2 altera planejamento de pessoal das MPE", d: "out/2026", p: "2026", u: "https://movimentoeconomico.com.br/?p=132405", ty: "Reportagem regional", s: "Não há levantamentos regionais sobre o efeito nas pequenas empresas do NE", l: "Evidência de lacuna" },
+      S61: { pub: "Jettax (blog)", t: "Automação fiscal em 2026", d: "07/07/2026", p: "Não informado", u: "https://www.jettax.com.br/blog/automacao-fiscal-em-2026-por-que-escritorios-que-nao-automatizarem-vao-ficar-para-tras/", ty: "Conteúdo de fornecedor", s: "Mais de 60% dos escritórios com alguma automação fiscal; menos de 15% com IA", l: "Fonte comercial sem metodologia" },
+      S62: { pub: "Jornal Contábil", t: "Contador está sobrecarregado: os desafios que estão pesando na profissão", d: "2026", p: "Discussões de 2026 no Reddit r/ContabilidadeAtual", u: "https://jornalcontabil.com.br/noticia/contador-esta-sobrecarregado-os-desafios-que-estao-pesando-na-profissao/amp/", ty: "Análise de comunidade", s: "Sobrecarga é o tema mais recorrente entre contadores em 2026", l: "Análise exploratória" }
+    };
+
+    /* ========================= PANORAMA ========================= */
+    const PANO = [
+      { r: "NE", h: "Nordeste cresce acima do país, mas desacelera", f: "Atividade do NE subiu 2,5% em 12 meses até julho de 2026, contra 1,5% do Brasil; o ritmo caiu desde abril. PE lidera (3,6%); RN, CE, MA e BA vêm abaixo.", i: "Demanda regional mais resiliente para serviços e comércio, com estados muito diferentes entre si.", src: ["S49", "S51"] },
+      { r: "NE", h: "Indústria nordestina é o elo fraco", f: "O Etene aponta a indústria como principal fragilidade da região no início de 2026, com consumo das famílias resistindo apesar do crédito restrito.", i: "Oportunidades industriais no NE pedem cautela; serviços e comércio têm sinais melhores.", src: ["S50"] },
+      { r: "BR", h: "Inadimplência empresarial recorde", f: "9,3 milhões de CNPJs negativados em agosto de 2026; micro e pequenas somam 8,8 milhões e R$ 211 bi em dívidas. MG e RJ estão entre os estados com mais empresas negativadas.", i: "Caixa apertado limita compra de software; soluções que pagam a si mesmas (recuperar receita, evitar multa) vendem melhor.", src: ["S20", "S21"] },
+      { r: "BR", h: "Reforma tributária saiu do papel e entrou na rotina", f: "Notas com campos de IBS/CBS em teste em 2026; em uma base de 6,4 milhões de NF-e, 64,4% chegaram sem os campos preenchidos. Simples Nacional passa a ser exigido em 2027.", i: "Custo de erro operacional sobe; conferência de documentos recebidos vira dor recorrente.", src: ["S01", "S03"] },
+      { r: "BR", h: "Fim da escala 6x1 com prazo curto", f: "Emenda Constitucional 141/2026: limite de 42h e duas folgas a partir de 16/12/2026; 40h em dezembro de 2027.", i: "Negócios que abrem 6 ou 7 dias com equipes pequenas precisam refazer escalas em semanas.", src: ["S08", "S59"] },
+      { r: "BR", h: "Saúde mental vira obrigação fiscalizada", f: "Riscos psicossociais no gerenciamento de riscos ocupacionais com fiscalização punitiva desde 26/05/2026.", i: "Demanda por diagnóstico, inventário e plano de ação em empresas sem área de SST.", src: ["S35", "S36"] },
+      { r: "BR", h: "Onda de formalização em janeiro de 2027", f: "Autônomos com receita acima de R$ 40,5 mil e produtores rurais acima de R$ 3,6 mi precisarão de CNPJ e nota fiscal a partir de 1/1/2027; locadores de imóveis também entram.", i: "Pico de demanda por abertura, emissão de notas e contabilidade simplificada no 1º trimestre de 2027.", src: ["S06", "S07"] },
+      { r: "NE", h: "Energia renovável desperdiçada no Nordeste", f: "O NE concentrou cerca de 83% dos cortes de geração eólica e solar de jan a ago/2026; a Justiça negou ressarcimento integral às geradoras em setembro.", i: "Problema bilionário, mas de grandes geradores e regulação; não é porta de entrada para equipe enxuta.", src: ["S46", "S47", "S48"] },
+      { r: "BR", h: "Pequenos negócios já usam IA, de forma rasa", f: "52% dos pequenos negócios usaram IA nas duas semanas anteriores à pesquisa; em MG, 56% já usam. O uso principal é marketing e textos.", i: "Barreira de adoção caiu; o diferencial é resolver um processo, não “ter IA”.", src: ["S52", "S53"] },
+      { r: "BR", h: "WhatsApp virou canal pago", f: "Na PB, 81% dos pequenos negócios vendem pelo WhatsApp. A Meta passou a cobrar pelo próprio agente de IA (agosto) e por mensagens de serviço (outubro de 2026).", i: "Atendimento automatizado passa a ter custo variável por conversa; eficiência vira argumento de venda.", src: ["S40"] },
+      { r: "BR", h: "Hospitais recebem mais tarde", f: "Hospitais da Anahp levaram 77,4 dias para receber em 2025, com glosas iniciais de 15,93%; em jan/2026 o prazo chegou a 87 dias.", i: "Capital de giro preso em contas médicas; serviços de faturamento e recurso de glosa têm comprador claro.", src: ["S26", "S27", "S28"] },
+      { r: "BR", h: "Construção trava em pequenas obras", f: "CBIC cortou a projeção de 2026 para 1,2% e cita adiamento de pequenas obras e reformas; falta de mão de obra não qualificada aparece para 28,9% dos empresários.", i: "Dor real, mas comprador pulverizado e pouco digitalizado.", src: ["S42", "S43", "S41"] },
+      { r: "SE", h: "SUS municipal perde até um terço das vagas", f: "Na região do Alto Tietê (SP), Itaquaquecetuba registrou 26,26% de faltas de janeiro a agosto de 2026; Jundiaí relata até 33% em angiologia.", i: "Capacidade ociosa paga com dinheiro público; comprador é a secretaria municipal.", src: ["S33", "S34"] },
+      { r: "BR", h: "Hospedagem pressionada por OTAs", f: "Booking.com elevou a comissão para 18% no Brasil em 2026 e entidades acionaram o Cade.", i: "Pousadas do litoral nordestino têm incentivo financeiro imediato para vender direto.", src: ["S38"] }
+    ];
+
+    /* ========================= PROBLEMAS ========================= */
+    const P = [
+      { id: "P01", n: "Créditos de IBS/CBS ameaçados por notas recebidas incompletas", d: "Empresas compradoras recebem NF-e de fornecedores sem os campos novos ou com valores divergentes, o que pode impedir o aproveitamento do crédito a partir de 2027.", pub: "Empresas do regime regular com muitos fornecedores; seus escritórios contábeis", seg: "Serviços financeiros e fiscais", r: "BR", fr: "Diária (cada nota recebida)", ce: "Risco de perda de crédito e de caixa; 64,2% de 139 mil fornecedores analisados não estavam adequados", hoje: "Conferência manual, ERP, robôs fiscais pagos", pg: "N3", src: ["S01", "S02"], c: "Média" },
+      { id: "P02", n: "Cadastro tributário de produtos inconsistente", d: "Itens com classificação fiscal incorreta ou incompleta para a transição; problema se repete a cada produto novo.", pub: "Varejo, atacado e indústria do regime normal", seg: "Comércio e indústria", r: "BR", fr: "Contínua (mix de produtos muda)", ce: "Erro de tributação, retrabalho e crédito indevido; 93% dos produtos com inconsistência em levantamento de 4,5 mil empresas", hoje: "Consultorias, planilhas, ferramentas de saneamento fiscal", pg: "N3", src: ["S02", "S04"], c: "Média" },
+      { id: "P03", n: "Micro e pequenas empresas sem clareza para 2027", d: "Optantes do Simples passam a ter obrigações dos campos IBS/CBS em 2027 e precisam checar se fornecedores emitem corretamente para não perder créditos na cadeia.", pub: "MEI, ME e EPP", seg: "Todos", r: "BR", fr: "Pontual com efeito contínuo", ce: "Risco de pendências e perda de competitividade como fornecedor de empresas do regime regular", hoje: "Orientação do contador e do Sebrae", pg: "N2", src: ["S03", "S04"], c: "Média" },
+      { id: "P04", n: "Escritórios contábeis sobrecarregados", d: "Clientes já cobram orientação sobre a reforma; a maioria dos contadores ainda não tem plano de ação e espera reestruturação interna.", pub: "Escritórios contábeis (maioria é ME)", seg: "Serviços profissionais", r: "BR", fr: "Contínua", ce: "Horas não faturadas, perda de clientes e risco de erro; 43% esperam forte sobrecarga", hoje: "Mais horas, contratação difícil, softwares fiscais", pg: "N3", src: ["S05", "S62", "S61"], c: "Média" },
+      { id: "P05", n: "Formalização obrigatória de autônomos, locadores e grandes produtores rurais", d: "A partir de 1/1/2027, quem tem atividade habitual acima dos limites passa a precisar de CNPJ e nota fiscal; sistema simplificado previsto para novembro de 2026.", pub: "Autônomos > R$ 40,5 mil/ano; produtores > R$ 3,6 mi; locadores PF", seg: "Serviços profissionais; agro; imobiliário", r: "BR", fr: "Pico em jan–mar/2027, depois mensal", ce: "Risco de autuação e de perder clientes PJ que exigem nota", hoje: "Contador, contabilidades online", pg: "N2", src: ["S06", "S07"], c: "Alta" },
+      { id: "P06", n: "Refazer escalas para 42h e duas folgas", d: "Negócios que abrem 6 ou 7 dias com 2 a 20 funcionários precisam redistribuir turnos até 16/12/2026 sem estourar a folha.", pub: "Padarias, restaurantes, farmácias, mercados de bairro, clínicas, transporte", seg: "Comércio, alimentação, saúde, logística", r: "BR", fr: "Semanal (montagem de escala)", ce: "Custo de pessoal de +10% a +25% conforme entidades e empresários; risco trabalhista", hoje: "Papel, planilha, apps de ponto; simulador gratuito do Sebrae", pg: "N2", src: ["S08", "S09", "S10", "S11", "S13", "S12"], c: "Alta" },
+      { id: "P07", n: "Rotatividade e falta de mão de obra em alimentação", d: "Rotatividade muito alta e funções como sushiman e churrasqueiro difíceis de preencher; trabalhadores migram para apps de transporte e entrega.", pub: "Bares e restaurantes", seg: "Turismo e alimentação", r: "NESE", fr: "Contínua", ce: "Custo de recrutar e treinar; vendas perdidas em horários de pico", hoje: "Indicação, grupos de WhatsApp, freelancers informais", pg: "N2", src: ["S18", "S19"], c: "Média" },
+      { id: "P08", n: "Margens apertadas e dificuldade de repassar preço em restaurantes", d: "Um em cada cinco estabelecimentos fechou julho no prejuízo no país; no RN, um terço em fevereiro.", pub: "Bares e restaurantes", seg: "Turismo e alimentação", r: "NESE", fr: "Mensal", ce: "Prejuízo operacional e endividamento", hoje: "Cortes de equipe, ajuste de cardápio", pg: "N1", src: ["S15", "S16"], c: "Alta" },
+      { id: "P09", n: "Dependência de aplicativos de delivery", d: "Apps já respondem por 58% das vendas de delivery; o debate sobre taxa mínima de entrega preocupa o setor.", pub: "Restaurantes com delivery", seg: "Turismo e alimentação", r: "BR", fr: "Diária", ce: "Comissões e taxas reduzem margem", hoje: "Canal próprio via WhatsApp, cardápio digital", pg: "N3", src: ["S15"], c: "Média" },
+      { id: "P10", n: "Inadimplência recorde de micro e pequenas empresas", d: "Média de mais de sete dívidas em atraso por empresa; pressiona fornecedores que vendem a prazo para essas empresas.", pub: "MPE e seus fornecedores B2B", seg: "Serviços financeiros", r: "BR", fr: "Mensal", ce: "R$ 211 bi em dívidas de MPE negativadas (ago/2026)", hoje: "Boleto, protesto, renegociação, crédito caro", pg: "N3", src: ["S20", "S21"], c: "Alta" },
+      { id: "P11", n: "Cobrança recorrente manual em serviços de mensalidade", d: "Academias, escolas, cursos e clínicas cobram mensalidade por boleto ou Pix avulso; o Pix Automático existe, mas a adoção ainda é pequena.", pub: "Prestadores de serviço recorrente", seg: "Serviços pessoais, educação, saúde", r: "BR", fr: "Mensal", ce: "Atrasos e custo de cobrança; empresas recebendo por Pix Automático subiram de 275 para cerca de 14 mil em um ano", hoje: "Boleto, cartão recorrente, cobrança manual por WhatsApp", pg: "N3", src: ["S22"], c: "Média" },
+      { id: "P12", n: "Golpes digitais em pequenos negócios", d: "Boletos falsos, falsas centrais de banco e fraudes com Pix; donos acumulam funções e decidem no automático.", pub: "MEI e MPE", seg: "Todos", r: "NESE", fr: "44% sofreram tentativa em 12 meses", ce: "31% das vítimas com prejuízo financeiro (NE 27,2%; SE 31,8%)", hoje: "Pouca prevenção: só 17% têm medidas estruturadas", pg: "N1", src: ["S24", "S25"], c: "Alta" },
+      { id: "P13", n: "Glosas e demora no recebimento de convênios", d: "Operadoras retêm parte das contas e alongam prazos; parte das glosas é revertida após recurso.", pub: "Hospitais, clínicas, laboratórios credenciados", seg: "Saúde", r: "BR", fr: "Mensal (cada lote faturado)", ce: "Glosa inicial de 15,93% e prazo de 77,4 dias em 2025 nos hospitais Anahp; 87 dias em jan/2026", hoje: "Equipe de faturamento, auditoria terceirizada, recurso manual", pg: "N3", src: ["S26", "S27", "S28", "S29"], c: "Média" },
+      { id: "P14", n: "Faltas de pacientes em clínicas privadas", d: "Horários vazios sem reposição; impacto pouco medido pelas próprias clínicas.", pub: "Clínicas médicas, odontológicas, de terapia", seg: "Saúde", r: "BR", fr: "Diária", ce: "Até 32% da agenda em alguns casos; 31% das instituições com faltas acima de 11% (dado de 2024)", hoje: "Lembretes por WhatsApp, softwares de gestão, IA de voz", pg: "N3", src: ["S31", "S32"], c: "Média" },
+      { id: "P15", n: "Absenteísmo em consultas e exames do SUS municipal", d: "Pacientes agendados não comparecem; vaga se perde e fila cresce.", pub: "Secretarias municipais de saúde", seg: "Serviços públicos e saúde", r: "SE", fr: "Diária", ce: "26,26% em Itaquaquecetuba (jan–ago/2026); até 33% em especialidades em Jundiaí", hoje: "Ligação e WhatsApp manuais, campanhas", pg: "N2", src: ["S33", "S34"], c: "Alta" },
+      { id: "P16", n: "Conformidade com a NR-1 (riscos psicossociais)", d: "Empresas precisam identificar, avaliar e controlar riscos psicossociais e documentar no PGR; pequenas têm limitações técnicas e de orçamento.", pub: "Empregadores de todos os portes", seg: "Serviços profissionais (SST)", r: "BR", fr: "Anual com revisões", ce: "Multas por trabalhador exposto e efeito no custo previdenciário", hoje: "Empresas de SST, psicólogos, consultorias", pg: "N3", src: ["S35", "S36", "S37"], c: "Média" },
+      { id: "P17", n: "Comissão maior das OTAs para pousadas", d: "Booking.com subiu para 18% em 2026; pequenos meios de hospedagem dependem de OTAs para ocupação.", pub: "Pousadas e hotéis independentes", seg: "Turismo e hotelaria", r: "NE", fr: "Por reserva", ce: "Margem por diária reduzida", hoje: "Aceitar comissão; vender por Instagram e WhatsApp sem motor de reservas", pg: "N3", src: ["S38", "S39"], c: "Média" },
+      { id: "P18", n: "Custo variável do atendimento no WhatsApp", d: "Com a nova tarifação da Meta, conversa que não vende vira custo; empresas não medem custo por atendimento.", pub: "PMEs que usam WhatsApp Business Platform ou agentes", seg: "Economia digital", r: "NE", fr: "Diária", ce: "Gasto por mensagem e por token sem controle", hoje: "BSPs e plataformas de atendimento", pg: "N3", src: ["S40"], c: "Baixa" },
+      { id: "P19", n: "Pequenas obras e reformas travadas por mão de obra e custo", d: "Escassez de trabalhadores, custo da mão de obra subindo acima da inflação e juros altos levam ao adiamento de reformas.", pub: "Pequenas construtoras, empreiteiros, clientes de reforma", seg: "Construção civil", r: "BR", fr: "Contínua", ce: "Mão de obra +8,82% em 12 meses até mar/2026; 288 mil contratações extras projetadas a partir de 2027", hoje: "Indicação, informalidade", pg: "N2", src: ["S41", "S42", "S43", "S44", "S45"], c: "Alta" },
+      { id: "P20", n: "Energia eólica e solar desperdiçada no Nordeste", d: "Cortes de geração por excesso de oferta e falta de transmissão.", pub: "Geradoras eólicas e solares", seg: "Energia", r: "NE", fr: "Diária", ce: "Prejuízo estimado de R$ 8,6 a 13,1 bi; ressarcimento negado", hoje: "Disputa regulatória e judicial", pg: "N3", src: ["S46", "S47", "S48"], c: "Alta" },
+      { id: "P21", n: "Agricultura familiar com dificuldade para vender a compras públicas", d: "Barreiras de edital, preço, nota fiscal e logística; intermediários capturam o valor.", pub: "Agricultores familiares e cooperativas", seg: "Agronegócio", r: "NE", fr: "Por chamada pública", ce: "Não quantificada em 2026", hoje: "ATER pública, cooperativas, plataforma Contrata+Brasil", pg: "N1", src: ["S54", "S55"], c: "Baixa" },
+      { id: "P22", n: "Inadimplência e gestão amadora de condomínios", d: "Atrasos elevam a taxa dos pagantes; poucos condomínios têm síndico profissional.", pub: "Condomínios, síndicos, administradoras", seg: "Imobiliário", r: "NESE", fr: "Mensal", ce: "Inadimplência citada de 12,71% (NE) e 12,28% (SE), data não confirmada", hoje: "Administradoras, apps de condomínio, cobrança judicial", pg: "N3", src: ["S56", "S57"], c: "Baixa" }
+    ];
+
+    /* ========================= OPORTUNIDADES ========================= */
+    const CRIT = [
+      { k: "int", n: "Intensidade", w: 15 }, { k: "fre", n: "Frequência", w: 10 }, { k: "pag", n: "Disposição de pagamento", w: 15 }, { k: "per", n: "Perda financeira", w: 10 }, { k: "def", n: "Deficiência das soluções", w: 10 },
+      { k: "aqu", n: "Facilidade de aquisição", w: 10 }, { k: "via", n: "Viabilidade", w: 10 }, { k: "rec", n: "Receita recorrente", w: 10 }, { k: "dif", n: "Diferenciação", w: 5 }, { k: "exp", n: "Expansão regional", w: 5 }
+    ];
+    const O = [
+      { id: "O01", n: "Conferência de crédito IBS/CBS das notas recebidas", pr: ["P01", "P04"], seg: "Fiscal / contabilidade", r: "BR", cli: "Escritórios contábeis com clientes do regime regular; empresas médias com centenas de fornecedores", loc: "Começar por capitais do SE (SP, BH) e polos do NE (Recife, Fortaleza, Salvador)", pq: "O destinatário da nota passa a responder pelo próprio crédito. A maioria dos fornecedores ainda não preenche os campos, e o problema se repete a cada nota.", ex: "Plataformas de captura e validação de XML, ERPs e robôs fiscais; V360 publicou estudo sobre o tema.", lac: "Ferramentas focam em grandes volumes ou em emissão; falta algo leve para o escritório contábil monitorar vários clientes e acionar o fornecedor faltoso.", sol: "Painel que lê os XML recebidos, aponta notas e fornecedores com problema, calcula o crédito em risco e gera a mensagem de correção ao fornecedor.", mod: "SaaS B2B vendido a escritórios contábeis (canal) e direto a empresas médias", cob: "Mensalidade por CNPJ monitorado (hipótese a testar)", rr: "Alta", con: "V360, ERPs (Omie, TOTVS e similares), plataformas de gestão de XML", dif: "Média", cus: "Sem base pública em R$; hipótese de 6 a 10 semanas de uma pessoa para o MVP", ris: "ERPs incorporarem a função; mudanças nos leiautes técnicos; responsabilidade por erro de interpretação", ia: ["Automação convencional mais adequada", "Validação de regras de XML é determinística; IA ajuda só a classificar itens e explicar divergências."], c: "Média", f: ["S01", "S02", "S05"], sc: { int: 4, fre: 5, pag: 4, per: 4, def: 3, aqu: 3, via: 3, rec: 5, dif: 2, exp: 5 }, ev: "Empresas já pagam ferramentas de automação fiscal (N3)", pay: "Escritório contábil ou empresa média" },
+      { id: "O02", n: "Saneamento de cadastro tributário como serviço", pr: ["P02"], seg: "Fiscal / comércio", r: "BR", cli: "Varejistas e distribuidores do regime normal com milhares de itens", loc: "SP, MG e RJ (maior densidade); depois PE, CE e BA", pq: "Cadastro errado contamina todas as notas emitidas; o trabalho é grande uma vez e depois é manutenção.", ex: "Consultorias tributárias, ferramentas de saneamento fiscal, equipe interna", lac: "Consultorias são caras para o médio varejo; ferramentas exigem quem saiba operar.", sol: "Serviço híbrido: IA sugere classificação a partir da descrição do produto, especialista revisa, cliente recebe base corrigida e monitoramento de itens novos.", mod: "Projeto inicial + manutenção mensal", cob: "Preço por lote de itens + mensalidade (hipótese)", rr: "Média", con: "Consultorias fiscais, fornecedores de conteúdo tributário", dif: "Média", cus: "Sem base; exige parceiro tributarista", ris: "Responsabilidade técnica; comoditização", ia: ["IA como diferencial", "Classificar descrições livres em códigos é onde modelos de linguagem economizam horas; a revisão humana continua obrigatória."], c: "Média", f: ["S02", "S04"], sc: { int: 4, fre: 3, pag: 4, per: 3, def: 3, aqu: 3, via: 4, rec: 3, dif: 3, exp: 5 }, ev: "Mercado de consultoria fiscal já existe (N3)", pay: "Varejista/distribuidor" },
+      { id: "O03", n: "Pacote de formalização 2027 para autônomos e locadores", pr: ["P05", "P04"], seg: "Serviços profissionais", r: "BR", cli: "Contadores que querem atender em volume; autônomos acima de R$ 40,5 mil/ano; locadores PF", loc: "Nacional, com ação local via contadores do interior", pq: "Prazo legal fixo cria pico de demanda; muitos autônomos nunca tiveram CNPJ nem emitiram nota.", ex: "Contabilidades online, apps de MEI, sistema simplificado do governo (previsto para nov/2026)", lac: "Incerto: se o sistema do governo for simples, o valor vai para emissão e obrigações mensais, não para a abertura.", sol: "Diagnóstico de enquadramento + abertura + emissão de notas + lembretes de obrigações, operado via contadores parceiros.", mod: "Serviço com software, vendido por contadores (marca branca)", cob: "Taxa de ativação + mensalidade baixa (hipótese)", rr: "Média", con: "Contabilidades online, apps de MEI, emissores de nota", dif: "Baixa", cus: "Baixo; dependente de parceria contábil", ris: "Regra para produtores menores ainda indefinida; ferramenta pública gratuita", ia: ["Automação convencional mais adequada", "Fluxo de cadastro e lembretes; IA só para tirar dúvidas frequentes."], c: "Média", f: ["S06", "S07"], sc: { int: 3, fre: 3, pag: 3, per: 2, def: 3, aqu: 3, via: 4, rec: 4, dif: 2, exp: 5 }, ev: "Autônomos já pagam contador quando formalizados (N2)", pay: "Autônomo / locador" },
+      { id: "O04", n: "Escala 5x2 operacional para quem abre 6 ou 7 dias", pr: ["P06", "P07"], seg: "Gestão de pessoas / varejo e alimentação", r: "BR", cli: "Padarias, restaurantes, farmácias e mercados de bairro com 5 a 30 funcionários", loc: "Começar em uma capital (ex.: Recife ou BH) por associações comerciais locais", pq: "Prazo legal de 16/12/2026; escala é refeita toda semana; donos não têm tempo nem ferramenta.", ex: "Escala Sebrae (simulador gratuito), apps de ponto e escala, planilhas", lac: "O simulador planeja cenários, mas não publica a escala para a equipe, não controla trocas nem alerta quando alguém passa de 42h.", sol: "Monta a escala respeitando 42h/40h e duas folgas, envia a cada funcionário por WhatsApp, registra trocas e gera relatório para o contador da folha.", mod: "Micro-SaaS por estabelecimento", cob: "Mensalidade por loja com faixa de funcionários (hipótese)", rr: "Alta", con: "Escala Sebrae, apps de controle de ponto e escala, ERPs de RH", dif: "Média", cus: "Hipótese: 4 a 6 semanas de uma pessoa para o MVP", ris: "Concorrente gratuito; 51% das MPE acham que não serão afetadas; convenções coletivas variam por cidade", ia: ["Tecnologia de IA desnecessária", "É um problema de otimização com regras; um algoritmo de escalonamento resolve melhor e mais barato."], c: "Média", f: ["S08", "S09", "S10", "S12", "S13", "S14"], sc: { int: 4, fre: 5, pag: 3, per: 4, def: 3, aqu: 3, via: 4, rec: 5, dif: 2, exp: 5 }, ev: "Empresas já pagam apps de ponto (N2/N3); intenção de pagar por escala não comprovada", pay: "Dono do estabelecimento" },
+      { id: "O05", n: "Banco de extras por turno para alimentação", pr: ["P07", "P06"], seg: "Marketplace de trabalho", r: "NESE", cli: "Restaurantes que precisam cobrir picos e folgas novas", loc: "Uma cidade turística (ex.: Natal ou Salvador)", pq: "Folgas extras e rotatividade criam buracos de turno.", ex: "Grupos de WhatsApp, indicações, plataformas de trabalho por demanda", lac: "Confiança e pontualidade dos extras.", sol: "Rede local de profissionais avaliados, com chamada rápida e pagamento intermediado.", mod: "Marketplace com taxa por turno", cob: "Percentual por turno (hipótese)", rr: "Média", con: "Grupos informais e plataformas de freelas", dif: "Baixa", cus: "Alto em operação e aquisição dos dois lados", ris: "Liquidez dos dois lados; risco trabalhista de vínculo", ia: ["Tecnologia de IA desnecessária", "O gargalo é liquidez e confiança, não software."], c: "Baixa", f: ["S18", "S19"], sc: { int: 4, fre: 4, pag: 2, per: 3, def: 3, aqu: 1, via: 2, rec: 3, dif: 2, exp: 3 }, ev: "Restaurantes pagam freelas informalmente (N2)", pay: "Restaurante" },
+      { id: "O06", n: "Cobrança recorrente com Pix Automático para mensalidades", pr: ["P11", "P10"], seg: "Fintech / serviços recorrentes", r: "BR", cli: "Academias, escolas de idiomas, cursos livres, clínicas de estética com 100 a 1.000 alunos/pacientes", loc: "Cidades médias do NE e interior de SP e MG", pq: "Adoção ainda pequena do Pix Automático e alta inadimplência; quem cobra mensalidade sente o atraso todo mês.", ex: "Gateways e plataformas de cobrança, bancos, ERPs verticais", lac: "Migrar a base de alunos para autorização recorrente exige trabalho de convencimento que as plataformas não fazem.", sol: "Migração assistida (mensagens, link de autorização, acompanhamento) + régua de cobrança para quem não aderir.", mod: "SaaS + serviço de migração", cob: "Mensalidade por base ativa ou % sobre recuperado (hipótese)", rr: "Alta", con: "Plataformas de cobrança e bancos com Pix Automático", dif: "Baixa", cus: "Integração com um PSP; baixo", ris: "Mercado lotado de fintechs; tarifa do PSP define margem", ia: ["Automação convencional mais adequada", "Régua de cobrança e integração bancária; IA não é necessária."], c: "Média", f: ["S22", "S20"], sc: { int: 3, fre: 5, pag: 4, per: 3, def: 2, aqu: 3, via: 4, rec: 5, dif: 1, exp: 5 }, ev: "Empresas já pagam boleto e gateway (N3)", pay: "Dono da academia/escola" },
+      { id: "O07", n: "Conferência anti-golpe de boletos e pagamentos", pr: ["P12"], seg: "Segurança financeira", r: "NESE", cli: "MPE do comércio que pagam muitos boletos de fornecedores", loc: "SE (maior taxa de prejuízo entre vítimas) e capitais do NE", pq: "Boleto falso é o golpe que mais preocupa; poucas MPE têm processo de checagem.", ex: "Recursos dos bancos, treinamentos do Sebrae", lac: "Ninguém confere o beneficiário do boleto contra o cadastro do fornecedor antes de pagar.", sol: "Encaminhar o boleto por WhatsApp e receber um semáforo: beneficiário confere com o fornecedor cadastrado?", mod: "Serviço por assinatura ou embutido em contadores", cob: "Mensalidade baixa (hipótese)", rr: "Média", con: "Bancos e serviços de segurança", dif: "Média", cus: "Baixo", ris: "Disposição de pagar por prevenção é baixa; bancos podem oferecer de graça", ia: ["IA como diferencial", "Leitura do boleto é convencional; IA ajuda a detectar padrões de mensagem fraudulenta."], c: "Média", f: ["S24", "S25"], sc: { int: 3, fre: 3, pag: 2, per: 3, def: 3, aqu: 2, via: 3, rec: 3, dif: 2, exp: 5 }, ev: "Prejuízo existe, pagamento por prevenção não comprovado (N1)", pay: "Dono da MPE" },
+      { id: "O08", n: "Pré-auditoria e recuperação de glosas para prestadores médios", pr: ["P13"], seg: "Saúde / faturamento", r: "BR", cli: "Hospitais de pequeno e médio porte, clínicas de imagem e laboratórios credenciados a convênios", loc: "Capitais do SE e do NE com rede privada relevante", pq: "Dinheiro já faturado fica retido; parte relevante das glosas é revertida em recurso, o que mostra que o esforço compensa.", ex: "Equipes internas de faturamento, auditorias terceirizadas, startups do tema", lac: "Prestadores menores não têm equipe para recorrer de tudo nem para prevenir glosa antes de enviar o lote.", sol: "Antes do envio: checagem de guias e documentos contra regras do contrato. Depois: fila de recursos com prioridade por valor e prazo.", mod: "Serviço híbrido com software; remuneração por êxito", cob: "% do valor recuperado + mensalidade de prevenção (hipótese)", rr: "Alta", con: "Auditorias de contas médicas, startups (ex.: Rivio), sistemas hospitalares", dif: "Média", cus: "Exige alguém com experiência em faturamento hospitalar", ris: "Dados sensíveis de saúde (LGPD); ciclo de venda longo; dependência de cada contrato com operadora", ia: ["IA essencial para escalar", "Ler prontuários, guias e respostas de glosa em texto livre é onde a IA reduz o trabalho humano."], c: "Média", f: ["S26", "S27", "S28", "S29", "S30"], sc: { int: 5, fre: 5, pag: 4, per: 5, def: 3, aqu: 2, via: 3, rec: 4, dif: 3, exp: 4 }, ev: "Prestadores já pagam auditoria e faturamento terceirizado (N3)", pay: "Diretor financeiro do prestador" },
+      { id: "O09", n: "Confirmação e reposição de horários em clínicas", pr: ["P14"], seg: "Saúde / agenda", r: "BR", cli: "Clínicas com 2 a 15 profissionais", loc: "Qualquer cidade média", pq: "Faltas afetam receita todo dia e são pouco medidas.", ex: "Softwares de gestão de clínicas, plataformas de agendamento, soluções de voz com IA", lac: "Pequena: a função já existe em muitos produtos.", sol: "Só faz sentido como recurso dentro de outro produto (ex.: O08 ou O06), não como negócio isolado.", mod: "Recurso adicional", cob: "Incluído em outro plano", rr: "Alta", con: "Muitos sistemas de clínica e plataformas de agendamento", dif: "Baixa", cus: "Baixo", ris: "Mercado saturado", ia: ["Automação convencional mais adequada", "Lembretes e lista de espera resolvem a maior parte."], c: "Média", f: ["S31", "S32"], sc: { int: 3, fre: 5, pag: 4, per: 3, def: 1, aqu: 2, via: 5, rec: 5, dif: 1, exp: 5 }, ev: "Clínicas já pagam software (N3)", pay: "Dono da clínica" },
+      { id: "O10", n: "Redução de faltas no SUS municipal", pr: ["P15"], seg: "Govtech / saúde pública", r: "SE", cli: "Secretarias municipais de saúde de cidades médias", loc: "Alto Tietê e interior de SP como piloto", pq: "Taxas de 20% a 33% em especialidades; vaga perdida custa dinheiro público e aumenta fila.", ex: "Contato manual por telefone e WhatsApp feito pelas próprias prefeituras", lac: "Falta confirmação ativa com reposição imediata da vaga a partir da fila.", sol: "Confirmação 72h e 24h, liberação automática da vaga para o próximo da fila e painel de absenteísmo por especialidade.", mod: "Contrato público (licitação ou dispensa conforme valor)", cob: "Mensalidade por município ou por vaga recuperada (hipótese)", rr: "Alta", con: "Integradores de saúde pública e sistemas de regulação", dif: "Média", cus: "Médio; exige integração com sistema de regulação municipal", ris: "Ciclo de compra público longo; integração com sistemas legados", ia: ["Automação convencional mais adequada", "Previsão de falta por perfil pode ser diferencial depois."], c: "Média", f: ["S33", "S34"], sc: { int: 4, fre: 5, pag: 2, per: 4, def: 3, aqu: 1, via: 3, rec: 4, dif: 3, exp: 4 }, ev: "Prefeituras já gastam com equipes de confirmação (N2)", pay: "Secretaria municipal" },
+      { id: "O11", n: "NR-1 psicossocial pronta para pequenas empresas", pr: ["P16"], seg: "SST / RH", r: "BR", cli: "Empresas de SST e escritórios contábeis que atendem MPE com 10 a 100 funcionários", loc: "Nacional via parceiros", pq: "Obrigação fiscalizada desde maio de 2026; pequenas não têm área de SST.", ex: "Empresas de SST, consultorias de saúde mental, plataformas de bem-estar", lac: "Pacote acessível que produza as evidências que a fiscalização pede.", sol: "Questionário aplicado por celular, inventário de riscos, plano de ação e registro de evidências, assinado por profissional parceiro.", mod: "Licença para empresas de SST (marca branca)", cob: "Por empresa atendida por ano (hipótese)", rr: "Média", con: "Consultorias de SST e plataformas de saúde mental", dif: "Baixa", cus: "Médio; exige responsável técnico", ris: "Responsabilidade técnica; risco de virar só papel; concorrência crescente", ia: ["Automação convencional mais adequada", "Formulários e relatórios; IA pode resumir respostas abertas."], c: "Média", f: ["S35", "S36", "S37"], sc: { int: 4, fre: 3, pag: 4, per: 3, def: 3, aqu: 3, via: 3, rec: 4, dif: 2, exp: 5 }, ev: "Empresas já contratam SST obrigatório (N3)", pay: "Empresa empregadora" },
+      { id: "O12", n: "Venda direta para pousadas do Nordeste", pr: ["P17", "P18"], seg: "Turismo / hotelaria", r: "NE", cli: "Pousadas com 8 a 40 quartos no litoral (ex.: Porto de Galinhas, Pipa, Jericoacoara, Maragogi)", loc: "Começar por um destino e expandir pela costa", pq: "Comissão maior em 2026 dá retorno imediato a cada reserva que sai da OTA.", ex: "Motores de reserva e channel managers nacionais e internacionais", lac: "Pousadas pequenas instalam motor de reserva, mas não têm quem traga o hóspede de volta pelo canal direto.", sol: "Motor de reserva com Pix + WhatsApp + campanha para hóspedes antigos e para quem achou a pousada na OTA.", mod: "SaaS + operação de marketing", cob: "Mensalidade + % sobre reservas diretas (hipótese)", rr: "Alta", con: "Motores de reserva e channel managers (ex.: Omnibees, Cloudbeds, Hospedin)", dif: "Média", cus: "Baixo em software; custo está na operação de marketing", ris: "Pousada continua precisando da OTA para hóspede novo; sazonalidade", ia: ["Automação convencional mais adequada", "IA pode responder dúvidas de hóspedes, mas sob a nova tarifa do WhatsApp isso tem custo."], c: "Média", f: ["S38", "S39", "S40"], sc: { int: 4, fre: 4, pag: 4, per: 4, def: 2, aqu: 3, via: 4, rec: 5, dif: 2, exp: 4 }, ev: "Pousadas já pagam comissão e software (N3)", pay: "Dono da pousada" },
+      { id: "O13", n: "Controle de custo e resultado do atendimento no WhatsApp", pr: ["P18"], seg: "Economia digital", r: "NE", cli: "PMEs e agências que operam WhatsApp Business Platform", loc: "PB e PE como piloto", pq: "Conversas passaram a custar; poucos sabem quanto custa cada venda feita pelo canal.", ex: "Painéis dos provedores de WhatsApp", lac: "Visão de custo por conversa ligada a venda e por campanha.", sol: "Painel que cruza custo de mensagens com pedidos e indica onde cortar.", mod: "SaaS", cob: "Mensalidade (hipótese)", rr: "Alta", con: "Provedores de WhatsApp e plataformas de atendimento", dif: "Média", cus: "Baixo", ris: "Dependência das regras da Meta; provedor pode incluir a função", ia: ["Automação convencional mais adequada", "Analítico; IA não é necessária."], c: "Baixa", f: ["S40"], sc: { int: 3, fre: 4, pag: 3, per: 3, def: 3, aqu: 3, via: 3, rec: 4, dif: 3, exp: 5 }, ev: "Empresas já pagam provedores (N3), mas a dor de custo é nova e pouco documentada", pay: "PME ou agência" },
+      { id: "O14", n: "Gestão de obra enxuta para pequenos empreiteiros", pr: ["P19"], seg: "Construção civil", r: "BR", cli: "Empreiteiros e pequenas construtoras de reforma", loc: "Cidades médias", pq: "Com mão de obra escassa e cara, perder dia de equipe custa mais.", ex: "Planilhas, apps de gestão de obra", lac: "Pouca disposição a pagar; uso de software baixo.", sol: "Orçamento rápido, cronograma e diário de obra por WhatsApp.", mod: "SaaS barato", cob: "Mensalidade (hipótese)", rr: "Média", con: "Apps de gestão de obra", dif: "Baixa", cus: "Baixo", ris: "Comprador informal, alta rotatividade de clientes", ia: ["Tecnologia de IA desnecessária", "Problema é de rotina e disciplina, não de dados."], c: "Baixa", f: ["S41", "S42", "S43"], sc: { int: 3, fre: 3, pag: 2, per: 3, def: 2, aqu: 2, via: 4, rec: 3, dif: 2, exp: 4 }, ev: "Não comprovada (N1/N2)", pay: "Empreiteiro" },
+      { id: "O15", n: "Habilitação da agricultura familiar para chamadas públicas", pr: ["P21"], seg: "Agro / compras públicas", r: "NE", cli: "Cooperativas e associações; prefeituras", loc: "Semiárido e agreste do NE", pq: "Venda institucional paga melhor que intermediário, mas exige papelada.", ex: "ATER pública, Sebrae, plataforma Contrata+Brasil", lac: "Evidência de 2026 insuficiente para afirmar que a lacuna persiste.", sol: "Serviço de montagem de projetos de venda, documentação e nota fiscal.", mod: "Serviço", cob: "Por projeto ou % do contrato (hipótese)", rr: "Baixa", con: "ATER pública, ONGs, plataforma federal", dif: "Média", cus: "Baixo", ris: "Baixa capacidade de pagamento; concorrência gratuita do poder público", ia: ["Tecnologia de IA desnecessária", "É serviço de campo."], c: "Baixa", f: ["S54", "S55"], sc: { int: 3, fre: 2, pag: 1, per: 3, def: 3, aqu: 2, via: 4, rec: 2, dif: 3, exp: 3 }, ev: "Fraca (N1)", pay: "Cooperativa" }
+    ];
+    const ORIG = JSON.parse(JSON.stringify(O.map(o => o.sc)));
+    const WORIG = CRIT.map(c => c.w);
+
+    /* ========================= EQUIPES ENXUTAS ========================= */
+    const LEAN = [
+      { o: "O04", mvp: "Formulário que recebe funcionários, horário de funcionamento e regras; devolve escala semanal válida e envia a cada pessoa por WhatsApp.", ess: "Regras de 42h e duas folgas; alerta de horas; troca de folga com aprovação do dono; exportação para o contador.", nao: "Controle de ponto, folha de pagamento, app nativo.", tec: "Web app simples, banco relacional, biblioteca de otimização, API de WhatsApp", ia: "Não necessária", int: "WhatsApp; exportação CSV para sistemas de folha", pc: "Padaria ou restaurante com 8 a 20 funcionários aberto 7 dias", dez: "Associação comercial e Abrasel da cidade; contadores que fazem a folha desses negócios; visita presencial em corredor comercial.", cob: "Mensalidade por loja (hipótese a validar)", tempo: "3 a 4 semanas antes de 16/12/2026", dif: "Concorrente gratuito do Sebrae; convenções coletivas diferentes por cidade." },
+      { o: "O01", mvp: "Upload de XML recebidos de um mês; relatório de notas sem IBS/CBS por fornecedor e valor do crédito em risco.", ess: "Leitura de XML; regras dos campos novos; ranking de fornecedores; mensagem pronta de correção.", nao: "Integração com Sefaz no início; apuração completa.", tec: "Parser de XML, banco relacional, web", ia: "Opcional, para explicar divergências em linguagem simples", int: "Depois: download automático de XML (certificado digital)", pc: "Escritório contábil com 20 a 80 clientes do regime regular", dez: "Conselhos regionais de contabilidade, grupos de contadores, eventos de reforma tributária.", cob: "Por CNPJ monitorado (hipótese)", tempo: "4 a 6 semanas", dif: "Acompanhar notas técnicas; responsabilidade sobre interpretação." },
+      { o: "O02", mvp: "Planilha de produtos entra; sai planilha com classificação sugerida e grau de confiança, revisada por especialista.", ess: "Classificação assistida; fila de revisão; histórico de alterações.", nao: "Integração com ERP no início.", tec: "Modelo de linguagem via API, planilhas, painel de revisão", ia: "Diferencial", int: "Importação e exportação de planilhas", pc: "Distribuidor com 3 a 10 mil itens", dez: "Contadores que já atendem varejo; associações de atacadistas.", cob: "Por lote de itens (hipótese)", tempo: "4 semanas", dif: "Precisa de parceiro tributarista para assinar a revisão." },
+      { o: "O06", mvp: "Lista de alunos entra; cada um recebe link de autorização de Pix Automático; painel mostra quem aderiu e quem atrasou.", ess: "Integração com um provedor de Pix Automático; mensagens; régua de cobrança.", nao: "Emissão de nota, controle de frequência.", tec: "Web, API de um PSP, WhatsApp", ia: "Não necessária", int: "Um PSP com Pix Automático", pc: "Academia de bairro com 300 a 800 alunos", dez: "Visita a academias e escolas de idiomas; parceria com sistemas verticais que não têm Pix Automático.", cob: "Mensalidade ou % do recuperado (hipótese)", tempo: "4 a 6 semanas", dif: "Margem depende da tarifa do PSP; mercado concorrido." },
+      { o: "O12", mvp: "Página de reservas com Pix e calendário, integrada ao WhatsApp, e campanha para hóspedes antigos.", ess: "Disponibilidade, pagamento, confirmação automática, lista de hóspedes anteriores.", nao: "Channel manager próprio; app.", tec: "Web, gateway Pix, WhatsApp, e-mail", ia: "Opcional", int: "Calendário iCal das OTAs no início", pc: "Pousada de 10 a 25 quartos com alta dependência de Booking", dez: "Associações de pousadas do destino; visita na baixa temporada.", cob: "Mensalidade + % da reserva direta (hipótese)", tempo: "6 a 8 semanas (efeito real só na alta temporada)", dif: "Medir quanto da reserva direta é incremental; sazonalidade." },
+      { o: "O11", mvp: "Questionário validado por profissional parceiro, aplicado por link; relatório de inventário e plano de ação em PDF.", ess: "Questionário; anonimato; relatório; registro de ações.", nao: "Plataforma de bem-estar, teleconsulta.", tec: "Web, geração de PDF", ia: "Opcional para resumir respostas abertas", int: "Nenhuma no início", pc: "Empresa de SST que atende 50 a 300 MPE", dez: "Venda a empresas de SST e contadores, não direto ao empregador.", cob: "Por empresa atendida/ano (hipótese)", tempo: "4 semanas", dif: "Responsabilidade técnica fica com o parceiro." },
+      { o: "O13", mvp: "Importa fatura de mensagens e pedidos; mostra custo por conversa que virou venda.", ess: "Importação; cruzamento; alertas.", nao: "Plataforma de atendimento própria.", tec: "Web, ETL simples", ia: "Não necessária", int: "Exportações dos provedores de WhatsApp", pc: "Loja ou restaurante com alto volume no WhatsApp", dez: "Agências de marketing do NE que operam WhatsApp para clientes.", cob: "Mensalidade (hipótese)", tempo: "3 a 4 semanas", dif: "Evidência de dor ainda fraca." },
+      { o: "O03", mvp: "Diagnóstico por WhatsApp (precisa ou não de CNPJ em 2027?) e encaminhamento a contador parceiro.", ess: "Questionário de enquadramento; agenda com contador; lembretes.", nao: "Sistema contábil próprio.", tec: "Formulário e WhatsApp", ia: "Opcional para dúvidas frequentes", int: "Nenhuma", pc: "Contador que quer volume de autônomos", dez: "Conselhos de classe de profissões liberais; corretores de imóveis (locadores).", cob: "Taxa de indicação ou ativação (hipótese)", tempo: "Validar entre dez/2026 e mar/2027", dif: "Depende do sistema do governo." },
+      { o: "O08", mvp: "Serviço manual: pegar 3 meses de glosas de um prestador, recorrer das maiores e medir quanto voltou.", ess: "Planilha de glosas; modelo de recurso; acompanhamento de prazo.", nao: "Software completo antes de provar recuperação.", tec: "Planilhas; depois leitura de PDFs com IA", ia: "Essencial ao escalar", int: "Exportações do sistema de faturamento do prestador", pc: "Clínica de imagem ou hospital de 50 a 150 leitos", dez: "Diretores financeiros via associações de hospitais estaduais; indicação de consultores de faturamento.", cob: "% do recuperado (hipótese)", tempo: "30 a 90 dias (prazo de resposta das operadoras)", dif: "Requer experiência em faturamento; LGPD com dado de saúde." },
+      { o: "O09", mvp: "Não recomendado como produto isolado.", ess: "Incluir como recurso em O06 ou O08.", nao: "Tudo, isoladamente.", tec: "—", ia: "—", int: "—", pc: "—", dez: "—", cob: "—", tempo: "—", dif: "Mercado saturado." }
+    ];
+
+    /* ========================= REGIÕES ========================= */
+    const REG = [
+      {
+        h: "A. Específicas do Nordeste", items: [
+          ["O12", "Pousadas do litoral (PE, RN, CE, AL, BA) sob comissão maior das OTAs; turismo regional segue aquecido."],
+          ["O13", "PB e PE: alta dependência do WhatsApp para vender; nova tarifa da Meta pesa mais em quem automatiza."],
+          ["O15", "Agricultura familiar do semiárido: evidência de 2026 insuficiente; só com validação de campo."],
+          ["P20", "Curtailment: problema bilionário do NE, mas fora do alcance de equipe enxuta; registrado como resultado negativo."]]
+      },
+      {
+        h: "B. Específicas do Sudeste", items: [
+          ["O10", "SUS municipal em SP (Alto Tietê, Jundiaí) com dados oficiais de 2026; não foram achados dados equivalentes no NE."],
+          ["O01", "Maior densidade de empresas do regime regular e de escritórios contábeis em SP, MG e RJ."],
+          ["O08", "Concentração de hospitais e de conflitos públicos com operadoras em SP."]]
+      },
+      {
+        h: "C. Comuns às duas regiões", items: [
+          ["O04", "Fim da 6x1 vale em todo o país em 16/12/2026; intensidade maior onde há comércio de bairro com equipes de 2 a 5."],
+          ["O06", "Inadimplência recorde em todas as UFs; MG e RJ entre os maiores volumes."],
+          ["O07", "Golpes: prejuízo entre vítimas de 27,2% no NE e 31,8% no SE."],
+          ["O11", "NR-1 sem distinção de porte ou região."]]
+      },
+      {
+        h: "D. Começar em uma, expandir para a outra", items: [
+          ["O12", "Validar em um destino do NE na alta temporada; expandir para litoral de SP, RJ e ES."],
+          ["O10", "Provar redução de faltas em município de SP e levar a consórcios de saúde no NE."],
+          ["O04", "Começar em uma capital com associação comercial forte (Recife ou BH) e replicar por convenção coletiva."]]
+      }
+    ];
+
+    /* ========================= VALIDAÇÃO ========================= */
+    const PLANS = {
+      O08: { w: [["Listar 30 prestadores credenciados em uma capital", "Mapear auditorias e startups concorrentes", "Entrevistar 8 gestores de faturamento", "Confirmar volume mensal de glosas por prestador"], ["Propor recuperação por êxito em 3 meses de glosas", "Perguntar orçamento atual com faturamento terceirizado", "Pedir acesso a uma amostra anonimizada", "Buscar 1 termo de compromisso assinado"], ["Montar planilha de triagem por valor e prazo", "Usar modelos de recurso prontos", "Testar leitura de PDFs em 50 casos"], ["Recorrer de um lote real", "Medir valor recuperado e horas gastas", "Calcular margem do modelo de êxito", "Decidir continuar, ajustar ou abandonar"]], k: [["Entrevistas com dor confirmada", "≥ 6"], ["Prestadores que liberam dados", "≥ 2"], ["Valor em recurso (R$ mil)", "≥ 100"], ["Clientes pagantes ou contrato", "≥ 1"]] },
+      O01: { w: [["Listar 40 escritórios contábeis com clientes do regime regular", "Testar 3 ferramentas concorrentes", "Entrevistar 10 contadores", "Confirmar quantas notas por mês cada cliente recebe"], ["Mostrar relatório de exemplo com dados fictícios", "Perguntar quanto pagam hoje em software fiscal", "Oferecer piloto pago com desconto", "Pedir XML real de 1 cliente"], ["Parser de XML e relatório em planilha", "Regras dos campos IBS/CBS conforme notas técnicas", "Rodar com XML de 3 escritórios"], ["Cobrar o piloto", "Medir notas com problema encontradas", "Medir tempo economizado", "Decidir"]], k: [["Contadores com dor confirmada", "≥ 7"], ["Escritórios que enviam XML real", "≥ 3"], ["Pilotos pagos", "≥ 2"], ["Notas com problema detectadas (%)", "≥ 30"]] },
+      O04: { w: [["Listar 50 negócios que abrem 7 dias em um bairro comercial", "Testar o simulador do Sebrae e apps de escala", "Entrevistar 12 donos ou gerentes", "Ver como montam a escala hoje"], ["Mostrar escala gerada para o caso real deles", "Perguntar quanto pagariam por mês", "Oferecer pré-venda até 16/12", "Buscar indicações de contadores"], ["Gerador de escala com regras de 42h", "Envio por WhatsApp", "Testar com 3 negócios"], ["Cobrar o primeiro mês", "Medir uso semanal e trocas", "Medir horas extras evitadas", "Decidir"]], k: [["Donos com dor confirmada", "≥ 8"], ["Pré-vendas pagas", "≥ 3"], ["Uso semanal após 2 semanas (%)", "≥ 70"], ["Clientes pagantes", "≥ 5"]] },
+      O12: { w: [["Escolher um destino e listar 40 pousadas", "Mapear motores de reserva usados", "Entrevistar 10 donos", "Levantar % de reservas via OTA"], ["Calcular comissão anual paga por pousada", "Propor modelo com % sobre reserva direta", "Buscar 3 compromissos de piloto", "Pedir lista de hóspedes antigos (com consentimento)"], ["Página de reserva com Pix", "Campanha por WhatsApp e e-mail", "Rodar com 2 pousadas"], ["Medir reservas diretas geradas", "Comparar com comissão evitada", "Cobrar", "Decidir"]], k: [["Donos com dor confirmada", "≥ 7"], ["Pousadas em piloto", "≥ 2"], ["Reservas diretas no mês", "≥ 10"], ["Clientes pagantes", "≥ 2"]] },
+      O06: { w: [["Listar 40 academias e escolas em uma cidade média", "Mapear quem já oferece Pix Automático", "Entrevistar 10 donos", "Levantar inadimplência mensal real"], ["Propor migração assistida", "Testar cobrança por % do recuperado", "Buscar 3 compromissos", "Escolher PSP"], ["Integração com PSP", "Link de autorização e mensagens", "Migrar 50 alunos de um cliente"], ["Medir adesão ao Pix Automático", "Medir redução de atraso", "Cobrar", "Decidir"]], k: [["Donos com dor confirmada", "≥ 7"], ["Adesão dos alunos (%)", "≥ 40"], ["Queda no atraso (pontos %)", "≥ 5"], ["Clientes pagantes", "≥ 3"]] }
+    };
+    const PLAN_ORDER = ["O08", "O01", "O04", "O12", "O06"];
+    const WEEKS = ["Semana 1 — Investigação", "Semana 2 — Validação da demanda", "Semana 3 — Protótipo", "Semana 4 — Teste comercial"];
+    let planState = {};
+
+    /* ========================= CONCLUSÃO ========================= */
+    const QA = [
+      ["Quais problemas parecem gerar maior oportunidade econômica?", "Glosas e prazo de recebimento na saúde (P13), créditos de IBS/CBS em notas recebidas (P01) e a reorganização de escalas pelo fim da 6x1 (P06). Os três têm dinheiro mensurável em jogo e se repetem todo mês."],
+      ["Quais possuem as melhores evidências de demanda?", "Glosas e conformidade fiscal: prestadores e empresas já pagam por auditoria, faturamento terceirizado e automação fiscal (nível 3). Pousadas também já pagam comissão e software. No caso da escala 5x2, a obrigação é certa, mas a disposição de pagar ainda não foi demonstrada."],
+      ["Quais apresentam menor concorrência efetiva?", "A operação semanal de escala 5x2 para negócios de bairro (o concorrente gratuito simula, não opera) e a recuperação de glosas para prestadores de porte médio. Faltas em clínicas e cobrança recorrente são os mercados mais disputados."],
+      ["Quais podem ser explorados com investimento inicial reduzido?", "Escala 5x2 (O04), conferência de notas recebidas (O01), venda direta para pousadas (O12) e a versão manual de glosas (O08), que começa com planilha e experiência, sem software."],
+      ["Quais oferecem maior potencial de receita recorrente?", "O01, O04, O06 e O12: cobrança mensal por estabelecimento ou CNPJ, com uso semanal ou diário."],
+      ["Quais podem ser explorados por um desenvolvedor independente?", "O04, O01 e O13 são os mais próximos de produto puro. O01 e O02 pedem um parceiro tributário; O08 pede um parceiro de faturamento hospitalar."],
+      ["Quais dependem de estrutura operacional ou comercial maior?", "O10 (venda pública), O05 (liquidez de marketplace), O08 em escala (equipe de recurso e LGPD de saúde) e qualquer coisa ligada ao curtailment de energia."],
+      ["Quais são as cinco melhores para começar a validar imediatamente?", "O04 (prazo de 16/12/2026), O01, O08, O12 (antes da alta temporada de verão) e O06."],
+      ["Qual tem a melhor combinação de demanda comprovada, facilidade e monetização?", "O01, conferência de crédito IBS/CBS das notas recebidas, vendida por escritórios contábeis. Tem pagamento já existente no mercado, MVP técnico curto e receita mensal por CNPJ. O risco principal é ERPs absorverem a função; por isso o canal contábil e a ação sobre o fornecedor faltoso são o diferencial."]
+    ];
+
+    /* ========================= LÓGICA ========================= */
+    const $ = (s, el = document) => el.querySelector(s);
+    const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+    let REGION = "ALL";
+    const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+    const rLabel = r => ({ NE: "Nordeste", SE: "Sudeste", BR: "Nacional", NESE: "NE e SE" }[r] || r);
+    const chip = r => `<span class="chip r-${r}">${rLabel(r)}</span>`;
+    const srcLinks = ids => ids.map(id => S[id] ? `<a href="${S[id].u}" target="_blank" rel="noopener" title="${esc(S[id].pub + ' — ' + S[id].t + ' (' + S[id].d + ')')}">${id}</a>` : id).join(", ");
+    const inRegion = r => REGION === "ALL" || r === REGION || r === "BR" || r === "NESE";
+    const score = sc => Math.round(CRIT.reduce((a, c) => a + (Number(sc[c.k]) || 0) / 5 * c.w, 0) * 10) / 10;
+    function classify(v) {
+      if (v >= 85) return ["Prioritária", "p1"];
+      if (v >= 70) return ["Promissora", "p2"];
+      if (v >= 55) return ["Condicionada a validação", "p3"];
+      if (v >= 40) return ["Fraca", "p4"];
+      return ["Não recomendada", "p5"];
+    }
+    const oById = id => O.find(o => o.id === id);
+
+    function renderPano() {
+      $("#panoGrid").innerHTML = PANO.filter(x => inRegion(x.r)).map(x => `
+    <article class="${x.r === "NE" ? "ne" : x.r === "SE" ? "se" : ""}">
+      <h3>${esc(x.h)}</h3>
+      <p>${chip(x.r)} ${esc(x.f)}</p>
+      <p class="imp"><b>Implicação:</b> ${esc(x.i)} <small>(${srcLinks(x.src)})</small></p>
+    </article>`).join("");
+    }
+    function renderProblems() {
+      const q = ($("#pSearch").value || "").toLowerCase();
+      const cf = $("#pConf").value;
+      const rows = P.filter(p => inRegion(p.r) && (!cf || p.c === cf) && (!q || JSON.stringify(p).toLowerCase().includes(q)));
+      $("#pTable tbody").innerHTML = rows.map(p => `<tr>
+    <td class="idc">${p.id}</td><td><b>${esc(p.n)}</b></td><td>${esc(p.d)}</td><td>${esc(p.pub)}</td><td>${esc(p.seg)}</td>
+    <td>${chip(p.r)}</td><td>${esc(p.fr)}</td><td>${esc(p.ce)}</td><td>${esc(p.hoje)}</td><td>${p.pg}</td>
+    <td>${srcLinks(p.src)}</td><td class="c-${p.c}">${p.c}</td></tr>`).join("");
+      $("#pCount").textContent = rows.length + " de " + P.length + " problemas";
+    }
+    function renderOpps() {
+      $("#oppList").innerHTML = O.filter(o => inRegion(o.r)).map(o => {
+        const v = score(o.sc); const [cl, cc] = classify(v);
+        return `<details class="opp" id="opp-${o.id}">
+      <summary><span class="oid">${o.id}</span><span><span class="ot">${esc(o.n)}</span><br>${chip(o.r)} <small class="muted">${esc(o.seg)}</small></span>
+      <span class="os">${v}<small><span class="cls ${cc}">${cl}</span></small></span></summary>
+      <div class="ogrid">
+        <div><h4>Problema de origem</h4><p>${o.pr.map(id => { const p = P.find(x => x.id === id); return id + " — " + esc(p ? p.n : "") }).join("<br>")}</p></div>
+        <div><h4>Cliente ideal</h4><p>${esc(o.cli)}</p></div>
+        <div><h4>Localização</h4><p>${esc(o.loc)}</p></div>
+        <div class="full"><h4>Por que existe uma oportunidade</h4><p>${esc(o.pq)}</p></div>
+        <div><h4>Soluções existentes</h4><p>${esc(o.ex)}</p></div>
+        <div><h4>Lacuna identificada</h4><p>${esc(o.lac)}</p></div>
+        <div><h4>Solução que poderia ser oferecida</h4><p>${esc(o.sol)}</p></div>
+        <div><h4>Modelo de negócio</h4><p>${esc(o.mod)}</p></div>
+        <div><h4>Forma de cobrança</h4><p>${esc(o.cob)}</p></div>
+        <div><h4>Potencial de receita recorrente</h4><p>${esc(o.rr)}</p></div>
+        <div><h4>Concorrentes</h4><p>${esc(o.con)}</p></div>
+        <div><h4>Dificuldade de implementação</h4><p>${esc(o.dif)}</p></div>
+        <div><h4>Custo inicial</h4><p>${esc(o.cus)}</p></div>
+        <div><h4>Riscos</h4><p>${esc(o.ris)}</p></div>
+        <div><h4>Papel da IA</h4><p><b>${esc(o.ia[0])}.</b> ${esc(o.ia[1])}</p></div>
+        <div><h4>Confiança da evidência</h4><p class="c-${o.c}">${o.c}</p></div>
+        <div><h4>Fontes</h4><p>${srcLinks(o.f)}</p></div>
+      </div></details>`;
+      }).join("");
+    }
+    function renderMatrix() {
+      const th = `<tr><th>ID</th><th>Oportunidade</th>${CRIT.map((c, i) => `<th>${c.n}<br><input type="number" min="0" max="100" step="1" value="${c.w}" data-w="${i}" aria-label="Peso de ${c.n}"> %</th>`).join("")}<th>Nota</th><th>Classe</th><th>Confiança</th></tr>`;
+      $("#mTable thead").innerHTML = th;
+      $("#mTable tbody").innerHTML = O.filter(o => inRegion(o.r)).map(o => {
+        const v = score(o.sc); const [cl, cc] = classify(v);
+        return `<tr data-o="${o.id}"><td class="idc">${o.id}</td><td>${esc(o.n)}</td>${CRIT.map(c => `<td><input type="number" min="0" max="5" step="1" value="${o.sc[c.k]}" data-k="${c.k}" aria-label="${c.n} de ${o.id}"></td>`).join("")}
+      <td class="tot">${v}<div class="bar-mini"><span style="width:${v}%"></span></div></td><td><span class="cls ${cc}">${cl}</span></td><td class="c-${o.c}">${o.c}</td></tr>`;
+      }).join("");
+      const ws = CRIT.reduce((a, c) => a + c.w, 0);
+      $("#wSum").textContent = "Soma dos pesos: " + ws + "%" + (ws !== 100 ? " — ajuste para 100" : "");
+    }
+    function ranked() { return O.filter(o => inRegion(o.r)).map(o => ({ o, v: score(o.sc) })).sort((a, b) => b.v - a.v); }
+    function renderRanking() {
+      const r = ranked().slice(0, 10);
+      $("#rTable tbody").innerHTML = r.map((x, i) => {
+        const o = x.o; const p = P.find(p => p.id === o.pr[0]); return `<tr>
+    <td class="idc">${i + 1}</td><td><b>${o.id}</b> ${esc(o.n)}</td><td>${esc(o.seg)}</td><td>${chip(o.r)}</td><td>${esc(o.pay)}</td>
+    <td>${esc(p ? p.n : "")}</td><td>${esc(o.ev)}</td><td>${esc(o.cob)}</td><td><b>${x.v}</b></td><td class="c-${o.c}">${o.c}</td><td>${esc(o.ris.split(";")[0])}</td></tr>`;
+      }).join("");
+      const why = {
+        O08: "Maior perda financeira por cliente e pagamento já existente no mercado; a remuneração por êxito reduz a objeção de preço.",
+        O01: "Dor diária, obrigação legal e canal claro (contadores); perde pontos por concorrência de ERPs.",
+        O04: "Prazo legal fixo e uso semanal; perde pontos porque a disposição de pagar ainda não foi provada e há ferramenta gratuita.",
+        O12: "Cada reserva desviada da OTA economiza comissão visível; perde pontos pela sazonalidade e pela dependência que persiste.",
+        O06: "Receita recorrente e venda fácil de explicar; perde em diferenciação num mercado de fintechs lotado.",
+        O02: "Pagamento já existe em consultorias; perde porque o trabalho grande acontece uma vez.",
+        O09: "Pagamento comprovado, mas mercado saturado; só como recurso de outro produto.",
+        O11: "Obrigação fiscalizada; perde por concorrência crescente e responsabilidade técnica.",
+        O13: "Dor nova e real, mas evidência ainda vem de uma única fonte regional.",
+        O10: "Problema grande e medido; perde pelo ciclo de compra público.",
+        O03: "Pico de demanda certo em 2027; incerteza sobre o sistema gratuito do governo.",
+        O07: "Prejuízo real, mas pouca gente paga por prevenção.",
+        O05: "Marketplace com liquidez difícil nos dois lados.",
+        O14: "Comprador informal e baixa disposição de pagar.",
+        O15: "Evidência de 2026 insuficiente."
+      };
+      $("#whyTop").innerHTML = `<h3 style="margin-top:1.4rem">Por que cada uma ficou nessa posição</h3><ol>${r.map(x => `<li><b>${x.o.id}</b> — ${esc(why[x.o.id] || "")}</li>`).join("")}</ol>
+    <div class="note warn">Nenhuma oportunidade passou de 85 e nenhuma tem confiança alta. Por isso nenhuma deve ser apresentada como comprovada; todas pedem a validação da Parte VII.</div>`;
+      renderPlacar(r);
+    }
+    function renderPlacar(r) {
+      $("#placar").innerHTML = r.slice(0, 5).map((x, i) => `<div class="it"><div class="pos">${i + 1}</div><div class="nm">${esc(x.o.n)}</div><div class="sc">${x.v} pontos · ${classify(x.v)[0]}</div></div>`).join("");
+    }
+    function renderLean() {
+      $("#leanList").innerHTML = LEAN.filter(l => inRegion(oById(l.o).r)).map(l => {
+        const o = oById(l.o); return `<div class="lean">
+    <h3>${o.id} · ${esc(o.n)}</h3>
+    <dl>
+      <dt>Produto mínimo viável</dt><dd>${esc(l.mvp)}</dd>
+      <dt>Funcionalidades essenciais</dt><dd>${esc(l.ess)}</dd>
+      <dt>Não desenvolver agora</dt><dd>${esc(l.nao)}</dd>
+      <dt>Tecnologias</dt><dd>${esc(l.tec)}</dd>
+      <dt>Uso de IA</dt><dd>${esc(l.ia)}</dd>
+      <dt>Integrações</dt><dd>${esc(l.int)}</dd>
+      <dt>Primeiro cliente</dt><dd>${esc(l.pc)}</dd>
+      <dt>Primeiros dez clientes</dt><dd>${esc(l.dez)}</dd>
+      <dt>Cobrança</dt><dd>${esc(l.cob)}</dd>
+      <dt>Tempo de validação</dt><dd>${esc(l.tempo)}</dd>
+      <dt>Principais dificuldades</dt><dd>${esc(l.dif)}</dd>
+    </dl></div>`;
+      }).join("");
+    }
+    function renderReg() {
+      $("#regGrid").innerHTML = REG.map(g => `<div><h3>${g.h}</h3><ul>${g.items.map(([id, t]) => `<li><b>${id}</b> ${esc(t)}</li>`).join("")}</ul></div>`).join("");
+    }
+    function planProgress(id) {
+      const st = planState[id] || { t: {}, k: {} };
+      const total = PLANS[id].w.reduce((a, w) => a + w.length, 0);
+      const done = Object.values(st.t).filter(Boolean).length;
+      return { done, total, st };
+    }
+    function verdictFor(id) {
+      const pl = PLANS[id]; const st = (planState[id] || { k: {} }).k;
+      let hit = 0, filled = 0;
+      pl.k.forEach(([n, goal], i) => {
+        const v = st[i]; if (v === undefined || v === "") return; filled++;
+        const g = Number(goal.replace(/[^\d.]/g, ""));
+        if (Number(v) >= g) hit++;
+      });
+      if (filled < pl.k.length) return "Preencha todos os indicadores para ver o veredito.";
+      if (hit === pl.k.length) return "Avançar: todas as metas foram atingidas.";
+      if (hit >= pl.k.length - 1) return "Modificar: quase lá; ajuste oferta, preço ou público e repita por mais 2 semanas.";
+      return "Abandonar ou pausar: a demanda não se confirmou no teste.";
+    }
+    function renderPlans() {
+      $("#planList").innerHTML = PLAN_ORDER.filter(id => inRegion(oById(id).r)).map(id => {
+        const o = oById(id); const pl = PLANS[id]; const { done, total, st } = planProgress(id);
+        return `<div class="plan" data-plan="${id}">
+      <h3>${id} · ${esc(o.n)}</h3>
+      <div class="prog" aria-hidden="true"><span style="width:${Math.round(done / total * 100)}%"></span></div>
+      <small class="muted">${done} de ${total} tarefas</small>
+      <div class="weeks">${pl.w.map((tasks, wi) => `<div><h4>${WEEKS[wi]}</h4>${tasks.map((t, ti) => { const key = wi + "-" + ti; return `<label><input type="checkbox" data-t="${key}" ${st.t[key] ? "checked" : ""}> <span>${esc(t)}</span></label>`; }).join("")}</div>`).join("")}</div>
+      <div class="kpi"><b>Indicadores para decidir</b>
+        <div class="scroll"><table><thead><tr><th>Indicador</th><th>Meta</th><th>Resultado</th></tr></thead><tbody>
+        ${pl.k.map(([n, g], i) => `<tr><td>${esc(n)}</td><td>${esc(g)}</td><td><input type="number" min="0" data-k="${i}" value="${st.k[i] ?? ""}" aria-label="Resultado de ${esc(n)}"></td></tr>`).join("")}
+        </tbody></table></div>
+        <p class="verdict">${verdictFor(id)}</p>
+      </div></div>`;
+      }).join("");
+    }
+    function renderQA() {
+      $("#qaList").innerHTML = QA.map(([q, a]) => `<dt>${esc(q)}</dt><dd>${esc(a)}</dd>`).join("");
+      $("#verdict").innerHTML = `<h3>Recomendação</h3>
+  <p>Para quem tem perfil técnico e pouco capital, a recomendação é validar <b>em paralelo e com prazos diferentes</b>:</p>
+  <p><b>Agora até 16/12/2026:</b> O04, escala 5x2 operacional. A janela é curta e o teste é barato. Se até meados de dezembro não houver ao menos três pré-vendas pagas, abandone; a ferramenta gratuita do Sebrae e os 51% de pequenos empresários que não esperam impacto são sinais reais de que a dor pode ser menor do que parece.</p>
+  <p><b>Novembro a fevereiro:</b> O01, conferência de crédito IBS/CBS, vendida por escritórios contábeis. É a aposta com melhor relação entre pagamento já existente, MVP curto e receita recorrente, e a dor cresce até a cobrança efetiva em 2027.</p>
+  <p><b>Se houver um sócio com experiência em faturamento de saúde:</b> O08 é a de maior valor por cliente e pode começar como serviço manual, sem software.</p>
+  <p class="muted">Não foi encontrada evidência suficiente para recomendar marketplaces, soluções para agricultura familiar ou qualquer frente ligada a curtailment para equipes enxutas.</p>`;
+    }
+    const fmt = n => isFinite(n) ? n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }) : "—";
+    const PRESETS = [
+      { n: "Hipótese — escritórios contábeis (O01)", N: 20000, pct: 30, price: 300, sam: 40, som: 1, note: "N é hipótese ilustrativa; substitua pelo número de escritórios ativos por CNAE 6920-6/01 na UF." },
+      { n: "Hipótese — negócios que abrem 7 dias (O04)", N: 150000, pct: 40, price: 90, sam: 15, som: 0.5, note: "N é hipótese; levante padarias, restaurantes, farmácias e minimercados com empregados por CNAE e UF." },
+      { n: "Dado parcial — hospitais privados (O08)", N: 4200, pct: 60, price: 4000, sam: 30, som: 1.5, note: "N = cerca de 4.200 hospitais privados (Conjur, jun/2026, S30). % com o problema, preço e conquista são hipóteses." },
+      { n: "Hipótese — pousadas do litoral NE (O12)", N: 6000, pct: 60, price: 250, sam: 30, som: 3, note: "N é hipótese; levante via Cadastur por município litorâneo." }
+    ];
+    function calc() {
+      const N = +$("#cN").value, pct = +$("#cPct").value / 100, pr = +$("#cPrice").value, sam = +$("#cSam").value / 100, som = +$("#cSom").value / 100;
+      const tam = N * pct * pr * 12, s = tam * sam, so = s * som;
+      $("#oTam").textContent = fmt(tam); $("#oSam").textContent = fmt(s); $("#oSom").textContent = fmt(so);
+      $("#oCli").textContent = isFinite(N * pct * sam * som) ? Math.round(N * pct * sam * som).toLocaleString("pt-BR") : "—";
+    }
+    function loadPreset(i) {
+      const p = PRESETS[i]; $("#cN").value = p.N; $("#cPct").value = p.pct; $("#cPrice").value = p.price; $("#cSam").value = p.sam; $("#cSom").value = p.som;
+      $("#cNote").textContent = p.note + " Preço mensal é hipótese de teste, não preço de mercado."; calc();
+    }
+    function renderSources() {
+      const q = ($("#sSearch").value || "").toLowerCase();
+      $("#sTable tbody").innerHTML = Object.entries(S).filter(([id, s]) => !q || (id + JSON.stringify(s)).toLowerCase().includes(q)).map(([id, s]) => `<tr>
+    <td class="idc" id="src-${id}">${id}</td><td>${esc(s.pub)}</td><td><a href="${s.u}" target="_blank" rel="noopener">${esc(s.t)}</a></td><td>${esc(s.d)}</td><td>${esc(s.p)}</td><td>${esc(s.ty)}</td><td>${esc(s.s)}</td><td>${esc(s.l)}</td></tr>`).join("");
+    }
+    function renderAll() { renderPano(); renderProblems(); renderOpps(); renderMatrix(); renderRanking(); renderLean(); renderPlans(); }
+    function download(name, obj) {
+      const b = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+    function readJSON(input, cb) {
+      const f = input.files && input.files[0]; if (!f) return;
+      const rd = new FileReader(); rd.onload = () => { try { cb(JSON.parse(rd.result)); } catch (e) { alert("Arquivo inválido: o JSON não pôde ser lido."); } input.value = ""; }; rd.readAsText(f);
+    }
+
+    /* eventos */
+    $("#regionSeg").addEventListener("click", e => {
+      const b = e.target.closest("button[data-r]"); if (!b) return;
+      REGION = b.dataset.r; $$("#regionSeg button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false")); renderAll();
+    });
+    $("#pSearch").addEventListener("input", renderProblems);
+    $("#pConf").addEventListener("change", renderProblems);
+    $("#sSearch").addEventListener("input", renderSources);
+    $("#mTable").addEventListener("change", e => {
+      const t = e.target;
+      if (t.dataset.w !== undefined) { CRIT[+t.dataset.w].w = Math.max(0, Math.min(100, +t.value || 0)); }
+      else if (t.dataset.k) { const id = t.closest("tr").dataset.o; oById(id).sc[t.dataset.k] = Math.max(0, Math.min(5, Math.round(+t.value || 0))); }
+      renderMatrix(); renderRanking(); renderOpps();
+    });
+    $("#resetScores").addEventListener("click", () => { O.forEach((o, i) => o.sc = JSON.parse(JSON.stringify(ORIG[i]))); CRIT.forEach((c, i) => c.w = WORIG[i]); renderMatrix(); renderRanking(); renderOpps(); });
+    $("#exportScores").addEventListener("click", () => download("notas-oportunidades.json", { pesos: Object.fromEntries(CRIT.map(c => [c.k, c.w])), notas: Object.fromEntries(O.map(o => [o.id, o.sc])) }));
+    $("#importScores").addEventListener("change", e => readJSON(e.target, d => {
+      if (d.pesos) CRIT.forEach(c => { if (d.pesos[c.k] !== undefined) c.w = +d.pesos[c.k]; });
+      if (d.notas) O.forEach(o => { if (d.notas[o.id]) o.sc = Object.assign({}, o.sc, d.notas[o.id]); });
+      renderMatrix(); renderRanking(); renderOpps();
+    }));
+    $("#planList").addEventListener("change", e => {
+      const box = e.target.closest(".plan"); if (!box) return; const id = box.dataset.plan;
+      planState[id] = planState[id] || { t: {}, k: {} };
+      if (e.target.dataset.t) planState[id].t[e.target.dataset.t] = e.target.checked;
+      if (e.target.dataset.k !== undefined) planState[id].k[e.target.dataset.k] = e.target.value;
+      renderPlans();
+    });
+    $("#exportPlan").addEventListener("click", () => download("progresso-validacao.json", planState));
+    $("#importPlan").addEventListener("change", e => readJSON(e.target, d => { planState = d || {}; renderPlans(); }));
+    $("#printBtn").addEventListener("click", () => { $$("details.opp").forEach(d => d.open = true); window.print(); });
+    $("#themeBtn").addEventListener("click", () => {
+      const root = document.documentElement; const cur = root.getAttribute("data-theme");
+      const dark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+      root.setAttribute("data-theme", dark ? "light" : "dark");
+    });
+    $("#cPreset").innerHTML = PRESETS.map((p, i) => `<option value="${i}">${esc(p.n)}</option>`).join("");
+    $("#cPreset").addEventListener("change", e => loadPreset(+e.target.value));
+    ["#cN", "#cPct", "#cPrice", "#cSam", "#cSom"].forEach(s => $(s).addEventListener("input", calc));
+
+    /* navegação ativa */
+    const secs = $$("section.part");
+    const io = new IntersectionObserver(ents => {
+      ents.forEach(en => { if (en.isIntersecting) { $$("#toc a").forEach(a => a.setAttribute("aria-current", a.getAttribute("href") === "#" + en.target.id ? "true" : "false")); } });
+    }, { rootMargin: "-40% 0px -55% 0px" });
+    secs.forEach(s => io.observe(s));
+
+    renderAll(); renderReg(); renderQA(); renderSources(); loadPreset(0);
+  </script>
+</body>
+
+</html>

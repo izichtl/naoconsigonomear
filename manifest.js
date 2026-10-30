@@ -1,5 +1,6 @@
 /* Gerado por generate-manifest.sh. Não edite manualmente. */
 window.PAGE_MANIFEST = [
+  {"path":"pages/analise-mercado.html","title":"Inteligência de mercado 2026 — Nordeste e Sudeste"},
   {"path":"pages/conectivos-logicos-v1.html","title":"Conectivos Lógicos Teoría"},
   {"path":"pages/conectivos-logicos-v2.html","title":"Conectivos Lógicos Prática"},
   {"path":"pages/estudo da forma.html","title":"Estudo de forma"},
