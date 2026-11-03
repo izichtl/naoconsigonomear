@@ -6,8 +6,8 @@ preserva a navegação.
 
 ## Segurança das chaves OpenRouter
 
-As páginas que usam a OpenRouter, como `open-router-jev.html`,
-`open-router-img.html` e `open-router-pdf.html`, não armazenam a API key em arquivos, cookies,
+As páginas que usam a OpenRouter, como `open-router.html`,
+`open-router-jev.html`, `open-router-img.html` e `open-router-pdf.html`, não armazenam a API key em arquivos, cookies,
 `localStorage`, banco de dados ou backend. A chave fica somente na memória da
 página enquanto ela está aberta e é enviada diretamente do navegador para a
 OpenRouter por uma requisição `fetch`.
@@ -57,6 +57,13 @@ local. Para mudar a aparência de todos os estudos, edite apenas as variáveis n
 bloco `:root` de `theme.css`; o conteúdo e a lógica de cada HTML permanecem
 independentes.
 
+## Usar o blog
+
+A página **Blog** começa com um post sobre ela mesma. Use o formulário
+**Adicionar post** para informar título, descrição, link e exatamente três
+palavras-chave. Os posts adicionados ficam salvos no `localStorage` do
+navegador e podem ser removidos restaurando a página inicial.
+
 O [theme.js](./theme.js) normaliza automaticamente o topo das páginas que não
 possuem um `<header>` explícito: ele organiza o primeiro título e subtítulo no
 mesmo cabeçalho editorial usado pelo estudo de forma, sem duplicar ou editar o
@@ -70,6 +77,12 @@ quando a alça estiver focada. A largura inicial é 15% maior que a proporção
 original.
 
 ## Usar o OpenRouter no Jev request builder
+
+As ferramentas OpenRouter agora ficam reunidas na página **Prompts OpenRouter**,
+com abas para prompt simples, PDF, image e JEV. A chave e o modelo são
+preenchidos uma única vez no topo; o campo de modelo aceita tanto opções
+sugeridas quanto um novo ID digitado manualmente. As três páginas originais
+continuam disponíveis por seus caminhos diretos, mas não aparecem na sidebar.
 
 Abra a página **Montador de request — Jev / triagem de artigos** pela sidebar.
 Na seção **Enviar para OpenRouter**:

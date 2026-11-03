@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor e renderizador Markdown</title>
+  <link rel="stylesheet" href="../theme.css">
+  <style>
+    .markdown-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .markdown-toolbar input[type="file"] {
+      max-width: 260px;
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    .markdown-toolbar button {
+      padding: 9px 12px;
+      font-size: 11px;
+    }
+
+    .markdown-status {
+      min-height: 1.5em;
+      margin: 0 0 14px;
+      font-size: 12px;
+    }
+
+    .markdown-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .markdown-panel {
+      min-width: 0;
+      border: 1px solid var(--study-border);
+      background: var(--study-surface);
+    }
+
+    .markdown-panel h2 {
+      margin: 0;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--study-border);
+      font-size: 12px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    #markdownInput {
+      display: block;
+      width: 100%;
+      min-height: 65vh;
+      margin: 0;
+      padding: 16px;
+      border: 0;
+      resize: vertical;
+      font: 14px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    #markdownPreview {
+      min-height: 65vh;
+      padding: 16px;
+      overflow-wrap: anywhere;
+    }
+
+    #markdownPreview h1,
+    #markdownPreview h2,
+    #markdownPreview h3 {
+      margin: 0 0 12px;
+      letter-spacing: -.04em;
+    }
+
+    #markdownPreview h1 { font-size: 28px; }
+    #markdownPreview h2 { font-size: 22px; }
+    #markdownPreview h3 { font-size: 18px; }
+    #markdownPreview p { margin: 0 0 14px; }
+    #markdownPreview ul,
+    #markdownPreview ol { padding-left: 24px; }
+    #markdownPreview blockquote {
+      margin: 14px 0;
+      padding: 4px 14px;
+      border-left: 3px solid var(--study-border);
+      color: var(--study-muted);
+    }
+    #markdownPreview pre {
+      overflow: auto;
+      padding: 12px;
+      background: #eeeeee;
+      white-space: pre-wrap;
+    }
+    #markdownPreview code {
+      padding: 2px 4px;
+      background: #eeeeee;
+      font: 13px ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    #markdownPreview pre code {
+      padding: 0;
+      background: transparent;
+    }
+    #markdownPreview a {
+      color: var(--study-text);
+      text-underline-offset: 3px;
+    }
+
+    @media (max-width: 760px) {
+      .markdown-layout { grid-template-columns: 1fr; }
+      #markdownInput,
+      #markdownPreview { min-height: 45vh; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Editor de<br>Markdown</h1>
+      <p class="intro">Edite o conteúdo à esquerda, acompanhe o resultado renderizado à direita e baixe o documento pronto em HTML.</p>
+    </header>
+
+    <div class="markdown-toolbar">
+      <label for="markdownFile">Abrir Markdown</label>
+      <input id="markdownFile" type="file" accept=".md,.markdown,text/markdown">
+      <button id="downloadHtml" type="button">Baixar renderizado</button>
+      <button id="clearMarkdown" class="secondary" type="button">Limpar</button>
+    </div>
+    <p id="markdownStatus" class="markdown-status note" role="status"></p>
+
+    <div class="markdown-layout">
+      <section class="markdown-panel">
+        <h2>Markdown</h2>
+        <textarea id="markdownInput" spellcheck="false" aria-label="Conteúdo Markdown"># Novo documento
+
+Escreva ou cole seu conteúdo **Markdown** aqui.
+
+## Exemplo
+
+- Edite o texto à esquerda
+- Veja o resultado renderizado à direita
+- Baixe o resultado como HTML</textarea>
+      </section>
+      <section class="markdown-panel">
+        <h2>Renderização</h2>
+        <article id="markdownPreview"></article>
+      </section>
+    </div>
+  </main>
+
+  <script src="../markdown-editor.js"></script>
+</body>
+</html>

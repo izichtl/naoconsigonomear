@@ -836,7 +836,6 @@ Execute a análise com base no PDF fornecido e retorne todos os itens na estrutu
       const researchContext = $("researchContext").value.trim();
       if (!key) return setStatus("Informe sua chave da API OpenRouter.", true);
       if (!model) return setStatus("Informe o ID do modelo.", true);
-      if (!selectedDataUrl) return setStatus("Selecione um arquivo PDF.", true);
       if (!prompt) return setStatus("Escreva o que você quer saber sobre o PDF.", true);
       if (!researchContext) return setStatus("Preencha o contexto da sua pesquisa.", true);
 
@@ -844,8 +843,18 @@ Execute a análise com base no PDF fornecido e retorne todos os itens na estrutu
       $("runBtn").textContent = "Processando…";
       $("result").style.display = "none";
       $("emptyState").style.display = "block";
-      setStatus("Enviando o PDF à OpenRouter. Isso pode levar alguns minutos…");
+      setStatus(selectedDataUrl
+        ? "Enviando o PDF à OpenRouter. Isso pode levar alguns minutos…"
+        : "Enviando o prompt à OpenRouter. Isso pode levar alguns minutos…");
       try {
+        const messageContent = [];
+        if (selectedDataUrl) {
+          messageContent.push({ type: "file", file: { filename: selectedFileName, file_data: selectedDataUrl } });
+        }
+        messageContent.push({
+          type: "text",
+          text: `Contexto da pesquisa atual:\n${researchContext}\n\nPrompt de análise:\n${prompt}`
+        });
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
@@ -856,10 +865,7 @@ Execute a análise com base no PDF fornecido e retorne todos os itens na estrutu
             model,
             messages: [{
               role: "user",
-              content: [
-                { type: "file", file: { filename: selectedFileName, file_data: selectedDataUrl } },
-                { type: "text", text: `Contexto da pesquisa atual:\n${researchContext}\n\nPrompt de análise:\n${prompt}` }
-              ]
+              content: messageContent
             }]
           })
         });
@@ -869,7 +875,7 @@ Execute a análise com base no PDF fornecido e retorne todos os itens na estrutu
         if (!text) throw new Error("A resposta não trouxe texto. Verifique se o modelo aceita PDFs e tente novamente.");
         const version = saveResponseVersion(text);
         $("output").textContent = text;
-        $("resultMeta").textContent = `Arquivo: ${selectedFileName} · Modelo: ${model}`;
+        $("resultMeta").textContent = `${selectedFileName ? `Arquivo: ${selectedFileName} · ` : ""}Modelo: ${model}`;
         $("downloadBtn").href = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
         $("emptyState").style.display = "none";
         $("result").style.display = "block";
