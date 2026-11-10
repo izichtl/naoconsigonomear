@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Hello World</title>
+</head>
+
+<body>
+  <h1>Hello World!</h1>
+</body>
+
+</html>
+
+
+CSS — Hello World
+
+css
+body {
+background-color: #101820;
+color: white;
+font-family: Arial, sans-serif;
+}
+
+h1::after {
+content: " Hello World!";
+}
+
+
+JavaScript — Hello World
+
+javascript
+console.log("Hello World!");
+
+document.body.innerHTML +=
+"<p>Hello World!</p>";
+
+2. Motor do navegador — Blink e V8
+
+O Blink processa HTML e CSS, enquanto o V8 interpreta e compila JavaScript. O código JavaScript pode ser transformado em
+bytecode e posteriormente em código de máquina nativo.
+
+Exemplo conceitual:
+
+javascript
+function hello() {
+return "Hello World!";
+}
+
+console.log(hello());
+
+
+Fluxo simplificado:
+
+JavaScript → Parser → AST → Bytecode → JIT → Código de máquina.
+
+3. C e C++ — implementação nativa
+
+Grande parte da infraestrutura do Chromium é implementada em C++. Os mecanismos internos executam operações de
+gerenciamento de memória, renderização, comunicação e integração com o sistema operacional.
+
+C — Hello World
+
+c
+#include <stdio.h>
+
+  int main() {
+  printf("Hello World!\n");
+  return 0;
+  }
+
+
+  C++ — Hello World
+
+  cpp
+  #include <iostream>
+
+    int main() {
+    std::cout << "Hello World!" << std::endl; return 0; } Esses códigos são compilados previamente para código de
+      máquina pelo compilador, como GCC, Clang ou MSVC. 4. Bibliotecas e APIs do sistema operacional O código nativo
+      utiliza bibliotecas e interfaces do sistema operacional para solicitar recursos, como criação de processos, acesso
+      à memória, operações de arquivos e comunicação de rede. Exemplo em C utilizando uma API POSIX: c #include
+      <unistd.h>
+
+      int main() {
+      write(1, "Hello World!\n", 13);
+      return 0;
+      }
+
+
+      A função write() solicita ao sistema operacional a escrita dos dados no descritor de saída.
+
+      5. System Calls — chamadas ao kernel
+
+      Quando um programa precisa de um serviço privilegiado, realiza uma chamada ao sistema operacional. Essa chamada
+      transfere a execução do modo usuário para o modo kernel.
+
+      Exemplo simplificado em C para Linux x86-64:
+
+      c
+      #include <unistd.h>
+
+        int main() {
+        const char msg[] = "Hello World!\n";
+
+        write(1, msg, sizeof(msg) - 1);
+
+        return 0;
+        }
+
+
+        A função write() utiliza internamente a interface de chamadas de sistema do Linux.
+
+        6. Kernel — núcleo do sistema operacional
+
+        O kernel, implementado predominantemente em C e com partes em Assembly, gerencia processos, threads, memória
+        virtual, escalonamento do processador, dispositivos e operações de entrada e saída.
+
+        Exemplo conceitual de código de módulo Linux em C:
+
+        c
+        #include <linux /module.h>
+          #include <linux /kernel.h>
+
+            static int __init hello_init(void)
+            {
+            printk(KERN_INFO "Hello World!\n");
+            return 0;
+            }
+
+            static void __exit hello_exit(void)
+            {
+            printk(KERN_INFO "Goodbye World!\n");
+            }
+
+            module_init(hello_init);
+            module_exit(hello_exit);
+
+            MODULE_LICENSE("GPL");
+
+
+            Esse exemplo representa um módulo de kernel, não um programa C comum. printk() registra mensagens no sistema
+            de logs do kernel.
+
+            7. Drivers — comunicação com o hardware
+
+            Os drivers permitem que o kernel controle dispositivos físicos, como GPU, controladores de armazenamento,
+            interfaces de rede e outros componentes.
+
+            Sua implementação depende do dispositivo e da arquitetura. Geralmente utiliza C e, em situações específicas,
+            Assembly.
+
+            Fluxo:
+
+            Aplicação → Kernel → Driver → Controlador do dispositivo → Hardware.
+
+            8. Assembly e código de máquina
+
+            O código nativo compilado para a arquitetura da CPU é representado por instruções binárias. O processador
+            busca, decodifica e executa essas instruções.
+
+            Assembly x86-64 — Hello World para Linux
+
+            asm
+            section .data
+            msg db "Hello World!", 10
+            len equ $ - msg
+
+            section .text
+            global _start
+
+            _start:
+            mov rax, 1
+            mov rdi, 1
+            mov rsi, msg
+            mov rdx, len
+            syscall
+
+            mov rax, 60
+            xor rdi, rdi
+            syscall
+
+
+            Esse programa utiliza diretamente a interface de chamadas de sistema do Linux x86-64 para escrever a
+            mensagem e encerrar o processo.
+
+            9. Microarquitetura — processamento interno do chip
+
+            As instruções são processadas pelas unidades internas da CPU, envolvendo registradores, unidades lógicas e
+            aritméticas (ALU), unidades de ponto flutuante, caches e circuitos de controle.
+
+            Etapas gerais:
+
+            Fetch: busca das instruções.
+            Decode: decodificação.
+            Execute: execução das operações.
+            Memory: acesso à memória, quando necessário.
+            Retire: confirmação dos resultados.
+            10. Transistores — execução física
+
+            Finalmente, os circuitos digitais implementados com transistores realizam operações elétricas que
+            representam os estados binários utilizados no processamento computacional.
+
+            Os transistores formam portas lógicas, registradores, unidades aritméticas e demais componentes internos do
+            processador.
+
+            Fluxograma geral
+
+            HTML + CSS + JavaScript
+
+            ↓
+
+            Motor do navegador: Blink + V8
+
+            ↓
+
+            Parser, AST e representações intermediárias
+
+            ↓
+
+            Bytecode e compiladores JIT
+
+            ↓
+
+            Código nativo do navegador: C/C++
+
+            ↓
+
+            Bibliotecas e APIs do sistema operacional
+
+            ↓
+
+            System Calls
+
+            ↓
+
+            Kernel do sistema operacional
+
+            ↓
+
+            Drivers
+
+            ↓
+
+            Código de máquina / Assembly
+
+            ↓
+
+            CPU: Fetch → Decode → Execute
+
+            ↓
+
+            Microarquitetura: ALU / FPU / Registradores / Cache
+
+            ↓
+
+            Circuitos digitais
+
+            ↓
+
+            Transistores / Silício
+
+            Observação técnica
+
+            Não existe uma conversão obrigatória de JavaScript para C e depois para o kernel. O JavaScript pode ser
+            compilado diretamente para código de máquina pela engine. C/C++ é utilizado na implementação nativa do
+            navegador e do sistema operacional.
+
+            O kernel recebe chamadas de sistema, não código JavaScript. Tanto o navegador quanto o kernel possuem seus
+            próprios caminhos de execução na CPU.
+
+            Resumo: HTML/CSS/JS → Engine do navegador → Código nativo → APIs do SO → System Calls → Kernel → Drivers →
+            Código de máquina → Microarquitetura da CPU → Transistores.

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oficina de Construção Retórica e Argumentativa</title>
+<style>
+  :root {
+    --bg-main: #fcfcfd;
+    --bg-card: #ffffff;
+    --border-color: #e2e8f0;
+    --border-focus: #0f172a;
+    --text-primary: #0f172a;
+    --text-muted: #64748b;
+    --accent: #1e293b;
+    --badge-bg: #f1f5f9;
+    --badge-used: #e2e8f0;
+    --radius: 8px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font);
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 24px 32px;
+    width: 100%;
+  }
+
+  .header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  .header-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .top-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  button {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  button:hover {
+    border-color: var(--border-focus);
+    background: #f8fafc;
+  }
+
+  button.primary {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+
+  button.primary:hover {
+    background: #334155;
+  }
+
+  /* Navigation Tabs */
+  nav.tabs-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    width: 100%;
+  }
+
+  .tabs-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 2px;
+    padding: 0 32px;
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    padding: 16px 20px;
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .tab-btn:hover {
+    background: transparent;
+    color: var(--text-primary);
+    border-color: transparent;
+  }
+
+  .tab-btn.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--border-focus);
+  }
+
+  /* Main Layout */
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px;
+    width: 100%;
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .section-intro {
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Cards & Forms */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-family: inherit;
+    font-size: 14px;
+    background: #ffffff;
+    color: var(--text-primary);
+    resize: vertical;
+  }
+
+  textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: var(--border-focus);
+  }
+
+  textarea { min-height: 100px; }
+
+  /* Inventio Grid */
+  .inventio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  .inventio-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--badge-bg);
+    color: var(--text-muted);
+  }
+
+  .badge.used {
+    background: var(--badge-used);
+    color: var(--text-primary);
+  }
+
+  .send-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border-color);
+  }
+
+  .send-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 4px;
+  }
+
+  /* Chips */
+  .chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .chip {
+    background: var(--badge-bg);
+    border: 1px solid var(--border-color);
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .chip:hover {
+    border-color: var(--border-focus);
+    background: #ffffff;
+  }
+
+  /* Final Preview & Actio */
+  .speech-preview {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    line-height: 1.8;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 32px;
+    border-radius: var(--radius);
+  }
+
+  .speech-paragraph {
+    margin-bottom: 24px;
+  }
+
+  .speech-label {
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .actio-tag {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    margin: 0 4px;
+  }
+
+  .status-toast {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <div>
+      <h1>Oficina de Construção Retórica</h1>
+      <div class="header-desc">Ferramenta interativa de estruturação argumentativa, discurso e performance</div>
+    </div>
+    <div class="top-actions">
+      <div class="status-toast"><span class="dot"></span> <span id="saveStatus">Salvo automaticamente</span></div>
+      <button onclick="restoreDefault()">Restaurar Exemplo</button>
+      <button class="primary" onclick="copySpeech()">Copiar Discurso Completo</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs-nav">
+  <div class="tabs-container">
+    <button class="tab-btn active" onclick="switchTab('inventio')">1. Inventio (Ideias & Fatos)</button>
+    <button class="tab-btn" onclick="switchTab('dispositio')">2. Dispositio (Organização)</button>
+    <button class="tab-btn" onclick="switchTab('elocutio')">3. Elocutio (Auditório & Estilo)</button>
+    <button class="tab-btn" onclick="switchTab('actio')">4. Actio (Performance)</button>
+    <button class="tab-btn" onclick="switchTab('resultado')">5. Discurso Final</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- TAB 1: INVENTIO -->
+  <section id="tab-inventio" class="tab-content active">
+    <div class="section-intro">
+      <h2 class="section-title">1. Inventio (Invenção)</h2>
+      <p class="section-desc">Despeje aqui seus argumentos, fatos, exemplos e objeções sem preocupação com a ordem. Cada ideia criada fica disponível para ser inserida na estrutura do discurso.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Adicionar Novo Argumento / Fato Bruto</h3>
+      <div style="display:flex; gap:12px; margin-top:12px;">
+        <input type="text" id="newIdeaInput" placeholder="Digite uma ideia, fato, argumento ou objeção..." onkeypress="if(event.key==='Enter') addIdea()">
+        <button class="primary" onclick="addIdea()">+ Adicionar Idea</button>
+      </div>
+    </div>
+
+    <div class="inventio-grid" id="inventioGrid"></div>
+  </section>
+
+  <!-- TAB 2: DISPOSITIO -->
+  <section id="tab-dispositio" class="tab-content">
+    <div class="section-intro">
+      <h2 class="section-title">2. Dispositio (Disposição)</h2>
+      <p class="section-desc">Organize o material bruto nas 5 partes clássicas da retórica. Clique nas ideias pendentes da Inventio para inseri-las em cada trecho.</p>
+    </div>
+
+    <div id="dispositioSections"></div>
+  </section>
+
+  <!-- TAB 3: ELOCUTIO -->
+  <section id="tab-elocutio" class="tab-content">
+    <div class="section-intro">
+      <h2 class="section-title">3. Elocutio (Elocução)</h2>
+      <p class="section-desc">Adeqúe o tom, o estilo e o vocabulário ao perfil do auditório que ouvirá a sua apresentação.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Análise e Perfil do Auditório</h3>
+      <p class="card-subtitle">Quem são os ouvintes? Quais são seus valores, expectativas e resistências?</p>
+      <textarea id="auditorioText" placeholder="Ex: Diretores da empresa, preocupados com estabilidade e custos..." oninput="saveData()"></textarea>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Estratégia de Linguagem & Tom</h3>
+      <p class="card-subtitle">Formalidade, uso de metáforas, tom conciliador ou incisivo.</p>
+      <textarea id="estiloText" placeholder="Ex: Linguagem sóbria, respeitosa, enfatizando coerência e evolução continuada..." oninput="saveData()"></textarea>
+    </div>
+  </section>
+
+  <!-- TAB 4: ACTIO -->
+  <section id="tab-actio" class="tab-content">
+    <div class="section-intro">
+      <h2 class="section-title">4. Actio (Ação & Performance)</h2>
+      <p class="section-desc">Adicione anotações de postura, entonação, gestos ou pausas nos trechos do discurso para o momento da apresentação.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Inserir Marcação de Performance</h3>
+      <p class="card-subtitle">Selecione uma parte do discurso e adicione um comando de ação.</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <select id="actioPartSelect" style="padding:8px; border-radius:var(--radius); border:1px solid var(--border-color);">
+          <option value="exordio">1. Exórdio</option>
+          <option value="narracao">2. Narração</option>
+          <option value="confirmacao">3. Confirmação</option>
+          <option value="refutacao">4. Refutação</option>
+          <option value="peroracao">5. Peroração</option>
+        </select>
+        <input type="text" id="actioTagInput" placeholder="Ex: [GESTO: Mão espalmada] ou [PAUSA 2s]" style="flex:1;">
+        <button class="primary" onclick="addActioTag()">+ Inserir Marcação</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">Roteiro com Anotações de Performance</h3>
+      <div class="speech-preview" id="actioPreview"></div>
+    </div>
+  </section>
+
+  <!-- TAB 5: DISCURSO FINAL -->
+  <section id="tab-resultado" class="tab-content">
+    <div class="section-intro">
+      <h2 class="section-title">5. Discurso Final Consolidado</h2>
+      <p class="section-desc">Visualização completa do discurso articulado e pronto para uso.</p>
+    </div>
+
+    <div class="speech-preview" id="finalSpeechPreview"></div>
+  </section>
+
+</main>
+
+<script>
+const STORAGE_KEY = 'retorica_app_data_v2';
+
+const defaultData = {
+  inventio: [
+    { id: 1, text: "Normas criadas no passado podem perder eficácia com o tempo.", used: true },
+    { id: 2, text: "A regra institucional original visava uniformidade, mas o contexto mudou.", used: true },
+    { id: 3, text: "A manutenção rígida impede a evolução necessária.", used: true },
+    { id: 4, text: "Modificar regras pode parecer arriscado para a estabilidade.", used: true },
+    { id: 5, text: "Revisar normas preserva os princípios em vez de destruí-los.", used: true }
+  ],
+  dispositio: {
+    exordio: {
+      title: "1. Exórdio",
+      desc: "Introduz o assunto e conquista a atenção do interlocutor.",
+      text: "Nem toda regra que foi estabelecida em determinado momento continua sendo adequada às circunstâncias atuais. Algumas normas, embora tenham sido criadas com uma finalidade legítima, podem deixar de cumprir sua função ao longo do tempo."
+    },
+    narracao: {
+      title: "2. Narração",
+      desc: "Apresenta o contexto e os fatos que motivam a discussão.",
+      text: "Em determinada instituição, uma regra foi estabelecida para organizar as atividades e garantir uniformidade entre os participantes. Entretanto, com as transformações ocorridas ao longo dos anos, surgiram novas necessidades que não foram contempladas pela norma original."
+    },
+    confirmacao: {
+      title: "3. Confirmação",
+      desc: "Desenvolve a tese central e defende os argumentos principais.",
+      text: "A manutenção dessa regra, sem considerar as mudanças ocorridas, pode produzir resultados contrários à finalidade para a qual foi criada. Uma norma deve servir à organização das atividades, e não impedir que elas acompanhem as necessidades existentes. Portanto, sua revisão permitiria preservar o objetivo original, adequando os meios utilizados à realidade atual."
+    },
+    refutacao: {
+      title: "4. Refutação",
+      desc: "Antecipa objeções contrárias e responde a elas.",
+      text: "É possível argumentar que modificar uma regra pode comprometer a estabilidade institucional e criar dificuldades de adaptação. Embora essa preocupação seja legítima, a permanência de uma norma inadequada também pode gerar problemas. A estabilidade não depende necessariamente da imutabilidade das regras, mas da capacidade de mantê-las coerentes com sua finalidade."
+    },
+    peroracao: {
+      title: "5. Peroração",
+      desc: "Conclui o discurso e reforça a tese com impacto.",
+      text: "Assim, revisar uma regra não significa abandonar os princípios que justificaram sua criação. Significa reconhecer que os instrumentos utilizados para alcançar determinado objetivo também precisam evoluir. Por essa razão, a revisão da norma representa uma medida necessária para preservar sua própria finalidade."
+    }
+  },
+  elocutio: {
+    auditorio: "Membros do conselho e lideranças institucionais valorizando estabilidade.",
+    estilo: "Tom sóbrio, respeitoso, enfatizando continuidade e aperfeiçoamento."
+  },
+  actioTags: [
+    { part: "exordio", tag: "[ENTONAÇÃO: Voz calma e firme]" },
+    { part: "confirmacao", tag: "[GESTO: Apontar com clareza]" },
+    { part: "peroracao", tag: "[PAUSA: 2 segundos antes de encerrar]" }
+  ]
+};
+
+let appData = JSON.parse(JSON.stringify(defaultData));
+
+function init() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try { appData = JSON.parse(saved); } catch(e){}
+  }
+  renderAll();
+}
+
+function saveData() {
+  // read textareas
+  appData.elocutio.auditorio = document.getElementById('auditorioText').value;
+  appData.elocutio.estilo = document.getElementById('estiloText').value;
+
+  for (let key in appData.dispositio) {
+    const el = document.getElementById('disp-' + key);
+    if (el) appData.dispositio[key].text = el.value;
+  }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  document.getElementById('saveStatus').textContent = 'Salvo às ' + new Date().toLocaleTimeString();
+  renderPreviews();
+}
+
+function renderAll() {
+  renderInventio();
+  renderDispositio();
+  document.getElementById('auditorioText').value = appData.elocutio.auditorio || '';
+  document.getElementById('estiloText').value = appData.elocutio.estilo || '';
+  renderPreviews();
+}
+
+function renderInventio() {
+  const grid = document.getElementById('inventioGrid');
+  grid.innerHTML = '';
+  appData.inventio.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'inventio-card';
+    card.innerHTML = `
+      <div>
+        <span class="badge ${item.used ? 'used' : ''}">${item.used ? '✓ No discurso' : '⚪ Pendente'}</span>
+        <p style="margin-top:8px; font-size:14px;">${escapeHtml(item.text)}</p>
+      </div>
+      <div>
+        <div class="send-actions">
+          <span style="font-size:11px; color:var(--text-muted); width:100%;">Enviar para:</span>
+          <button class="send-btn" onclick="sendToPart(${item.id}, 'exordio')">Exórdio</button>
+          <button class="send-btn" onclick="sendToPart(${item.id}, 'narracao')">Narração</button>
+          <button class="send-btn" onclick="sendToPart(${item.id}, 'confirmacao')">Confirmação</button>
+          <button class="send-btn" onclick="sendToPart(${item.id}, 'refutacao')">Refutação</button>
+          <button class="send-btn" onclick="sendToPart(${item.id}, 'peroracao')">Peroração</button>
+        </div>
+        <button style="margin-top:8px; font-size:11px; color:#ef4444; border-color:transparent; padding:2px;" onclick="deleteIdea(${item.id})">Remover</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function addIdea() {
+  const input = document.getElementById('newIdeaInput');
+  const text = input.value.trim();
+  if (!text) return;
+  appData.inventio.push({ id: Date.now(), text: text, used: false });
+  input.value = '';
+  saveData();
+  renderInventio();
+  renderDispositio();
+}
+
+function deleteIdea(id) {
+  appData.inventio = appData.inventio.filter(i => i.id !== id);
+  saveData();
+  renderInventio();
+  renderDispositio();
+}
+
+function sendToPart(ideaId, partKey) {
+  const idea = appData.inventio.find(i => i.id === ideaId);
+  if (!idea) return;
+  
+  if (appData.dispositio[partKey].text.trim().length > 0) {
+    appData.dispositio[partKey].text += " " + idea.text;
+  } else {
+    appData.dispositio[partKey].text = idea.text;
+  }
+  idea.used = true;
+  saveData();
+  renderAll();
+}
+
+function renderDispositio() {
+  const container = document.getElementById('dispositioSections');
+  container.innerHTML = '';
+  
+  for (let key in appData.dispositio) {
+    const part = appData.dispositio[key];
+    const card = document.createElement('div');
+    card.className = 'card';
+    
+    // Chips of available ideas
+    const unused = appData.inventio.filter(i => !i.used);
+    let chipsHtml = '';
+    if (unused.length > 0) {
+      chipsHtml = `<div class="chips-container"><span style="font-size:12px; color:var(--text-muted); align-self:center;">+ Inserir da Inventio:</span>` +
+        unused.map(u => `<span class="chip" onclick="sendToPart(${u.id}, '${key}')">+ ${escapeHtml(u.text.substring(0,35))}...</span>`).join('') +
+        `</div>`;
+    }
+
+    card.innerHTML = `
+      <h3 class="card-title">${part.title}</h3>
+      <p class="card-subtitle">${part.desc}</p>
+      ${chipsHtml}
+      <textarea id="disp-${key}" oninput="saveData()">${escapeHtml(part.text)}</textarea>
+    `;
+    container.appendChild(card);
+  }
+}
+
+function addActioTag() {
+  const part = document.getElementById('actioPartSelect').value;
+  const tag = document.getElementById('actioTagInput').value.trim();
+  if (!tag) return;
+  appData.actioTags.push({ part, tag });
+  document.getElementById('actioTagInput').value = '';
+  saveData();
+  renderPreviews();
+}
+
+function renderPreviews() {
+  const finalEl = document.getElementById('finalSpeechPreview');
+  const actioEl = document.getElementById('actioPreview');
+  finalEl.innerHTML = '';
+  actioEl.innerHTML = '';
+
+  for (let key in appData.dispositio) {
+    const part = appData.dispositio[key];
+    if (!part.text.trim()) continue;
+
+    // Final speech element
+    const p = document.createElement('div');
+    p.className = 'speech-paragraph';
+    p.innerHTML = `<span class="speech-label">${part.title}</span><p>${escapeHtml(part.text)}</p>`;
+    finalEl.appendChild(p);
+
+    // Actio element with tags
+    const tags = appData.actioTags.filter(t => t.part === key);
+    let tagsHtml = tags.map(t => `<span class="actio-tag">${escapeHtml(t.tag)}</span>`).join(' ');
+    
+    const pActio = document.createElement('div');
+    pActio.className = 'speech-paragraph';
+    pActio.innerHTML = `<span class="speech-label">${part.title}</span> ${tagsHtml}<p style="margin-top:4px;">${escapeHtml(part.text)}</p>`;
+    actioEl.appendChild(pActio);
+  }
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+  
+  event.target.classList.add('active');
+  document.getElementById('tab-' + tabId).classList.add('active');
+}
+
+function restoreDefault() {
+  if (confirm("Deseja restaurar o exemplo original? Suas edições atuais serão substituídas.")) {
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+
+function copySpeech() {
+  let fullText = '';
+  for (let key in appData.dispositio) {
+    if (appData.dispositio[key].text.trim()) {
+      fullText += appData.dispositio[key].title + '
+' + appData.dispositio[key].text + '
+
+';
+    }
+  }
+  navigator.clipboard.writeText(fullText).then(() => {
+    alert("Discurso completo copiado para a área de transferência!");
+  });
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+window.onload = init;
+</script>
+</body>
+</html>

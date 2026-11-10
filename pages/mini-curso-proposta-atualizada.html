@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estruturação de Apresentação: Revisão Sistemática de Literatura (RSL)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mono: {
+              50: '#fafafa',
+              100: '#f4f4f5',
+              200: '#e4e4e7',
+              300: '#d4d4d8',
+              400: '#a1a1aa',
+              500: '#71717a',
+              600: '#52525b',
+              700: '#3f3f46',
+              800: '#27272a',
+              900: '#18181b',
+              950: '#09090b',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+            serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+            mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+      font-size: 18px;
+    }
+    body {
+      color: #18181b;
+      background-color: #ffffff;
+      line-height: 1.75;
+    }
+    ::selection {
+      background-color: #18181b;
+      color: #ffffff;
+    }
+    /* Reading Progress Bar */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background-color: #18181b;
+      width: 0%;
+      z-index: 50;
+      transition: width 0.1s linear;
+    }
+    /* TOC Active Indicator */
+    .toc-link.active {
+      font-weight: 600;
+      color: #09090b;
+      border-left: 2px solid #09090b;
+      padding-left: 0.75rem;
+    }
+    .toc-link {
+      transition: all 0.15s ease-in-out;
+      border-left: 2px solid transparent;
+    }
+    /* Custom monochrome details */
+    .mono-card {
+      border: 1px solid #e4e4e7;
+      background-color: #ffffff;
+    }
+    .mono-callout {
+      border-left: 4px solid #18181b;
+      background-color: #fafafa;
+    }
+    @media print {
+      #progress-bar, #toc-sidebar, header nav, .no-print {
+        display: none !important;
+      }
+      body {
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+      }
+      .max-w-4xl {
+        max-width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-mono-900 selection:text-mono-50">
+
+  <!-- Reading Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Main Navigation / Header -->
+  <header class="border-b border-mono-200 bg-white sticky top-0 z-40 bg-opacity-95 backdrop-blur-sm">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="#" class="font-bold tracking-tight text-mono-900 text-lg uppercase tracking-wider">
+        Metodologia & Research
+      </a>
+      <div class="flex items-center space-x-4 text-sm text-mono-600 no-print">
+        <button id="btn-increase-font" class="hover:text-mono-950 p-1 rounded border border-mono-200 px-2 text-xs uppercase font-mono" title="Aumentar Fonte">A+</button>
+        <button id="btn-decrease-font" class="hover:text-mono-950 p-1 rounded border border-mono-200 px-2 text-xs uppercase font-mono" title="Diminuir Fonte">A-</button>
+        <button onclick="window.print()" class="hover:text-mono-950 p-1 rounded border border-mono-200 px-3 text-xs uppercase font-mono">Imprimir / PDF</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Container Principal -->
+  <div class="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+    
+    <!-- Hero / Header do Artigo -->
+    <article class="max-w-3xl mx-auto">
+      <header class="mb-12 border-b border-mono-200 pb-10">
+        <div class="flex items-center space-x-3 text-xs font-mono uppercase tracking-widest text-mono-500 mb-4">
+          <span class="px-2 py-0.5 border border-mono-300 rounded text-mono-800">Plano de Apresentação</span>
+          <span>•</span>
+          <span>Revisão Sistemática</span>
+          <span>•</span>
+          <span>8 min de leitura</span>
+        </div>
+        
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-mono-950 leading-tight mb-6">
+          Estruturação de Apresentação: Revisão Sistemática de Literatura (RSL)
+        </h1>
+        
+        <p class="text-xl text-mono-600 font-normal leading-relaxed mb-6">
+          Guia visual, rigor metodológico e roteiro de aplicação prática para construção e exposição didática de RSLs qualitativas e quantitativas.
+        </p>
+        
+        <div class="flex items-center space-x-4 pt-4 border-t border-mono-100 text-sm text-mono-500 font-mono">
+          <div>
+            <span class="text-mono-900 font-semibold block">Roteiro de Intervenção</span>
+            <span>Transcrição e Sistematização</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Layout em Grid: Índice Lateral (Desktop) + Conteúdo -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        <!-- Sidebar - Tabela de Conteúdos -->
+        <aside id="toc-sidebar" class="lg:col-span-4 hidden lg:block no-print">
+          <div class="sticky top-24 p-5 rounded-lg border border-mono-200 bg-mono-50 text-sm">
+            <h2 class="font-bold uppercase tracking-wider text-mono-900 mb-4 text-xs font-mono border-b border-mono-200 pb-2">
+              Sumário do Roteiro
+            </h2>
+            <nav class="space-y-2 text-mono-600 text-xs font-mono" id="toc-nav">
+              <a href="#sec-1" class="toc-link block hover:text-mono-950 py-1">1. Ideia Central e Objetivo</a>
+              <a href="#sec-2" class="toc-link block hover:text-mono-950 py-1">2. Estrutura da Apresentação</a>
+              <a href="#sec-3" class="toc-link block hover:text-mono-950 py-1">3. Fluxograma Visual</a>
+              <a href="#sec-4" class="toc-link block hover:text-mono-950 py-1">4. Protocolo de Pesquisa</a>
+              <a href="#sec-5" class="toc-link block hover:text-mono-950 py-1">5. Aplicação Prática (Bet/Ludomania)</a>
+              <a href="#sec-6" class="toc-link block hover:text-mono-950 py-1">6. Organização Temporal</a>
+              <a href="#sec-7" class="toc-link block hover:text-mono-950 py-1">7. Pontos a Definir</a>
+            </nav>
+          </div>
+        </aside>
+
+        <!-- Corpo do Artigo -->
+        <div class="lg:col-span-8 space-y-12 text-mono-800" id="article-body">
+
+          <!-- Caixas móveis para TOC em dispositivos móveis -->
+          <div class="block lg:hidden p-4 rounded border border-mono-200 bg-mono-50 text-sm mb-6 no-print">
+            <details>
+              <summary class="font-bold uppercase tracking-wider text-mono-900 cursor-pointer font-mono text-xs">
+                Índice dos Tópicos (Clique para expandir)
+              </summary>
+              <div class="mt-3 space-y-2 text-mono-600 font-mono text-xs pl-2">
+                <a href="#sec-1" class="block py-1">1. Ideia Central e Objetivo</a>
+                <a href="#sec-2" class="block py-1">2. Estrutura da Apresentação</a>
+                <a href="#sec-3" class="block py-1">3. Fluxograma Visual</a>
+                <a href="#sec-4" class="block py-1">4. Protocolo de Pesquisa</a>
+                <a href="#sec-5" class="block py-1">5. Aplicação Prática</a>
+                <a href="#sec-6" class="block py-1">6. Organização Temporal</a>
+                <a href="#sec-7" class="block py-1">7. Pontos a Definir</a>
+              </div>
+            </details>
+          </div>
+
+          <!-- SEÇÃO 1 -->
+          <section id="sec-1" class="scroll-mt-24">
+            <div class="flex items-center space-x-2 text-xs font-mono text-mono-500 uppercase tracking-widest mb-1">
+              <span>Seção 01</span>
+            </div>
+            <h2 class="text-2xl font-bold text-mono-950 mb-4 border-b border-mono-200 pb-2">
+              1. Ideia Central e Objetivo da Intervenção
+            </h2>
+            
+            <p class="mb-4">
+              O objetivo primordial deste plano pedagógico e expositivo é estruturar uma <strong>prescrição de curso/aula</strong> voltada para o ensino de <strong>Revisão Sistemática de Literatura (RSL)</strong> com ênfase na transparência metodológica, combate a práticas inadequadas (como o <i>brilhismo</i> acadêmico) e provisão de diretrizes de reprodutibilidade científica.
+            </p>
+
+            <div class="mono-callout p-5 my-6 rounded-r">
+              <p class="text-sm text-mono-700 italic font-serif">
+                "[L03–09] A minha ideia central é dar uma intervenção sobre a Revisão Sistemática de Literatura... passar por alguns pontos, algumas técnicas de trazer alguns autores, como a Cochrane, falando da produção de plataformas e de brilho, mas dentro disso também trazer o AMSTAR (1 e 2)... apresentar técnicas de construção de palavras de pesquisa e dar dois exemplos: uma qualitativa e uma quantitativa."
+              </p>
+            </div>
+
+            <p class="mb-4">
+              A proposta foca em desmistificar o processo de execução de uma RSL, guiando os alunos/ouvintes através de um <strong>encadeamento visual progressivo</strong> que liga a teoria acadêmica (autores de referência, checklists de qualidade) à prática efetiva (construção de strings de busca e registro de protocolos).
+            </p>
+          </section>
+
+          <!-- SEÇÃO 2 -->
+          <section id="sec-2" class="scroll-mt-24">
+            <div class="flex items-center space-x-2 text-xs font-mono text-mono-500 uppercase tracking-widest mb-1">
+              <span>Seção 02</span>
+            </div>
+            <h2 class="text-2xl font-bold text-mono-950 mb-4 border-b border-mono-200 pb-2">
+              2. Estrutura da Apresentação sobre RSL
+            </h2>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">2.1. Introdução à Revisão e Distinção de Escopo</h3>
+            <p class="mb-4">
+              A apresentação inicia-se definindo conceitualmente a RSL e estabelecendo um contraponto direto e conciso com a <strong>Revisão de Escopo (Scoping Review)</strong>. O intuito é demonstrar que, enquanto a revisão de escopo visa mapear a literatura existente e identificar lacunas sem necessariamente avaliar rigorosamente a qualidade metodológica dos artigos, a RSL busca responder a uma Pergunta de Pesquisa específica e delimitada sob critérios rígidos de inclusão e avaliação crítica.
+            </p>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">2.2. Autores, Ferramentas e Avaliação de Qualidade</h3>
+            <p class="mb-4">
+              A base teórica fundamenta-se nos principais frameworks globais de síntese de evidências:
+            </p>
+            
+            <ul class="list-disc pl-6 space-y-2 mb-6">
+              <li><strong>Cochrane Handbook:</strong> Referência clássica para diretrizes de condução de revisões sistemáticas.</li>
+              <li><strong>AMSTAR 1 e AMSTAR 2:</strong> Ferramentas para avaliação da qualidade metodológica de revisões sistemáticas (avaliação do <i>"material para o mundo todo"</i>).</li>
+              <li><strong>Técnicas de Busca:</strong> Formulação lógica de palavras-chave, operadores booleanos, amostragem e frameworks (PICO / SPIDER).</li>
+            </ul>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">2.3. Exemplos Práticos: Qualitativo e Quantitativo</h3>
+            <p class="mb-4">
+              Para consolidar a teoria, a apresentação incluirá dois recortes reais de literatura:
+            </p>
+            <ol class="list-decimal pl-6 space-y-2 mb-4">
+              <li><strong>Exemplo Qualitativo:</strong> Análise detalhada com exibição dos trechos do artigo, destacando explicitamente a <i>presença do protocolo de pesquisa registrado</i>, transparência no recorte amostral e crítica ao "brilhismo" (ausência de dados auditáveis).</li>
+              <li><strong>Exemplo Quantitativo:</strong> Apresentação de metanálise ou dados quantificáveis integrados ao protocolo.</li>
+            </ol>
+          </section>
+
+          <!-- SEÇÃO 3 -->
+          <section id="sec-3" class="scroll-mt-24">
+            <div class="flex items-center space-x-2 text-xs font-mono text-mono-500 uppercase tracking-widest mb-1">
+              <span>Seção 03</span>
+            </div>
+            <h2 class="text-2xl font-bold text-mono-950 mb-4 border-b border-mono-200 pb-2">
+              3. Construção do Fluxograma Visual da Apresentação
+            </h2>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">3.1. Conceito de "Cheat-Sheet" / Poster Interativo</h3>
+            <p class="mb-4">
+              A proposta pedagógica adota um recurso visual central: um <strong>flip-chart / fluxograma visual (Cheat-Sheet)</strong>. Este mapa mental visual é entregue aos participantes (ou disponibilizado em PDF) para ser impresso ou anotado passo a passo durante a apresentação.
+            </p>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">3.2. Conexões e Arquitetura do Fluxograma</h3>
+            <p class="mb-4">
+              O fluxograma visual interliga os conceitos de forma hierárquica e condicional:
+            </p>
+
+            <!-- Diagrama conceitual em CSS/HTML monocromático -->
+            <div class="mono-card p-6 rounded-lg my-6 font-mono text-xs space-y-4">
+              <div class="text-center font-bold border-b border-mono-200 pb-2">ARQUITETURA DE LIGAÇÕES DO FLUXOGRAMA</div>
+              <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center">
+                <div class="p-3 border border-mono-900 rounded w-full">
+                  <span class="font-bold block">RSL</span>
+                  <span class="text-mono-500">Conceito & Escopo</span>
+                </div>
+                <div class="text-mono-400">→</div>
+                <div class="p-3 border border-mono-900 rounded w-full">
+                  <span class="font-bold block">PROTOCOLO</span>
+                  <span class="text-mono-500">Diretrizes & Registro</span>
+                </div>
+                <div class="text-mono-400">→</div>
+                <div class="p-3 border border-mono-900 rounded w-full">
+                  <span class="font-bold block">PERGUNTA</span>
+                  <span class="text-mono-500">PICO / SPIDER</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-mono-600 text-[11px] pt-2 border-t border-mono-100">
+                <div>• Conexão: Cochrane & Autores</div>
+                <div>• Conexão: PRISMA & PROSPERO</div>
+                <div>• Conexão: Estratégia de Busca</div>
+              </div>
+            </div>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">3.3. Destaque Visual e Construção Progressiva</h3>
+            <p class="mb-4">
+              Em vez de exibir todo o mapa mental saturado desde o início, o fluxograma começa projetado no slide com uma <strong>opacidade reduzida (cinza claro/tracejado)</strong>. À medida que o palestrante avança pelos tópicos, os nós correspondentes "acendem" (ganham opacidade 100% e traço contínuo), acompanhados por um selo de verificação de qualidade (AMSTAR).
+            </p>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">3.4. Sequência de Ativação nos Slides</h3>
+            <div class="space-y-3 my-4">
+              <div class="flex items-start space-x-3">
+                <span class="font-mono text-xs bg-mono-900 text-white px-2 py-0.5 rounded">Passo 1</span>
+                <span><strong>Ativação da RSL:</strong> Apresentação do conceito base + 2 slides de aprofundamento.</span>
+              </div>
+              <div class="flex items-start space-x-3">
+                <span class="font-mono text-xs bg-mono-900 text-white px-2 py-0.5 rounded">Passo 2</span>
+                <span><strong>Ativação do Escopo vs. Cochrane:</strong> Diferenciação prática.</span>
+              </div>
+              <div class="flex items-start space-x-3">
+                <span class="font-mono text-xs bg-mono-900 text-white px-2 py-0.5 rounded">Passo 3</span>
+                <span><strong>Ativação do Protocolo & PRISMA:</strong> Exposição das diretrizes de publicação.</span>
+              </div>
+              <div class="flex items-start space-x-3">
+                <span class="font-mono text-xs bg-mono-900 text-white px-2 py-0.5 rounded">Passo 4</span>
+                <span><strong>Ativação do Registro (PROSPERO):</strong> Destaque para a transparência antes da execução.</span>
+              </div>
+              <div class="flex items-start space-x-3">
+                <span class="font-mono text-xs bg-mono-900 text-white px-2 py-0.5 rounded">Passo 5</span>
+                <span><strong>Ativação da Pergunta & Estrutura PICO/SPIDER:</strong> Construção lógica das palavras-chave.</span>
+              </div>
+            </div>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">3.5. Fechamento e Recapitulação</h3>
+            <p class="mb-4">
+              Ao término da apresentação, o mapa mental completo estará totalmente visível e aceso. O palestrante realiza uma síntese final resumida, refazendo o percurso visual para fixar os conceitos principais na mente dos alunos.
+            </p>
+          </section>
+
+          <!-- SEÇÃO 4 -->
+          <section id="sec-4" class="scroll-mt-24">
+            <div class="flex items-center space-x-2 text-xs font-mono text-mono-500 uppercase tracking-widest mb-1">
+              <span>Seção 04</span>
+            </div>
+            <h2 class="text-2xl font-bold text-mono-950 mb-4 border-b border-mono-200 pb-2">
+              4. Protocolo de Pesquisa
+            </h2>
+
+            <p class="mb-4">
+              O protocolo é o "plano de voo" da RSL. Ele deve ser elaborado e formalmente registrado <strong>antes da execução da busca</strong> para evitar viés de seleção e manipulação tardia de dados.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+              <div class="mono-card p-5 rounded">
+                <h4 class="font-bold text-mono-900 mb-2 font-mono text-sm border-b border-mono-100 pb-1">Diretriz PRISMA</h4>
+                <p class="text-sm text-mono-600">
+                  Guia internacional de 27 itens padronizados que orienta o que deve ser relatado em revisões sistemáticas para garantir clareza e auditoria.
+                </p>
+              </div>
+              <div class="mono-card p-5 rounded">
+                <h4 class="font-bold text-mono-900 mb-2 font-mono text-sm border-b border-mono-100 pb-1">Registro PROSPERO / Open Science</h4>
+                <p class="text-sm text-mono-600">
+                  Plataformas públicas onde o protocolo é submetido previamente. Garante que o planejamento não foi modificado após os resultados emergirem.
+                </p>
+              </div>
+            </div>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">4.3. Elementos Indispensáveis no Protocolo</h3>
+            <p class="mb-4">Para garantir rigor científico, o protocolo deve obrigatoriamente prever:</p>
+            <ul class="list-disc pl-6 space-y-2 mb-4">
+              <li><strong>Registro prévio:</strong> Submissão em repositório público ou plataforma dedicada.</li>
+              <li><strong>Equipe e papéis:</strong> Atribuição clara da função de cada pesquisador (incluindo revisores independentes para desempate).</li>
+              <li><strong>Pergunta de pesquisa:</strong> Questão clara delimitada pelo framework adequado.</li>
+              <li><strong>Bases de dados selecionadas:</strong> Relação exata de onde as buscas serão efetuadas.</li>
+              <li><strong>Estratégias de busca (Strings):</strong> Expressões booleanas completas pré-testadas.</li>
+              <li><strong>Critérios de inclusão e exclusão:</strong> Regras inequívocas de triagem.</li>
+              <li><strong>Etapas de seleção e extração:</strong> Workflow de triagem de títulos, resumos e texto completo.</li>
+            </ul>
+          </section>
+
+          <!-- SEÇÃO 5 -->
+          <section id="sec-5" class="scroll-mt-24">
+            <div class="flex items-center space-x-2 text-xs font-mono text-mono-500 uppercase tracking-widest mb-1">
+              <span>Seção 05</span>
+            </div>
+            <h2 class="text-2xl font-bold text-mono-950 mb-4 border-b border-mono-200 pb-2">
+              5. Aplicação Prática: Construção de uma Revisão
+            </h2>
+
+            <p class="mb-4">
+              Para tornar a aula tangível, propõe-se um estudo de caso prático embasado em um tema contemporâneo de grande relevância no contexto brasileiro:
+            </p>
+
+            <div class="mono-callout p-5 my-6 rounded-r">
+              <h4 class="font-bold text-mono-950 font-mono text-sm mb-1 uppercase">Tema Prático Escolhido:</h4>
+              <p class="text-base text-mono-800 font-semibold mb-2">
+                Ludomania e o Impacto das Apostas Eletrônicas ("Bets") na Literatura Científica Brasileira
+              </p>
+              <p class="text-sm text-mono-600">
+                [L66–76] Justificativa: "Como anda a pesquisa brasileira relacionada à ludomania... a proibição/regulamentação das Bets se tornou um debate no Congresso Brasileiro... precisamos entender o que o Brasil tem produzido de ciência em relação a isso."
+              </p>
+            </div>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">5.2. Formulação da Pergunta (PICO vs. SPIDER)</h3>
+            <p class="mb-4">
+              Dependendo da natureza do estudo (quantitativo ou qualitativo), aplica-se a estrutura ideal:
+            </p>
+
+            <div class="overflow-x-auto my-6">
+              <table class="w-full text-left text-sm border-collapse border border-mono-200">
+                <thead>
+                  <tr class="bg-mono-100 font-mono text-xs uppercase text-mono-900 border-b border-mono-200">
+                    <th class="p-3 border-r border-mono-200">Modelo</th>
+                    <th class="p-3 border-r border-mono-200">Sigla / Elementos</th>
+                    <th class="p-3">Aplicação Recomendada</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-mono-200 text-mono-700">
+                  <tr>
+                    <td class="p-3 font-bold font-mono border-r border-mono-200">PICO</td>
+                    <td class="p-3 border-r border-mono-200">Population, Intervention, Comparison, Outcome</td>
+                    <td class="p-3">Estudos quantitativos e clínicos.</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 font-bold font-mono border-r border-mono-200">SPIDER</td>
+                    <td class="p-3 border-r border-mono-200">Sample, Phenomenon of Interest, Design, Evaluation, Research type</td>
+                    <td class="p-3">Estudos qualitativos e de ciências sociais.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">5.3. Estratégia de Busca e Integração com OpenAlex</h3>
+            <p class="mb-4">
+              Na demonstração, será apresentada uma busca real utilizando termos como <code>("gambling" OR "bets" OR "jogos de azar") AND ("Brazil" OR "brasileira")</code>.
+            </p>
+            <p class="mb-4">
+              Como inovação prática, será mostrado o uso do <strong>OpenAlex</strong> (plataforma aberta de dados bibliométricos) para extração inicial e visualização direta dos metadados dos artigos em tempo real.
+            </p>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">5.4. Seleção de Bases de Dados e Avaliação AMSTAR</h3>
+            <p class="mb-4">
+              Serão selecionadas ao menos 3 bases reconhecidas (ex: SciELO, PubMed/MEDLINE, Scopus/Web of Science). Os critérios de seleção das bases e artigos serão submetidos aos quesitos de avaliação do checklist AMSTAR para garantir conformidade metodológica.
+            </p>
+          </section>
+
+          <!-- SEÇÃO 6 -->
+          <section id="sec-6" class="scroll-mt-24">
+            <div class="flex items-center space-x-2 text-xs font-mono text-mono-500 uppercase tracking-widest mb-1">
+              <span>Seção 06</span>
+            </div>
+            <h2 class="text-2xl font-bold text-mono-950 mb-4 border-b border-mono-200 pb-2">
+              6. Organização Temporal e Execução
+            </h2>
+
+            <h3 class="text-xl font-bold text-mono-900 mt-6 mb-3">6.1. Etapa de Pré-Execução vs. Execução</h3>
+            <p class="mb-4">
+              A apresentação enfatizará a separação cronológica estrita entre planejamento prévio e execução:
+            </p>
+
+            <!-- Timeline Visual Monocromática -->
+            <div class="mono-card p-6 rounded-lg my-6 space-y-4">
+              <h4 class="font-bold text-xs font-mono text-mono-900 uppercase border-b border-mono-200 pb-2">Linha do Tempo de RSL</h4>
+              
+              <div class="space-y-4 font-mono text-xs">
+                <div class="border-l-2 border-mono-900 pl-4 py-1">
+                  <span class="font-bold block text-mono-950">FASE 1: PRÉ-EXECUÇÃO (Planejamento)</span>
+                  <span class="text-mono-600 font-sans block text-sm mt-1">
+                    Definição da justificativa → Pergunta PICO/SPIDER → Elaboração do Protocolo → Registro público prévio (PROSPERO).
+                  </span>
+                </div>
+                
+                <div class="border-l-2 border-mono-400 pl-4 py-1">
+                  <span class="font-bold block text-mono-950">FASE 2: EXECUÇÃO (Coleta e Triagem)</span>
+                  <span class="text-mono-600 font-sans block text-sm mt-1">
+                    Execução das buscas nas bases → Remoção de duplicados → Triagem de títulos/resumos por 2 pareceristas → Leitura na íntegra.
+                  </span>
+                </div>
+
+                <div class="border-l-2 border-mono-200 pl-4 py-1">
+                  <span class="font-bold block text-mono-950">FASE 3: SÍNTESE E REDAÇÃO</span>
+                  <span class="text-mono-600 font-sans block text-sm mt-1">
+                    Avaliação de qualidade AMSTAR → Extração de dados → Síntese qualitativa/quantitativa → Redação final segundo PRISMA.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- SEÇÃO 7 -->
+          <section id="sec-7" class="scroll-mt-24">
+            <div class="flex items-center space-x-2 text-xs font-mono text-mono-500 uppercase tracking-widest mb-1">
+              <span>Seção 07</span>
+            </div>
+            <h2 class="text-2xl font-bold text-mono-950 mb-4 border-b border-mono-200 pb-2">
+              7. Pontos Ainda a Definir
+            </h2>
+
+            <p class="mb-4">
+              Para o refinamento final da apresentação e do plano de aula, o palestrante destaca os seguintes itens pendentes de ajuste:
+            </p>
+
+            <div class="mono-card p-5 rounded space-y-3 my-4">
+              <div class="flex items-start space-x-3 text-sm">
+                <span class="font-mono font-bold text-mono-900">[ ]</span>
+                <span><strong>Gestão de Tempo (Time-box):</strong> Calibrar o tempo exato de exposição para evitar sobrecarga de conteúdo ("densidade excessiva").</span>
+              </div>
+              <div class="flex items-start space-x-3 text-sm">
+                <span class="font-mono font-bold text-mono-900">[ ]</span>
+                <span><strong>Detalhamento dos Slides:</strong> Definir os cortes exatos do texto para manter o ritmo visual progressivo.</span>
+              </div>
+              <div class="flex items-start space-x-3 text-sm">
+                <span class="font-mono font-bold text-mono-900">[ ]</span>
+                <span><strong>Formulário de Registro Prático:</strong> Elaborar o template simplificado de protocolo para disponibilizar aos participantes.</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Rodapé do Artigo -->
+          <footer class="mt-16 pt-8 border-t border-mono-200 text-sm text-mono-500 font-mono flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+              <span>Sistematização de Roteiro Pedagógico • RSL</span>
+            </div>
+            <div>
+              <a href="#" class="hover:underline text-mono-900">Voltar ao topo ↑</a>
+            </div>
+          </footer>
+
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- Script JS Simples e Mínimo -->
+  <script>
+    // 1. Reading Progress Bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+    });
+
+    // 2. Font Resizer
+    let currentFontSize = 18;
+    const bodyEl = document.body;
+    const htmlEl = document.documentElement;
+
+    document.getElementById('btn-increase-font').addEventListener('click', () => {
+      if (currentFontSize < 22) {
+        currentFontSize += 1;
+        htmlEl.style.fontSize = currentFontSize + 'px';
+      }
+    });
+
+    document.getElementById('btn-decrease-font').addEventListener('click', () => {
+      if (currentFontSize > 15) {
+        currentFontSize -= 1;
+        htmlEl.style.fontSize = currentFontSize + 'px';
+      }
+    });
+
+    // 3. Highlight TOC Links on Scroll
+    const sections = document.querySelectorAll('section[id^="sec-"]');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    window.addEventListener('scroll', () => {
+      let currentSectionId = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+          currentSectionId = section.getAttribute('id');
+        }
+      });
+
+      tocLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${currentSectionId}`) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

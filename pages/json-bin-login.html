@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cofre de Configurações Criptografado</title>
+    <!-- Fonte Fira Code via CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bibliotecas Criptográficas via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.13/dist/modules/libsodium-wrappers.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hash-wasm@4.11.0/dist/argon2id.umd.min.js"></script>
+
+    <style>
+        :root {
+            --bg-body: #050505;
+            --bg-card: #0f0f10;
+            --bg-input: #161618;
+            --border: #27272a;
+            --border-hover: #52525b;
+            --text-main: #f4f4f5;
+            --text-muted: #71717a;
+            --accent: #ffffff;
+            --accent-inv: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Fira Code', monospace;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            text-transform: uppercase;
+        }
+
+        .status-locked { background: var(--bg-input); color: var(--text-muted); }
+        .status-unlocked { background: var(--accent); color: var(--accent-inv); font-weight: bold; }
+
+        .hidden { display: none !important; }
+
+        /* Forms & Inputs */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        input[type="password"],
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            border-radius: 2px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--border-hover);
+        }
+
+        button {
+            background-color: var(--accent);
+            color: var(--accent-inv);
+            border: 1px solid var(--accent);
+            padding: 12px 20px;
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.2s, opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            background-color: var(--border);
+            color: var(--text-muted);
+            border-color: var(--border);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-main);
+        }
+
+        /* Banner de Log / Erro */
+        .message-box {
+            padding: 12px;
+            border: 1px solid var(--border);
+            background-color: var(--bg-input);
+            font-size: 0.8rem;
+            margin-bottom: 16px;
+            word-break: break-all;
+        }
+
+        .message-box.error {
+            border-color: var(--text-main);
+            background-color: #1a1a1a;
+        }
+
+        /* Tabs & Dashboard */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            background: none;
+        }
+
+        .code-block {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            padding: 16px;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 400px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            border: 1px solid var(--border);
+            padding: 16px;
+            background-color: var(--bg-card);
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>[ COFRE DE CONFIGURAÇÕES ]</h1>
+            <div id="statusBadge" class="status-badge status-locked">LOCKED</div>
+        </header>
+
+        <!-- Mensagem de Feedback -->
+        <div id="messageBox" class="message-box hidden"></div>
+
+        <!-- TELA 1: LOCKED (Formulário de Desbloqueio) -->
+        <div id="lockedScreen">
+            <div class="form-group">
+                <label for="binSource">Fonte das Configurações (JSONBin)</label>
+                <input type="text" id="binIdInput" placeholder="Informe o BIN_ID público ou deixe o padrão">
+            </div>
+            <div class="form-group">
+                <label for="masterPassword">Senha do Cofre</label>
+                <input type="password" id="masterPassword" placeholder="Digite a chave secreta...">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button id="unlockBtn">Desbloquear Cofre</button>
+                <button id="toggleGenBtn" class="btn-secondary">Gerador de Envelope</button>
+            </div>
+        </div>
+
+        <!-- TELA 2: UNLOCKING (Loader) -->
+        <div id="unlockingScreen" class="hidden">
+            <div class="message-box">
+                [ AGUARDE ] Processando Argon2id KDF e descriptografando payload...
+            </div>
+        </div>
+
+        <!-- TELA 3: UNLOCKED (Dashboard Principal) -->
+        <div id="unlockedScreen" class="hidden">
+            <div class="nav-tabs">
+                <button class="tab-btn active" data-tab="tab-overview">Visão Geral</button>
+                <button class="tab-btn" data-tab="tab-private">Bins Privados</button>
+                <button class="tab-btn" data-tab="tab-raw">JSON Completo</button>
+                <button id="lockBtn" style="margin-left: auto;" class="btn-secondary">Bloquear Cofre</button>
+            </div>
+
+            <!-- Tab: Overview -->
+            <div id="tab-overview" class="tab-content">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Aplicação</h3>
+                        <div id="appInfo"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Serviços Cadastrados</h3>
+                        <div id="servicesInfo"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Private Bins -->
+            <div id="tab-private" class="tab-content hidden">
+                <div class="card">
+                    <h3>Consultar JSONBin Privado</h3>
+                    <div class="form-group">
+                        <label for="privateBinSelect">Selecione um Bin Privado Cadastrado:</label>
+                        <select id="privateBinSelect" style="width:100%; padding: 10px; background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); font-family: monospace;"></select>
+                    </div>
+                    <button id="fetchPrivateBtn">Buscar Dados do Bin</button>
+                </div>
+                <div id="privateBinResultCard" class="card hidden">
+                    <h3>Resultado da Consulta</h3>
+                    <pre class="code-block" id="privateBinOutput"></pre>
+                </div>
+            </div>
+
+            <!-- Tab: RAW JSON -->
+            <div id="tab-raw" class="tab-content hidden">
+                <pre class="code-block" id="rawJsonOutput"></pre>
+            </div>
+        </div>
+
+        <!-- FERRAMENTA AUXILIAR: GERADOR DE ENVELOPE (Opcional/Inline) -->
+        <div id="generatorScreen" class="hidden" style="margin-top: 24px; border-top: 1px dashed var(--border); padding-top: 20px;">
+            <h2 style="font-size: 1rem; margin-bottom: 16px;">[ GERADOR DE ENVELOPE CRIPTOGRAFADO ]</h2>
+            <div class="form-group">
+                <label for="genPassword">Senha para Criptografar</label>
+                <input type="password" id="genPassword" placeholder="Senha forte...">
+            </div>
+            <div class="form-group">
+                <label for="genJson">Conteúdo JSON Original</label>
+                <textarea id="genJson" rows="8" placeholder='{ "application": { "name": "Exemplo" } }'></textarea>
+            </div>
+            <button id="generateEnvelopeBtn">Gerar JSON Encriptado</button>
+
+            <div id="genResultArea" class="hidden" style="margin-top: 16px;">
+                <label>Copie o JSON abaixo e publique no seu JSONBin Público:</label>
+                <pre class="code-block" id="genOutput"></pre>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /**
+         * 3. Configuração Inicial do JSONBin Principal
+         */
+        const CONFIG = {
+            BIN_ID: "67c9c0fb8d266e74b77f3000", // Substiua pelo seu BIN_ID público ou altere no formulário
+            BIN_URL: "https://api.jsonbin.io/v3/b",
+            AUTO_LOAD: true
+        };
+
+        /**
+         * MÓDULO: CryptoManager
+         * Responsável por Argon2id e XChaCha20-Poly1305 via libsodium e hash-wasm.
+         */
+        class CryptoManager {
+            static async init() {
+                await sodium.ready;
+            }
+
+            static uint8ToBase64(uint8) {
+                let binary = '';
+                const len = uint8.byteLength;
+                for (let i = 0; i < len; i++) {
+                    binary += String.fromCharCode(uint8[i]);
+                }
+                return btoa(binary);
+            }
+
+            static base64ToUint8(base64) {
+                const binary = atob(base64);
+                const len = binary.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+                return bytes;
+            }
+
+            // Derivação de Chave de 256 bits via Argon2id
+            static async deriveKey(password, saltUint8, kdfParams) {
+                const keyUint8 = await hashWasm.argon2id({
+                    password: password,
+                    salt: saltUint8,
+                    parallelism: kdfParams.parallelism || 1,
+                    iterations: kdfParams.iterations || 3,
+                    memorySize: kdfParams.memory || 65536, // em KiB
+                    hashLength: 32, // 256 bits
+                    outputType: 'binary'
+                });
+                return keyUint8;
+            }
+
+            // Descriptografia XChaCha20-Poly1305
+            static async decryptEnvelope(envelope, password) {
+                await this.init();
+
+                if (envelope.version !== 1 || envelope.algorithm !== 'xchacha20-poly1305' || envelope.kdf !== 'argon2id') {
+                    throw new Error("Formato de envelope ou algoritmo incompatível.");
+                }
+
+                const salt = this.base64ToUint8(envelope.salt);
+                const nonce = this.base64ToUint8(envelope.nonce);
+                const ciphertext = this.base64ToUint8(envelope.ciphertext);
+
+                // 1. Deriva a chave
+                const key = await this.deriveKey(password, salt, envelope.kdfParams);
+
+                // 2. Descriptografa com libsodium (XChaCha20-Poly1305 AEAD IETF)
+                try {
+                    const decryptedUint8 = sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(
+                        null,
+                        ciphertext,
+                        null,
+                        nonce,
+                        key
+                    );
+                    const decodedText = new TextDecoder().decode(decryptedUint8);
+                    return JSON.parse(decodedText);
+                } catch (e) {
+                    throw new Error("Falha na autenticação criptográfica (senha incorreta ou dados corrompidos).");
+                }
+            }
+
+            // Criptografia XChaCha20-Poly1305 (Ferramenta Auxiliar)
+            static async encryptPayload(jsonObject, password, kdfParams = { memory: 65536, iterations: 3, parallelism: 1 }) {
+                await this.init();
+
+                const jsonString = JSON.stringify(jsonObject, null, 2);
+                const plainBytes = new TextEncoder().encode(jsonString);
+
+                const salt = sodium.randombytes_buf(16); // 16 bytes salt
+                const nonce = sodium.randombytes_buf(24); // 24 bytes nonce para XChaCha20
+
+                const key = await this.deriveKey(password, salt, kdfParams);
+
+                const ciphertext = sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
+                    plainBytes,
+                    null,
+                    null,
+                    nonce,
+                    key
+                );
+
+                return {
+                    version: 1,
+                    algorithm: "xchacha20-poly1305",
+                    kdf: "argon2id",
+                    kdfParams: kdfParams,
+                    salt: this.uint8ToBase64(salt),
+                    nonce: this.uint8ToBase64(nonce),
+                    ciphertext: this.uint8ToBase64(ciphertext)
+                };
+            }
+        }
+
+        /**
+         * MÓDULO: JsonBinManager
+         * Gerenciamento seguro de requisições HTTP para a API do JSONBin.
+         */
+        class JsonBinManager {
+            constructor(baseUrl = CONFIG.BIN_URL) {
+                this.baseUrl = baseUrl.replace(/\/$/, '');
+            }
+
+            async fetchBin(binId, accessKey = null, masterKey = null) {
+                const url = `${this.baseUrl}/${binId}/latest`;
+                const headers = { 'Accept': 'application/json' };
+                
+                if (accessKey) headers['X-Access-Key'] = accessKey;
+                if (masterKey) headers['X-Master-Key'] = masterKey;
+
+                try {
+                    const response = await fetch(url, { method: 'GET', headers });
+                    if (!response.ok) {
+                        if (response.status === 404) throw new Error('BIN não encontrado (404).');
+                        if (response.status === 401 || response.status === 403) throw new Error('Acesso negado ao BIN. Credenciais inválidas (401/403).');
+                        throw new Error(`Erro na comunicação com JSONBin: HTTP ${response.status}`);
+                    }
+                    const data = await response.json();
+                    return data.record ? data.record : data;
+                } catch (err) {
+                    if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                        throw new Error('Falha de rede ou restrição de CORS ao conectar ao JSONBin.');
+                    }
+                    throw err;
+                }
+            }
+        }
+
+        /**
+         * MÓDULO: CredentialManager
+         * Armazena dados sensíveis estritamente em memória volátil.
+         */
+        class CredentialManager {
+            #decryptedData = null;
+
+            setCredentials(data) {
+                this.#decryptedData = Object.freeze(JSON.parse(JSON.stringify(data)));
+            }
+
+            getCredentials() {
+                return this.#decryptedData;
+            }
+
+            getPrivateBins() {
+                return this.#decryptedData?.privateBins || [];
+            }
+
+            clear() {
+                this.#decryptedData = null;
+            }
+        }
+
+        /**
+         * MÓDULO: SessionManager
+         * Controla os estados LOCKED, UNLOCKING e UNLOCKED.
+         */
+        class SessionManager {
+            constructor(cryptoMgr, jsonBinMgr, credMgr, uiMgr) {
+                this.crypto = cryptoMgr;
+                this.jsonBin = jsonBinMgr;
+                this.cred = credMgr;
+                this.ui = uiMgr;
+                this.state = 'LOCKED';
+            }
+
+            async unlock(binId, password) {
+                if (!password) {
+                    this.ui.showError("Informe a senha do cofre.");
+                    return;
+                }
+
+                try {
+                    this.state = 'UNLOCKING';
+                    this.ui.updateState('UNLOCKING');
+                    this.ui.clearMessage();
+
+                    // 1. Buscar payload no JSONBin
+                    const targetBin = binId.trim() || CONFIG.BIN_ID;
+                    const envelope = await this.jsonBin.fetchBin(targetBin);
+
+                    // 2. Descriptografar e validar
+                    const decryptedData = await CryptoManager.decryptEnvelope(envelope, password);
+
+                    // 3. Salvar em memória e transicionar estado
+                    this.cred.setCredentials(decryptedData);
+                    this.state = 'UNLOCKED';
+                    this.ui.updateState('UNLOCKED', decryptedData);
+
+                } catch (err) {
+                    this.lock();
+                    this.ui.showError(err.message || "Erro durante o desbloqueio.");
+                }
+            }
+
+            lock() {
+                this.cred.clear();
+                this.state = 'LOCKED';
+                this.ui.updateState('LOCKED');
+            }
+        }
+
+        /**
+         * MÓDULO: UIManager
+         * Gerenciamento da interface monocromática.
+         */
+        class UIManager {
+            constructor() {
+                this.statusBadge = document.getElementById('statusBadge');
+                this.messageBox = document.getElementById('messageBox');
+                this.lockedScreen = document.getElementById('lockedScreen');
+                this.unlockingScreen = document.getElementById('unlockingScreen');
+                this.unlockedScreen = document.getElementById('unlockedScreen');
+                this.appInfo = document.getElementById('appInfo');
+                this.servicesInfo = document.getElementById('servicesInfo');
+                this.rawJsonOutput = document.getElementById('rawJsonOutput');
+                this.privateBinSelect = document.getElementById('privateBinSelect');
+            }
+
+            showError(msg) {
+                this.messageBox.textContent = `[ ERRO ] ${msg}`;
+                this.messageBox.className = "message-box error";
+                this.messageBox.classList.remove('hidden');
+            }
+
+            clearMessage() {
+                this.messageBox.textContent = '';
+                this.messageBox.className = "message-box hidden";
+            }
+
+            updateState(state, data = null) {
+                this.statusBadge.textContent = state;
+                this.statusBadge.className = `status-badge ${state === 'UNLOCKED' ? 'status-unlocked' : 'status-locked'}`;
+
+                this.lockedScreen.classList.toggle('hidden', state !== 'LOCKED');
+                this.unlockingScreen.classList.toggle('hidden', state !== 'UNLOCKING');
+                this.unlockedScreen.classList.toggle('hidden', state !== 'UNLOCKED');
+
+                if (state === 'UNLOCKED' && data) {
+                    this.renderDashboard(data);
+                }
+            }
+
+            renderDashboard(data) {
+                // Renderizar App Metadata
+                const app = data.application || {};
+                this.appInfo.innerHTML = `
+                    <p><strong>Nome:</strong> ${this.escape(app.name || 'N/A')}</p>
+                    <p><strong>Ambiente:</strong> ${this.escape(app.environment || 'N/A')}</p>
+                `;
+
+                // Renderizar Serviços
+                const services = data.credentials?.services || {};
+                let servicesHtml = '';
+                for (const [key, svc] of Object.entries(services)) {
+                    servicesHtml += `<p><strong>${this.escape(key)}:</strong> ${this.escape(svc.url || '')} [TOKEN PROTEGIDO]</p>`;
+                }
+                this.servicesInfo.innerHTML = servicesHtml || '<p>Nenhum serviço mapeado.</p>';
+
+                // Preencher Select de Bins Privados
+                const privateBins = data.privateBins || [];
+                this.privateBinSelect.innerHTML = '';
+                privateBins.forEach((bin, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.textContent = `${bin.name || 'Bin'} (${bin.binId})`;
+                    this.privateBinSelect.appendChild(opt);
+                });
+
+                // Raw JSON
+                this.rawJsonOutput.textContent = JSON.stringify(data, null, 2);
+            }
+
+            escape(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+        }
+
+        /**
+         * MÓDULO: Application (Orquestrador)
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            const jsonBinManager = new JsonBinManager();
+            const credManager = new CredentialManager();
+            const uiManager = new UIManager();
+            const session = new SessionManager(CryptoManager, jsonBinManager, credManager, uiManager);
+
+            // Preenche input com valor default
+            document.getElementById('binIdInput').value = CONFIG.BIN_ID;
+
+            // Evento Desbloquear
+            document.getElementById('unlockBtn').addEventListener('click', () => {
+                const binId = document.getElementById('binIdInput').value;
+                const pwd = document.getElementById('masterPassword').value;
+                session.unlock(binId, pwd);
+            });
+
+            // Enter key no input de senha
+            document.getElementById('masterPassword').addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') document.getElementById('unlockBtn').click();
+            });
+
+            // Evento Bloquear
+            document.getElementById('lockBtn').addEventListener('click', () => {
+                document.getElementById('masterPassword').value = '';
+                session.lock();
+            });
+
+            // Alternar Tabs da Dashboard
+            document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                    
+                    e.target.classList.add('active');
+                    document.getElementById(e.target.dataset.tab).classList.remove('hidden');
+                });
+            });
+
+            // Função Global Genérica exigida na arquitetura: fetchPrivateBin
+            window.fetchPrivateBin = async function(binId, accessKey) {
+                return await jsonBinManager.fetchBin(binId, accessKey);
+            };
+
+            // Evento Consultar Bin Privado
+            document.getElementById('fetchPrivateBtn').addEventListener('click', async () => {
+                const selectedIdx = uiManager.privateBinSelect.value;
+                const privateBins = credManager.getPrivateBins();
+                const target = privateBins[selectedIdx];
+
+                if (!target) return;
+
+                try {
+                    uiManager.clearMessage();
+                    const result = await window.fetchPrivateBin(target.binId, target.accessKey);
+                    document.getElementById('privateBinResultCard').classList.remove('hidden');
+                    document.getElementById('privateBinOutput').textContent = JSON.stringify(result, null, 2);
+                } catch (err) {
+                    uiManager.showError(`Erro ao consultar Bin Privado: ${err.message}`);
+                }
+            });
+
+            // Toggle Gerador de Envelope
+            document.getElementById('toggleGenBtn').addEventListener('click', () => {
+                const gen = document.getElementById('generatorScreen');
+                gen.classList.toggle('hidden');
+            });
+
+            // Gerar Novo Envelope Criptografado
+            document.getElementById('generateEnvelopeBtn').addEventListener('click', async () => {
+                const pwd = document.getElementById('genPassword').value;
+                const rawJson = document.getElementById('genJson').value;
+
+                if (!pwd || !rawJson) {
+                    alert("Informe a senha e o JSON original.");
+                    return;
+                }
+
+                try {
+                    const parsed = JSON.parse(rawJson);
+                    const envelope = await CryptoManager.encryptPayload(parsed, pwd);
+                    document.getElementById('genOutput').textContent = JSON.stringify(envelope, null, 2);
+                    document.getElementById('genResultArea').classList.remove('hidden');
+                } catch (err) {
+                    alert("JSON inválido ou erro de criptografia: " + err.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

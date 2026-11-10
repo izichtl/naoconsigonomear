@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research SLM — Projeto</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #131c30;
+      --panel2: #1a2740;
+      --text: #e8eef8;
+      --muted: #9aa9bd;
+      --accent: #60a5fa;
+      --green: #34d399;
+      --border: #293750;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.7 Inter, system-ui, sans-serif;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: auto;
+      padding: 45px 24px 80px;
+    }
+
+    header {
+      margin-bottom: 45px;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: clamp(34px, 6vw, 56px);
+      line-height: 1.1;
+      margin: 15px 0;
+    }
+
+    h2 {
+      font-size: 25px;
+      margin-top: 48px;
+    }
+
+    h3 {
+      font-size: 18px;
+    }
+
+    p,
+    li {
+      color: var(--muted);
+    }
+
+    strong {
+      color: var(--text);
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      margin: 15px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #173c36;
+      color: var(--green);
+      font-size: 12px;
+    }
+
+    code,
+    pre {
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+
+    pre {
+      background: #080d18;
+      color: #b9d7ff;
+      padding: 18px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 13px;
+      border: 1px solid var(--border);
+    }
+
+    .architecture {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 25px 0;
+    }
+
+    .node {
+      width: min(100%, 500px);
+      padding: 17px;
+      text-align: center;
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      border-radius: 10px;
+    }
+
+    .arrow {
+      color: var(--accent);
+      font-size: 23px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td,
+    th {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--accent);
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 55px;
+      padding-top: 20px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+      <div class="eyebrow">Projeto de Machine Learning</div>
+      <h1>Research SLM</h1>
+      <p>
+        Modelo de linguagem pequeno, especializado em geração de
+        estratégias e strings de busca científica, com aprendizado
+        incremental e atualização real dos pesos.
+      </p>
+      <span class="tag">Local-first</span>
+      <span class="tag">Apple Silicon</span>
+      <span class="tag">Continual Learning</span>
+    </header>
+
+    <section>
+      <h2>1. Visão geral</h2>
+      <div class="card">
+        <h3>Objetivo principal</h3>
+        <p>
+          Desenvolver um Small Language Model especializado em interpretar
+          contextos de pesquisa e gerar consultas bibliográficas adaptadas
+          às particularidades sintáticas e operacionais de diferentes
+          bases científicas.
+        </p>
+        <p>
+          O modelo deverá aprender novos padrões por meio de treinamento
+          incremental, atualizando seus próprios pesos, sem depender de
+          RAG ou da consulta permanente aos documentos originais.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Funcionalidades esperadas</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Interpretação</h3>
+          <p>Entender o contexto, objetivo, população e critérios da pesquisa.</p>
+        </div>
+        <div class="card">
+          <h3>Geração</h3>
+          <p>Produzir strings de busca com operadores booleanos, campos e filtros.</p>
+        </div>
+        <div class="card">
+          <h3>Especialização</h3>
+          <p>Conhecer as diferenças entre as APIs e bases científicas.</p>
+        </div>
+        <div class="card">
+          <h3>Aprendizado</h3>
+          <p>Incorporar exemplos validados mediante atualização dos pesos.</p>
+        </div>
+        <div class="card">
+          <h3>Validação</h3>
+          <p>Verificar sintaxe, campos e compatibilidade das consultas.</p>
+        </div>
+        <div class="card">
+          <h3>Evolução</h3>
+          <p>Receber novos exemplos e evoluir continuamente por checkpoints.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Arquitetura proposta</h2>
+      <div class="architecture">
+        <div class="node">
+          <strong>Entrada de pesquisa</strong>
+          <p>Contexto, objetivo e critérios</p>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="node">
+          <strong>Research SLM</strong>
+          <p>Modelo-base pré-treinado</p>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="node">
+          <strong>Search Generation Engine</strong>
+          <p>Interpretação e geração de consultas</p>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="node">
+          <strong>API Specification Validator</strong>
+          <p>Validação das regras da plataforma de destino</p>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="node">
+          <strong>Resultado</strong>
+          <p>Strings de busca estruturadas</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Modelo e infraestrutura</h2>
+      <div class="card">
+        <h3>Modelo inicial</h3>
+        <p><strong>Qwen2.5-0.5B Base</strong></p>
+        <p>
+          Modelo inicial de 500 milhões de parâmetros, apropriado para
+          experimentos de especialização e treinamento supervisionado.
+        </p>
+        <p>
+          Alternativa: Qwen2.5-1.5B Base, caso a memória disponível
+          permita experimentos maiores.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Stack tecnológica</h3>
+        <table>
+          <tr>
+            <th>Tecnologia</th>
+            <th>Responsabilidade</th>
+          </tr>
+          <tr>
+            <td>Python</td>
+            <td>Orquestração e lógica principal</td>
+          </tr>
+          <tr>
+            <td>Apple MLX</td>
+            <td>Computação em Apple Silicon</td>
+          </tr>
+          <tr>
+            <td>MLX-LM</td>
+            <td>Treinamento e fine-tuning</td>
+          </tr>
+          <tr>
+            <td>Hugging Face</td>
+            <td>Modelos e tokenizadores</td>
+          </tr>
+          <tr>
+            <td>FastAPI</td>
+            <td>Interface de serviços</td>
+          </tr>
+          <tr>
+            <td>JSONL / YAML</td>
+            <td>Dados e especificações</td>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>5. Aprendizado incremental</h2>
+      <div class="card">
+        <p>
+          O mecanismo de aprendizado deverá permitir receber novos
+          exemplos, transformá-los em dados de treinamento e atualizar
+          os parâmetros do modelo.
+        </p>
+        <pre>
+modelo.aprender(
+    contexto="Pesquisar ferramentas de observabilidade Kubernetes",
+    api="PubMed",
+    resultado=[
+        "Kubernetes observability tools",
+        "Kubernetes monitoring platforms",
+        "Kubernetes distributed tracing solutions"
+    ]
+)
+  </pre>
+        <p>
+          Fluxo interno:
+        </p>
+        <ol>
+          <li>Receber exemplo validado.</li>
+          <li>Normalizar e tokenizar os dados.</li>
+          <li>Calcular a função de perda.</li>
+          <li>Executar backpropagation.</li>
+          <li>Atualizar os pesos do modelo.</li>
+          <li>Executar testes de retenção e qualidade.</li>
+          <li>Salvar novo checkpoint.</li>
+        </ol>
+        <p>
+          O treinamento deve preservar exemplos anteriores para reduzir
+          o esquecimento catastrófico.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>6. Padrão dos documentos de treinamento</h2>
+      <p>
+        Cada exemplo deverá possuir uma estrutura padronizada, permitindo
+        treinamento misto com diferentes bases científicas.
+      </p>
+      <pre>
+{
+  "case_id": "research_001",
+  "task": "query_generation",
+
+  "context": {
+    "topic": "Diabetes tipo 2",
+    "objective": "Identificar estudos sobre intervenções digitais",
+    "population": "Adultos",
+    "period": "2020-2026"
+  },
+
+  "target": {
+    "database": "PubMed",
+    "api": "NCBI E-utilities"
+  },
+
+  "instructions": [
+    "Priorizar ensaios clínicos",
+    "Incluir sinônimos relevantes",
+    "Respeitar a sintaxe do PubMed"
+  ],
+
+  "expected_output": {
+    "queries": [
+      "(Type 2 Diabetes[MeSH Terms]) AND (Digital Health)"
+    ]
+  }
+}
+</pre>
+    </section>
+
+    <section>
+      <h2>7. Padrão de instruções por API</h2>
+      <p>
+        Cada plataforma terá especificações próprias, separadas das
+        regras gerais de geração.
+      </p>
+      <pre>
+database: PubMed
+
+syntax:
+  boolean_operators:
+    - AND
+    - OR
+    - NOT
+
+  field_tags:
+    - "[Title/Abstract]"
+    - "[MeSH Terms]"
+    - "[Author]"
+
+rules:
+  - Agrupar sinônimos com OR
+  - Combinar conceitos com AND
+  - Utilizar MeSH quando apropriado
+  - Não inventar descritores
+  - Validar a sintaxe antes de entregar
+</pre>
+    </section>
+
+    <section>
+      <h2>8. Bases científicas previstas</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>PubMed</h3>
+          <p>Pesquisa biomédica, MeSH e operadores booleanos.</p>
+          <a href="https://www.ncbi.nlm.nih.gov/books/NBK25501/">Documentação API</a>
+        </div>
+        <div class="card">
+          <h3>Europe PMC</h3>
+          <p>Literatura biomédica e campos específicos.</p>
+          <a href="https://europepmc.org/RestfulWebService">Documentação API</a>
+        </div>
+        <div class="card">
+          <h3>Scopus</h3>
+          <p>Pesquisa multidisciplinar e TITLE-ABS-KEY.</p>
+          <a href="https://dev.elsevier.com/">Documentação API</a>
+        </div>
+        <div class="card">
+          <h3>Web of Science</h3>
+          <p>Pesquisa multidisciplinar e operadores específicos.</p>
+          <a href="https://developer.clarivate.com/apis">Documentação API</a>
+        </div>
+        <div class="card">
+          <h3>IEEE Xplore</h3>
+          <p>Engenharia, computação e tecnologia.</p>
+          <a href="https://developer.ieee.org/">Documentação API</a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>9. Atualização das especificações</h2>
+      <div class="card">
+        <p>
+          O sistema deverá possuir um processo de monitoramento das
+          documentações oficiais das APIs.
+        </p>
+        <ol>
+          <li>Verificar alterações na documentação.</li>
+          <li>Identificar mudanças em operadores, campos e filtros.</li>
+          <li>Atualizar as especificações YAML.</li>
+          <li>Gerar novos exemplos de treinamento.</li>
+          <li>Validar os exemplos contra a API real.</li>
+          <li>Treinar e avaliar o modelo.</li>
+          <li>Publicar um novo checkpoint quando aprovado.</li>
+        </ol>
+        <p>
+          A atualização das regras operacionais e a atualização dos pesos
+          serão processos independentes, mas coordenados.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>10. Estrutura do projeto</h2>
+      <pre>
+research-slm/
+│
+├── models/
+│   ├── base/
+│   └── checkpoints/
+│
+├── training/
+│   ├── datasets/
+│   │   ├── pubmed.jsonl
+│   │   ├── europe_pmc.jsonl
+│   │   ├── scopus.jsonl
+│   │   ├── ieee.jsonl
+│   │   └── web_of_science.jsonl
+│   │
+│   ├── instructions/
+│   │   ├── global.yaml
+│   │   ├── pubmed.yaml
+│   │   ├── scopus.yaml
+│   │   └── ieee.yaml
+│   │
+│   ├── trainer.py
+│   └── evaluator.py
+│
+├── api_specs/
+│   ├── pubmed/
+│   ├── scopus/
+│   └── ieee/
+│
+├── engine/
+│   ├── learner.py
+│   ├── generator.py
+│   └── validator.py
+│
+└── app.py
+</pre>
+    </section>
+
+    <section>
+      <h2>11. API interna do modelo</h2>
+      <p>
+        A aplicação deverá expor uma interface simples para utilização
+        do modelo por outros sistemas.
+      </p>
+      <pre>
+class ResearchSLM:
+
+    def aprender(
+        self,
+        contexto,
+        api,
+        resultado
+    ):
+        """Atualiza os pesos com exemplos validados."""
+        pass
+
+    def perguntar(
+        self,
+        contexto,
+        api,
+        instrucoes=None
+    ):
+        """Gera strings de pesquisa."""
+        pass
+
+    def validar(
+        self,
+        consultas,
+        api
+    ):
+        """Valida as consultas geradas."""
+        pass
+
+    def salvar(self, caminho):
+        """Salva um checkpoint."""
+        pass
+
+    def carregar(self, caminho):
+        """Carrega um checkpoint."""
+        pass
+</pre>
+    </section>
+
+    <section>
+      <h2>12. Avaliação e qualidade</h2>
+      <div class="card">
+        <p>O modelo será avaliado por:</p>
+        <ul>
+          <li>Correção sintática das strings.</li>
+          <li>Aderência ao contexto apresentado.</li>
+          <li>Cobertura dos conceitos da pesquisa.</li>
+          <li>Compatibilidade com a API de destino.</li>
+          <li>Diversidade e relevância das consultas.</li>
+          <li>Retenção dos conhecimentos anteriores.</li>
+          <li>Estabilidade após sucessivas atualizações.</li>
+        </ul>
+        <p>
+          Sempre que possível, as consultas serão executadas em ambiente
+          de teste nas APIs reais, com comparação dos resultados obtidos.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>13. Cronograma inicial</h2>
+      <table>
+        <tr>
+          <th>Etapa</th>
+          <th>Atividade</th>
+          <th>Estimativa</th>
+        </tr>
+        <tr>
+          <td>01</td>
+          <td>Ambiente MLX e preparação do modelo</td>
+          <td>1-2 dias</td>
+        </tr>
+        <tr>
+          <td>02</td>
+          <td>Padronização dos datasets</td>
+          <td>2-3 dias</td>
+        </tr>
+        <tr>
+          <td>03</td>
+          <td>Treinamento supervisionado</td>
+          <td>2-4 dias</td>
+        </tr>
+        <tr>
+          <td>04</td>
+          <td>Implementação de aprender()</td>
+          <td>2-4 dias</td>
+        </tr>
+        <tr>
+          <td>05</td>
+          <td>Validação e retenção</td>
+          <td>2-4 dias</td>
+        </tr>
+        <tr>
+          <td>06</td>
+          <td>API e integração</td>
+          <td>1-3 dias</td>
+        </tr>
+      </table>
+      <p>
+        Estimativa preliminar de 8 a 16 dias úteis para um protótipo,
+        dependendo da experiência e da disponibilidade de dados.
+      </p>
+    </section>
+
+    <section>
+      <h2>14. Decisões técnicas iniciais</h2>
+      <div class="card">
+        <p><strong>Modelo:</strong> Qwen2.5-0.5B Base</p>
+        <p><strong>Framework:</strong> Apple MLX / MLX-LM</p>
+        <p><strong>Linguagem:</strong> Python</p>
+        <p><strong>Treinamento:</strong> Full Fine-tuning / SFT</p>
+        <p><strong>Aprendizado:</strong> Incremental, com replay de exemplos</p>
+        <p><strong>Persistência:</strong> Checkpoints versionados</p>
+        <p><strong>Arquitetura:</strong> Um único modelo especializado em múltiplas APIs</p>
+        <p><strong>Execução:</strong> Local no MacBook M4</p>
+      </div>
+    </section>
+
+    <footer>
+      <strong>Research SLM</strong>
+      <p>
+        Projeto conceitual de um modelo pequeno, especializado e
+        continuamente treinável para geração de estratégias de
+        pesquisa científica.
+      </p>
+      <p>Documento de arquitetura — Versão 1.0</p>
+    </footer>
+
+  </div>
+</body>
+
+</html>

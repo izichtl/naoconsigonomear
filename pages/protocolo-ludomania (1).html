@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Protocolo de revisão sistemática: ludomania</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --ink:#000000; --ink2:#4d4d4d; --ink3:#8c8c8c;
+  --line:#dedede; --soft:#f4f4f4; --chip:#ebebeb; --tag:#f5f5f5; --field:#f5f5f5;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --sans:"Inter",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --data:"Lora",Georgia,"Times New Roman",serif;
+  --head:56px;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + var(--head) + 8px);-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;font-weight:400;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* Barra superior */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{height:var(--head);display:flex;align-items:center;gap:12px;padding:0 16px;max-width:720px;margin:0 auto}
+.top-where{flex:1;min-width:0}
+.top-sec{font-weight:500;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25}
+.top-save{font-size:12px;color:var(--ink3);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn-index{border:1px solid var(--ink);background:var(--ink);color:var(--bg);border-radius:999px;width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.btn-font{border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:500;white-space:nowrap;flex:none}
+.btn-font:disabled{opacity:.55;cursor:wait}
+.progress{height:2px;background:var(--line)}
+.progress span{display:block;height:100%;width:0;background:var(--ink);transition:width .15s linear}
+.loading{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(255,255,255,.82)}
+.loading[hidden]{display:none}
+.loading-box{display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--bg);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.12);font-size:15px}
+.loading-spinner{width:20px;height:20px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:loading-spin .75s linear infinite}
+@keyframes loading-spin{to{transform:rotate(360deg)}}
+
+main{max-width:720px;margin:0 auto;padding:0 16px 48px}
+
+/* Abertura */
+.hero{padding:36px 0 28px;border-bottom:1px solid var(--line)}
+.hero-kind{font-size:14px;color:var(--ink2);margin:0 0 10px}
+.hero h1{font-size:28px;line-height:1.2;font-weight:600;margin:0 0 16px;letter-spacing:-.01em}
+.hero p{margin:0 0 12px;color:var(--ink2);font-size:16px}
+.howto{margin:20px 0 0;padding:14px 16px;background:var(--soft);border-radius:10px;font-size:15px;color:var(--ink2)}
+.howto b{color:var(--ink);font-weight:500}
+
+/* Seções */
+.sec{margin-top:15px}
+.sec-band{background:var(--tag);margin:0 -16px 16px;padding:20px 16px}
+.sec-band h2{font-size:22px;font-weight:700;line-height:1.25;margin:0;color:var(--ink)}
+.sec-d{color:var(--ink);font-weight:700;font-size:15px;margin:6px 0 0}
+
+/* Linha do tempo dos itens */
+.items{position:relative}
+.item{position:relative;padding:20px 0 22px;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.item-n{font-family:var(--sans);font-size:13px;color:var(--ink)}
+.item-h h3{font-size:18px;font-weight:500;margin:0;line-height:1.3;color:var(--ink)}
+.hint{margin:6px 0 12px;color:var(--ink2);font-size:15px;font-style:italic;line-height:1.5}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.badge{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--ink2);background:transparent;text-decoration:none;line-height:1.6}
+.badge.crit{border-color:var(--ink);color:var(--ink)}
+
+/* Campos */
+.inp,textarea.inp{font-family:var(--data);width:100%;border:1px solid var(--line);border-radius:6px;background:#fafafa;padding:11px 13px;font-size:16px;line-height:1.55;resize:none;display:block}
+textarea.inp{min-height:52px;overflow:hidden}
+.inp:focus{border-color:var(--ink);outline:none}
+.inp.code{font-size:15px;line-height:1.6}
+.sub{margin-bottom:12px}
+.sub:last-child{margin-bottom:0}
+.sub-l{display:block;font-size:14px;font-weight:500;margin:0 0 5px}
+.sub-l small{font-weight:400;color:var(--ink3);margin-left:4px}
+
+/* Tags */
+.tags{display:flex;flex-wrap:wrap;gap:7px;border:1px solid var(--line);border-radius:6px;padding:9px;background:#ffffff}
+.tags:focus-within{border-color:var(--ink)}
+.chip{font-family:var(--data);display:inline-flex;align-items:center;max-width:100%;background:var(--tag);border-radius:8px;font-size:15px;line-height:1.35}
+.chip-t{padding:6px 2px 6px 10px;border:0;background:none;text-align:left;cursor:text}
+.chip-x{border:0;background:none;padding:6px 10px 6px 6px;color:var(--ink3);font-size:17px;line-height:1}
+.tags input{font-family:var(--data);flex:1 1 140px;min-width:120px;border:0;background:transparent;padding:6px 4px;font-size:16px;outline:none}
+
+/* Tabelas */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;font-size:14px;min-width:100%}
+th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:500;white-space:nowrap;font-size:13px}
+td{min-width:130px;line-height:1.45;font-family:var(--data)}
+td.id{min-width:64px}
+td[contenteditable]{outline:none}
+td[contenteditable]:focus{background:var(--soft)}
+td[contenteditable]:empty::before{content:attr(data-ph);color:var(--ink3)}
+td.del,th.del{min-width:0;width:40px;border-right:0;padding:0;text-align:center}
+td.del button{border:0;background:none;color:var(--ink3);font-size:18px;width:40px;height:40px}
+tr:last-child td{border-bottom:0}
+.tbl-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px;color:var(--ink3)}
+.btn-line{border:1px solid var(--ink);background:transparent;border-radius:999px;padding:6px 14px;font-size:14px}
+
+/* PRISMA */
+.prisma{display:flex;flex-direction:column;align-items:stretch}
+.pstage{font-size:13px;color:var(--ink3);margin:14px 0 6px}
+.pstage:first-child{margin-top:0}
+.pbox{border:1px solid var(--line);border-radius:6px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--field)}
+.pbox.calc{background:var(--soft);border-color:var(--ink)}
+.pbox.side{margin-left:22px;border-style:dashed}
+.pbox span{font-size:15px;line-height:1.35}
+.pbox input{width:84px;text-align:right;border:1px solid var(--line);border-radius:4px;padding:6px 8px;font-size:16px;font-family:var(--data);background:var(--field)}
+.pbox output{font-family:var(--data);font-size:18px;font-weight:500}
+.parrow{align-self:center;width:1px;height:14px;background:var(--ink3)}
+.pwarn{font-size:13px;color:var(--ink);margin-top:10px;display:none}
+
+/* AMSTAR */
+.am{display:flex;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
+.am:last-child{border-bottom:0}
+.am input[type=checkbox]{width:22px;height:22px;margin:2px 0 0;accent-color:var(--ink);flex:none}
+.am-b{flex:1;min-width:0}
+.am-q{font-size:16px;line-height:1.45;margin:0}
+.am-q b{font-family:var(--sans);font-weight:500;font-size:13px;margin-right:6px}
+.am-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.am-crit{font-size:12px;border:1px solid var(--ink);border-radius:999px;padding:2px 9px}
+.am-link{font-size:12px;background:var(--chip);border:0;border-radius:999px;padding:3px 10px;line-height:1.6}
+.am-where{font-size:15px;margin:8px 0 0;line-height:1.5}
+.am-where span{font-weight:500}
+.am-note{font-size:14px;color:var(--ink2);font-style:italic;margin:8px 0 0}
+.am-sum{font-size:15px;color:var(--ink2);margin:0 0 4px}
+
+/* Rodapé */
+.foot{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--ink3)}
+.btn-reset{margin-top:12px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 16px;font-size:14px;color:var(--ink2)}
+.btn-reset.armed{border-color:var(--ink);color:var(--ink);font-weight:500}
+
+/* Índice (folha inferior) */
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;background:var(--bg);border-radius:16px 16px 0 0;max-height:82vh;max-height:82dvh;display:flex;flex-direction:column;transform:translateY(102%);transition:transform .25s ease;padding-bottom:env(safe-area-inset-bottom,0px);border-top:1px solid var(--line)}
+body.open .sheet-bg{opacity:1;pointer-events:auto}
+body.open .sheet{transform:none}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.sheet-h b{font-weight:600;font-size:17px}
+.sheet-h button{border:0;background:var(--chip);border-radius:999px;padding:6px 14px;font-size:14px}
+.export-controls{display:contents}
+.sheet-exports{display:none}
+.sheet-list{overflow-y:auto;padding:6px 18px 20px;-webkit-overflow-scrolling:touch}
+.ix-sec{display:flex;gap:10px;width:100%;text-align:left;border:0;background:none;padding:14px 0 6px;font-weight:600;font-size:16px}
+.ix-sec span{color:var(--ink);font-weight:300;min-width:24px}
+.ix-it{display:flex;gap:10px;width:100%;text-align:left;border:0;background:none;padding:7px 0 7px 34px;font-size:15px;color:var(--ink2)}
+.ix-it span{font-family:var(--sans);font-size:12px;color:var(--ink);min-width:30px;padding-top:2px}
+.ix-it.done{color:var(--ink)}
+
+@media (min-width:760px){
+  .hero h1{font-size:34px}
+}
+@media (max-width:759px){
+  html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 150px)}
+  body{font-size:18px;background:var(--bg);color:var(--ink)}
+  .top-in{position:relative;height:auto;min-height:var(--head);display:flex;flex-wrap:wrap;align-content:center;gap:8px;padding:10px 24px}
+  .top-where{flex:0 0 100%;padding-right:48px}
+  .top-sec{font-size:16px}
+  .top-save{font-size:13px}
+  .btn-index{position:absolute;top:10px;right:24px;width:40px;height:40px;background:var(--ink);color:var(--bg)}
+  .top .export-controls{display:none}
+  .sheet-exports{display:block;padding:10px 18px 6px}
+  .sheet-exports .export-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
+  .sheet-exports .btn-font{width:100%;min-width:0;height:36px;padding:6px 8px;font-size:12px;line-height:1;white-space:nowrap;text-align:center;background:transparent;color:var(--ink);border-color:var(--ink)}
+  main{padding-left:24px;padding-right:24px}
+  .sec-band{margin-left:-24px;margin-right:-24px;padding-left:24px;padding-right:24px;background:var(--tag);color:var(--ink)}
+  .hero h1{font-size:31px}
+  .sec-band h2{font-size:24px}
+  .item-h h3{font-size:20px}
+  .hint{font-size:16px}
+  .inp,textarea.inp{font-size:18px;background:#fafafa;border-color:var(--line);color:var(--ink)}
+  textarea.inp{min-height:76px}
+  .tags{background:var(--bg);border-color:var(--line)}
+  .tags input{font-size:18px;color:var(--ink)}
+  .chip{background:var(--tag);color:var(--ink)}
+  .tbl-wrap{border-color:var(--line)}
+  th{background:var(--soft);color:var(--ink)}
+}
+#printDoc{display:none}
+@media print{
+  @page{size:A4;margin:18mm 16mm}
+  :root{padding:0}
+  body{background:#fff;font-size:11pt;line-height:1.5}
+  body::before,.top,main,.sheet,.sheet-bg{display:none!important}
+  #printDoc{display:block;color:#000}
+  .pd-kind{font-family:var(--sans);font-size:10pt;color:#555;margin:0 0 6pt}
+  .pd-title{font-family:var(--sans);font-size:18pt;font-weight:700;line-height:1.25;margin:0 0 18pt}
+  .pd-sec{font-family:var(--sans);font-size:13pt;font-weight:700;background:#f5f5f5;padding:7pt 9pt;margin:20pt 0 10pt;break-after:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pd-it{font-family:var(--sans);font-size:11pt;font-weight:600;margin:12pt 0 4pt;break-after:avoid}
+  .pd-v,.pd-v li,.pd-tbl td{font-family:var(--data)}
+  .pd-v{margin:0 0 4pt;white-space:pre-wrap}
+  ul.pd-v{padding-left:16pt;white-space:normal}
+  .pd-lab{font-family:var(--sans);font-weight:600}
+  .pd-tbl{border-collapse:collapse;width:100%;font-size:8.5pt;margin:4pt 0 6pt;break-inside:auto}
+  .pd-tbl th,.pd-tbl td{border:0.6pt solid #999;padding:3pt 4pt;vertical-align:top;text-align:left;min-width:0}
+  .pd-tbl th{font-family:var(--sans);font-weight:600;background:#f5f5f5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pd-tbl tr{break-inside:avoid}
+  .pd-am{margin:0 0 8pt;break-inside:avoid}
+  .pd-am p{margin:0 0 2pt}
+  .pd-note{font-style:italic;color:#444}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="top-where">
+      <div class="top-sec" id="topSec">Protocolo de revisão sistemática</div>
+      <div class="top-save" id="topSave">Alterações salvas neste aparelho</div>
+    </div>
+    <div class="export-controls" id="exportControls">
+      <button class="btn-font" id="exportBtn" type="button">Exportar protocolo</button>
+      <button class="btn-font" id="exportDocxBtn" type="button">Exportar DOCX</button>
+      <button class="btn-font" id="exportTablesBtn" type="button">Exportar tabelas</button>
+      <button class="btn-font" id="exportZipBtn" type="button">Exportar ZIP</button>
+    </div>
+    <button class="btn-index" id="openIx" aria-haspopup="dialog" aria-label="Abrir índice"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 4.5h14M2 9h14M2 13.5h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg></button>
+  </div>
+  <div class="progress"><span id="bar"></span></div>
+</header>
+<div class="loading" id="docxLoading" role="status" aria-live="polite" aria-label="Gerando arquivo DOCX" hidden>
+  <div class="loading-box"><span class="loading-spinner" aria-hidden="true"></span><span>Gerando arquivo DOCX…</span></div>
+</div>
+
+<main id="main">
+  <section class="hero">
+    <p class="hero-kind">Protocolo de revisão sistemática em psicologia</p>
+    <h1 id="heroTitle">Intervenções psicológicas no tratamento da ludomania (transtorno do jogo): uma revisão sistemática da produção científica brasileira.</h1>
+    <p>O protocolo segue a ordem em que a revisão acontece: primeiro o que se define antes da busca, depois a busca e a seleção, a extração dos dados, a qualidade dos estudos e, por fim, a síntese e a análise.</p>
+    <div class="howto">
+      Cada item traz, em itálico, <b>o que precisa ser preenchido</b>. Logo abaixo está o conteúdo deste projeto, que você pode editar. Em listas, digite e use <b>vírgula</b> ou <b>Enter</b> para criar um item; toque em um item para corrigi-lo. Tudo fica salvo automaticamente neste aparelho.
+    </div>
+  </section>
+  <div id="sections"><p id="nojs" style="margin-top:32px;padding:14px 16px;border:1px solid var(--ink);border-radius:10px;font-size:15px">Você está vendo uma versão só de leitura: este app não executa a página. Para editar e salvar, abra o arquivo num navegador (Chrome, Safari, Firefox ou Edge).</p><section class="sec" id="s-identificacao" data-title="Identificação e registro" data-n="01"><div class="sec-band"><h2>01 Identificação e registro</h2><p class="sec-d">Quem conduz a revisão, quando ela acontece e onde o protocolo fica registrado.</p></div><div class="items"><article class="item filled" id="i-titulo"><div class="item-h"><h3>1.1 Título</h3></div><p class="hint">O nome da revisão, deixando claros o tema, a população e o tipo de estudo.</p><textarea class="inp" rows="4" spellcheck="true">Intervenções psicológicas no tratamento da ludomania (transtorno do jogo): uma revisão sistemática da produção científica brasileira.</textarea></article><article class="item filled" id="i-registro"><div class="item-h"><h3>1.2 Registro do protocolo</h3></div><p class="hint">Onde o protocolo será registrado antes da busca começar, e o número do registro.</p><textarea class="inp" rows="3" spellcheck="true">PROSPERO ou OSF Registries. Número de registro: a definir após a submissão.</textarea></article><article class="item filled" id="i-datas"><div class="item-h"><h3>1.3 Datas da pesquisa</h3></div><p class="hint">Quando a pesquisa começa, quando a busca será feita e quando deve terminar.</p><div><div class="sub"><label class="sub-l" for="datas-inicio">Início previsto</label><input class="inp" type="date" id="datas-inicio" value="2026-11-06"></div><div class="sub"><label class="sub-l" for="datas-busca">Data da busca nas bases</label><input class="inp" type="date" id="datas-busca" value="2026-11-06"></div><div class="sub"><label class="sub-l" for="datas-fim">Conclusão prevista</label><input class="inp" type="date" id="datas-fim" value="2026-11-06"></div></div></article><article class="item filled" id="i-responsavel"><div class="item-h"><h3>1.4 Responsável pela pesquisa</h3></div><p class="hint">Nome do pesquisador que responde pela revisão.</p><input class="inp" type="text" placeholder="Nome do pesquisador responsável" value="Não definido"></article><article class="item filled" id="i-participantes"><div class="item-h"><h3>1.5 Participantes</h3></div><p class="hint">Quem participa da revisão e qual o papel de cada um.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Revisor 1: triagem e extração">Revisor 1: triagem e extração</button><button class="chip-x" type="button" aria-label="Remover Revisor 1: triagem e extração">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Revisor 2: triagem e extração">Revisor 2: triagem e extração</button><button class="chip-x" type="button" aria-label="Remover Revisor 2: triagem e extração">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Revisor 3: resolução de divergências">Revisor 3: resolução de divergências</button><button class="chip-x" type="button" aria-label="Remover Revisor 3: resolução de divergências">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Participantes" value=""></div></article></div></section><section class="sec" id="s-introducao" data-title="Introdução e justificativa" data-n="02"><div class="sec-band"><h2>02 Introdução e justificativa</h2><p class="sec-d">Por que esta revisão existe e o que ela quer alcançar.</p></div><div class="items"><article class="item filled" id="i-contexto"><div class="item-h"><h3>2.1 Contexto geral</h3></div><p class="hint">O tema da pesquisa e o que se pretende identificar na literatura.</p><textarea class="inp" rows="12" spellcheck="true">A pesquisa pretende identificar e analisar o conhecimento científico produzido no Brasil sobre intervenções psicológicas voltadas ao tratamento da ludomania e dos problemas relacionados às apostas. Busca-se compreender quais abordagens psicológicas são utilizadas, quais tratamentos e estratégias de intervenção são descritos e quais resultados são apresentados pela literatura.</textarea></article><article class="item filled" id="i-justificativa"><div class="item-h"><h3>2.2 Justificativa da revisão sistemática</h3></div><p class="hint">Por que uma revisão sistemática é necessária: a lacuna que ela preenche e a sua relevância.</p><textarea class="inp" rows="12" spellcheck="true">Não há um panorama sistematizado da produção científica brasileira sobre intervenções psicológicas para a ludomania e os problemas relacionados às apostas. Reunir e analisar essa produção permite identificar o que já foi pesquisado, quais práticas de cuidado estão documentadas e quais aspectos ainda necessitam de investigação, oferecendo base para a prática clínica e para pesquisas futuras.</textarea></article><article class="item filled" id="i-objetivo"><div class="item-h"><h3>2.3 Objetivo</h3></div><p class="hint">O que a revisão quer construir ao final.</p><textarea class="inp" rows="7" spellcheck="true">Construir um panorama da produção científica brasileira sobre o tratamento psicológico da ludomania, identificando o que já foi pesquisado, quais práticas de cuidado estão documentadas e quais aspectos ainda necessitam de investigação.</textarea></article></div></section><section class="sec" id="s-pergunta" data-title="Pergunta de pesquisa" data-n="03"><div class="sec-band"><h2>03 Pergunta de pesquisa</h2><p class="sec-d">Definida antes da busca. Orienta os termos, os critérios e a análise.</p></div><div class="items"><article class="item filled" id="i-pergunta_norteadora"><div class="item-h"><h3>3.1 Pergunta norteadora</h3></div><p class="hint">Uma pergunta única e clara que a revisão vai responder.</p><textarea class="inp" rows="7" spellcheck="true">Quais intervenções psicológicas para o tratamento da ludomania (transtorno do jogo) e dos problemas relacionados às apostas são descritas na produção científica brasileira, e quais resultados elas apresentam?</textarea></article><article class="item filled" id="i-pico"><div class="item-h"><h3>3.2 Estratégia PICO</h3></div><p class="hint">Desmembra a pergunta em população, intervenção, comparação e desfecho. Indicada para estudos de intervenção.</p><div><div class="sub"><label class="sub-l" for="pico-p">P<small>População</small></label><textarea class="inp" rows="4" id="pico-p">Pessoas com ludomania (transtorno do jogo) ou problemas relacionados às apostas, em estudos brasileiros.</textarea></div><div class="sub"><label class="sub-l" for="pico-i">I<small>Intervenção</small></label><textarea class="inp" rows="3" id="pico-i">Intervenções psicológicas: abordagens, técnicas e estratégias terapêuticas.</textarea></div><div class="sub"><label class="sub-l" for="pico-c">C<small>Comparação</small></label><textarea class="inp" rows="3" id="pico-c">Outras abordagens psicológicas, ou ausência de comparação (não obrigatória).</textarea></div><div class="sub"><label class="sub-l" for="pico-o">O<small>Desfecho</small></label><textarea class="inp" rows="2" id="pico-o">Resultados terapêuticos relatados pelos estudos.</textarea></div></div></article><article class="item filled" id="i-spider"><div class="item-h"><h3>3.3 Estratégia SPIDER</h3></div><p class="hint">Alternativa ao PICO para estudos qualitativos e mistos, como relatos de experiência e estudos de caso.</p><div><div class="sub"><label class="sub-l" for="spider-s">S<small>Amostra</small></label><textarea class="inp" rows="2" id="spider-s">Pessoas com ludomania ou problemas com apostas atendidas no Brasil.</textarea></div><div class="sub"><label class="sub-l" for="spider-pi">PI<small>Fenômeno de interesse</small></label><textarea class="inp" rows="2" id="spider-pi">Intervenções psicológicas e experiências de atendimento.</textarea></div><div class="sub"><label class="sub-l" for="spider-d">D<small>Desenho</small></label><textarea class="inp" rows="4" id="spider-d">Estudos de caso, relatos de experiência, estudos qualitativos, quantitativos e mistos, teses e dissertações.</textarea></div><div class="sub"><label class="sub-l" for="spider-e">E<small>Avaliação</small></label><textarea class="inp" rows="2" id="spider-e">Resultados, percepções e experiências de cuidado relatadas.</textarea></div><div class="sub"><label class="sub-l" for="spider-r">R<small>Tipo de pesquisa</small></label><textarea class="inp" rows="2" id="spider-r">Qualitativa, quantitativa e mista.</textarea></div></div></article></div></section><section class="sec" id="s-busca" data-title="Estratégia de busca" data-n="04"><div class="sec-band"><h2>04 Estratégia de busca</h2><p class="sec-d">Onde e como os estudos serão procurados.</p></div><div class="items"><article class="item filled" id="i-bases"><div class="item-h"><h3>4.1 Bases de dados</h3></div><p class="hint">As bases nacionais e internacionais que serão consultadas.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar BVS">BVS</button><button class="chip-x" type="button" aria-label="Remover BVS">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar LILACS">LILACS</button><button class="chip-x" type="button" aria-label="Remover LILACS">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar SciELO">SciELO</button><button class="chip-x" type="button" aria-label="Remover SciELO">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar PePSIC">PePSIC</button><button class="chip-x" type="button" aria-label="Remover PePSIC">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar PubMed">PubMed</button><button class="chip-x" type="button" aria-label="Remover PubMed">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar PsycINFO">PsycINFO</button><button class="chip-x" type="button" aria-label="Remover PsycINFO">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Scopus">Scopus</button><button class="chip-x" type="button" aria-label="Remover Scopus">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Web of Science">Web of Science</button><button class="chip-x" type="button" aria-label="Remover Web of Science">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar OpenAlex">OpenAlex</button><button class="chip-x" type="button" aria-label="Remover OpenAlex">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Bases de dados" value=""></div></article><article class="item filled" id="i-cinzenta"><div class="item-h"><h3>4.2 Teses, dissertações e literatura cinzenta</h3></div><p class="hint">Fontes fora dos periódicos que também serão pesquisadas.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Biblioteca Digital Brasileira de Teses e Dissertações (BDTD)">Biblioteca Digital Brasileira de Teses e Dissertações (BDTD)</button><button class="chip-x" type="button" aria-label="Remover Biblioteca Digital Brasileira de Teses e Dissertações (BDTD)">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Catálogo de Teses e Dissertações da CAPES">Catálogo de Teses e Dissertações da CAPES</button><button class="chip-x" type="button" aria-label="Remover Catálogo de Teses e Dissertações da CAPES">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Teses, dissertações e literatura cinzenta" value=""></div></article><article class="item filled" id="i-descritores"><div class="item-h"><h3>4.3 Descritores e palavras-chave</h3></div><p class="hint">Os termos de busca, em português e inglês, conferidos no DeCS e no MeSH.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar ludomania">ludomania</button><button class="chip-x" type="button" aria-label="Remover ludomania">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar transtorno do jogo">transtorno do jogo</button><button class="chip-x" type="button" aria-label="Remover transtorno do jogo">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar jogo patológico">jogo patológico</button><button class="chip-x" type="button" aria-label="Remover jogo patológico">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar jogo compulsivo">jogo compulsivo</button><button class="chip-x" type="button" aria-label="Remover jogo compulsivo">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar apostas">apostas</button><button class="chip-x" type="button" aria-label="Remover apostas">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar psicoterapia">psicoterapia</button><button class="chip-x" type="button" aria-label="Remover psicoterapia">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar intervenção psicológica">intervenção psicológica</button><button class="chip-x" type="button" aria-label="Remover intervenção psicológica">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar tratamento">tratamento</button><button class="chip-x" type="button" aria-label="Remover tratamento">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar gambling disorder">gambling disorder</button><button class="chip-x" type="button" aria-label="Remover gambling disorder">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar pathological gambling">pathological gambling</button><button class="chip-x" type="button" aria-label="Remover pathological gambling">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar problem gambling">problem gambling</button><button class="chip-x" type="button" aria-label="Remover problem gambling">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar psychotherapy">psychotherapy</button><button class="chip-x" type="button" aria-label="Remover psychotherapy">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar psychological intervention">psychological intervention</button><button class="chip-x" type="button" aria-label="Remover psychological intervention">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Brazil">Brazil</button><button class="chip-x" type="button" aria-label="Remover Brazil">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Descritores e palavras-chave" value=""></div></article><article class="item filled" id="i-string"><div class="item-h"><h3>4.4 String de busca com operadores</h3></div><p class="hint">A combinação dos termos com operadores booleanos (AND, OR, NOT), adaptada para cada base.</p><textarea class="inp code" rows="17" spellcheck="false">("ludomania" OR "transtorno do jogo" OR "jogo patológico" OR "jogo compulsivo" OR apostas)
+AND (psicoterapia OR "intervenção psicológica" OR tratamento OR terapia)
+AND (Brasil OR brasileir*)
+
+("gambling disorder" OR "pathological gambling" OR "problem gambling")
+AND (psychotherapy OR "psychological intervention" OR treatment)
+AND (Brazil OR Brazilian)</textarea></article><article class="item filled" id="i-filtros"><div class="item-h"><h3>4.5 Filtros e limites</h3></div><p class="hint">Recortes aplicados na busca, como idioma, período e local.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Estudos realizados no Brasil">Estudos realizados no Brasil</button><button class="chip-x" type="button" aria-label="Remover Estudos realizados no Brasil">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Idiomas: português, inglês e espanhol">Idiomas: português, inglês e espanhol</button><button class="chip-x" type="button" aria-label="Remover Idiomas: português, inglês e espanhol">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Sem limite de data inicial">Sem limite de data inicial</button><button class="chip-x" type="button" aria-label="Remover Sem limite de data inicial">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Filtros e limites" value=""></div></article></div></section><section class="sec" id="s-elegibilidade" data-title="Critérios de elegibilidade" data-n="05"><div class="sec-band"><h2>05 Critérios de elegibilidade</h2><p class="sec-d">As regras que decidem se um estudo entra ou não na revisão.</p></div><div class="items"><article class="item filled" id="i-crit_gerais"><div class="item-h"><h3>5.1 Critérios gerais</h3></div><p class="hint">Regras amplas que valem para qualquer estudo: tipo de estudo, origem e formato.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Estudos primários">Estudos primários</button><button class="chip-x" type="button" aria-label="Remover Estudos primários">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Produção científica brasileira">Produção científica brasileira</button><button class="chip-x" type="button" aria-label="Remover Produção científica brasileira">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Artigos">Artigos</button><button class="chip-x" type="button" aria-label="Remover Artigos">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Estudos de caso">Estudos de caso</button><button class="chip-x" type="button" aria-label="Remover Estudos de caso">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Relatos de experiência">Relatos de experiência</button><button class="chip-x" type="button" aria-label="Remover Relatos de experiência">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Teses">Teses</button><button class="chip-x" type="button" aria-label="Remover Teses">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Dissertações">Dissertações</button><button class="chip-x" type="button" aria-label="Remover Dissertações">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Critérios gerais" value=""></div></article><article class="item filled" id="i-crit_inclusao"><div class="item-h"><h3>5.2 Critérios de inclusão</h3></div><p class="hint">Características específicas do tema que o estudo precisa ter para ser incluído.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Aborda intervenção psicológica para ludomania ou problemas com apostas">Aborda intervenção psicológica para ludomania ou problemas com apostas</button><button class="chip-x" type="button" aria-label="Remover Aborda intervenção psicológica para ludomania ou problemas com apostas">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Descreve abordagem, técnica ou estratégia terapêutica">Descreve abordagem, técnica ou estratégia terapêutica</button><button class="chip-x" type="button" aria-label="Remover Descreve abordagem, técnica ou estratégia terapêutica">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Apresenta experiência de atendimento ou resultados">Apresenta experiência de atendimento ou resultados</button><button class="chip-x" type="button" aria-label="Remover Apresenta experiência de atendimento ou resultados">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Realizado no Brasil">Realizado no Brasil</button><button class="chip-x" type="button" aria-label="Remover Realizado no Brasil">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Critérios de inclusão" value=""></div></article><article class="item filled" id="i-crit_exclusao"><div class="item-h"><h3>5.3 Critérios de exclusão</h3></div><p class="hint">Características que tiram o estudo da revisão, mesmo que ele trate do tema.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Estudos secundários (revisões)">Estudos secundários (revisões)</button><button class="chip-x" type="button" aria-label="Remover Estudos secundários (revisões)">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Sem intervenção psicológica">Sem intervenção psicológica</button><button class="chip-x" type="button" aria-label="Remover Sem intervenção psicológica">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Realizado fora do Brasil">Realizado fora do Brasil</button><button class="chip-x" type="button" aria-label="Remover Realizado fora do Brasil">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Editoriais, cartas e resumos de eventos">Editoriais, cartas e resumos de eventos</button><button class="chip-x" type="button" aria-label="Remover Editoriais, cartas e resumos de eventos">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Texto completo indisponível">Texto completo indisponível</button><button class="chip-x" type="button" aria-label="Remover Texto completo indisponível">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Critérios de exclusão" value=""></div></article><article class="item filled" id="i-crit_qualidade"><div class="item-h"><h3>5.4 Requisitos de qualidade</h3></div><p class="hint">O mínimo de qualidade que o estudo precisa ter para seguir na revisão.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Método descrito">Método descrito</button><button class="chip-x" type="button" aria-label="Remover Método descrito">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Intervenção descrita com clareza">Intervenção descrita com clareza</button><button class="chip-x" type="button" aria-label="Remover Intervenção descrita com clareza">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Resultados apresentados">Resultados apresentados</button><button class="chip-x" type="button" aria-label="Remover Resultados apresentados">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Requisitos de qualidade" value=""></div></article></div></section><section class="sec" id="s-selecao" data-title="Seleção dos estudos" data-n="06"><div class="sec-band"><h2>06 Seleção dos estudos</h2><p class="sec-d">O caminho entre os resultados da busca e os estudos incluídos.</p></div><div class="items"><article class="item filled" id="i-duplicatas"><div class="item-h"><h3>6.1 Remoção de duplicatas</h3></div><p class="hint">Como e com qual ferramenta os registros repetidos serão removidos.</p><textarea class="inp" rows="4" spellcheck="true">As referências encontradas serão exportadas para um gerenciador (Rayyan ou Zotero), onde as duplicatas serão removidas antes da triagem.</textarea></article><article class="item filled" id="i-triagem_resumo"><div class="item-h"><h3>6.2 Triagem por título e resumo</h3></div><p class="hint">Como será feita a primeira leitura, aplicando os critérios de elegibilidade.</p><textarea class="inp" rows="6" spellcheck="true">Os revisores leem títulos e resumos de forma independente e aplicam os critérios de elegibilidade. Estudos que claramente não atendem aos critérios são excluídos nesta etapa.</textarea></article><article class="item filled" id="i-triagem_completo"><div class="item-h"><h3>6.3 Triagem por texto completo</h3></div><p class="hint">Como será feita a leitura integral dos estudos que passaram pela primeira triagem.</p><textarea class="inp" rows="4" spellcheck="true">Os estudos restantes são lidos na íntegra. Cada exclusão é registrada com o critério aplicado e a justificativa.</textarea></article><article class="item filled" id="i-revisores"><div class="item-h"><h3>6.4 Seleção por mais de um pesquisador</h3></div><p class="hint">Quantos pesquisadores participam e como as divergências serão resolvidas.</p><textarea class="inp" rows="6" spellcheck="true">A seleção e a extração são feitas por no mínimo 3 pesquisadores, de forma independente. Divergências são resolvidas por consenso; se persistirem, o terceiro pesquisador decide.</textarea></article><article class="item" id="i-prisma"><div class="item-h"><h3>6.5 Fluxograma PRISMA</h3></div><p class="hint">O número de estudos em cada etapa. Comece em zero e atualize durante a revisão.</p><div class="prisma"><div class="pstage">Identificação</div><div class="pbox"><span>Registros encontrados nas bases</span><input type="number" min="0" inputmode="numeric" aria-label="Registros encontrados nas bases" value="0"></div><div class="parrow"></div><div class="pbox"><span>Registros em teses, dissertações e outras fontes</span><input type="number" min="0" inputmode="numeric" aria-label="Registros em teses, dissertações e outras fontes" value="0"></div><div class="parrow"></div><div class="pbox calc"><span>Total identificado</span><output>0</output></div><div class="parrow"></div><div class="pbox side"><span>Duplicatas removidas</span><input type="number" min="0" inputmode="numeric" aria-label="Duplicatas removidas" value="0"></div><div class="pstage">Triagem</div><div class="pbox calc"><span>Registros triados por título e resumo</span><output>0</output></div><div class="parrow"></div><div class="pbox side"><span>Excluídos na triagem por título e resumo</span><input type="number" min="0" inputmode="numeric" aria-label="Excluídos na triagem por título e resumo" value="0"></div><div class="pstage">Elegibilidade</div><div class="pbox calc"><span>Estudos avaliados no texto completo</span><output>0</output></div><div class="parrow"></div><div class="pbox side"><span>Excluídos no texto completo, com justificativa</span><input type="number" min="0" inputmode="numeric" aria-label="Excluídos no texto completo, com justificativa" value="0"></div><div class="pstage">Inclusão</div><div class="pbox calc"><span>Estudos incluídos na revisão</span><output>0</output></div><div class="pwarn" style="display: none;">Algum número ficou negativo. Confira as exclusões.</div></div></article></div></section><section class="sec" id="s-extracao" data-title="Registro e extração dos dados" data-n="07"><div class="sec-band"><h2>07 Registro e extração dos dados</h2><p class="sec-d">O que será coletado de cada estudo e como fica organizado.</p></div><div class="items"><article class="item filled" id="i-dados"><div class="item-h"><h3>7.1 Dados a coletar</h3></div><p class="hint">As informações que serão extraídas de cada estudo incluído.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Autoria">Autoria</button><button class="chip-x" type="button" aria-label="Remover Autoria">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Ano">Ano</button><button class="chip-x" type="button" aria-label="Remover Ano">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Instituição">Instituição</button><button class="chip-x" type="button" aria-label="Remover Instituição">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Região">Região</button><button class="chip-x" type="button" aria-label="Remover Região">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Tipo de publicação">Tipo de publicação</button><button class="chip-x" type="button" aria-label="Remover Tipo de publicação">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Objetivos">Objetivos</button><button class="chip-x" type="button" aria-label="Remover Objetivos">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Participantes">Participantes</button><button class="chip-x" type="button" aria-label="Remover Participantes">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Modalidade de jogo investigada">Modalidade de jogo investigada</button><button class="chip-x" type="button" aria-label="Remover Modalidade de jogo investigada">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Abordagem psicológica">Abordagem psicológica</button><button class="chip-x" type="button" aria-label="Remover Abordagem psicológica">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Técnicas terapêuticas">Técnicas terapêuticas</button><button class="chip-x" type="button" aria-label="Remover Técnicas terapêuticas">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Intervenções realizadas">Intervenções realizadas</button><button class="chip-x" type="button" aria-label="Remover Intervenções realizadas">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Contexto de atendimento">Contexto de atendimento</button><button class="chip-x" type="button" aria-label="Remover Contexto de atendimento">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Resultados encontrados">Resultados encontrados</button><button class="chip-x" type="button" aria-label="Remover Resultados encontrados">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Limitações dos estudos">Limitações dos estudos</button><button class="chip-x" type="button" aria-label="Remover Limitações dos estudos">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Dados a coletar" value=""></div></article><article class="item filled" id="i-tab_incluidos"><div class="item-h"><h3>7.2 Tabela de estudos incluídos e excluídos</h3></div><p class="hint">Todos os estudos lidos na íntegra, com a situação de cada um e o critério de inclusão ou exclusão que justifica a decisão.</p><div><div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Autoria</th><th>Ano</th><th>Título</th><th>Tipo de publicação</th><th>Base de origem</th><th>Situação</th><th>Etapa</th><th>Critério aplicado</th><th>Justificativa</th></tr></thead><tbody><tr><td contenteditable="true" data-ph="ID" class="id">E01</td><td contenteditable="true" data-ph="Autoria" class="">Souza, A. M.; Lima, R. P.</td><td contenteditable="true" data-ph="Ano" class="">2019</td><td contenteditable="true" data-ph="Título" class="">Terapia cognitivo-comportamental em grupo para pessoas com transtorno do jogo: relato de experiência em um CAPS AD</td><td contenteditable="true" data-ph="Tipo de publicação" class="">Artigo (relato de experiência)</td><td contenteditable="true" data-ph="Base de origem" class="">LILACS</td><td contenteditable="true" data-ph="Situação" class="">Incluído</td><td contenteditable="true" data-ph="Etapa" class="">Texto completo</td><td contenteditable="true" data-ph="Critério aplicado" class="">Critérios de inclusão atendidos</td><td contenteditable="true" data-ph="Justificativa" class="">Descreve intervenção psicológica em grupo para ludomania realizada no Brasil</td></tr><tr><td contenteditable="true" data-ph="ID" class="id">E02</td><td contenteditable="true" data-ph="Autoria" class="">Oliveira, C. R.</td><td contenteditable="true" data-ph="Ano" class="">2022</td><td contenteditable="true" data-ph="Título" class="">Atendimento psicodinâmico de um caso de ludomania associada a cassinos online</td><td contenteditable="true" data-ph="Tipo de publicação" class="">Dissertação</td><td contenteditable="true" data-ph="Base de origem" class="">BDTD</td><td contenteditable="true" data-ph="Situação" class="">Incluído</td><td contenteditable="true" data-ph="Etapa" class="">Texto completo</td><td contenteditable="true" data-ph="Critério aplicado" class="">Critérios de inclusão atendidos</td><td contenteditable="true" data-ph="Justificativa" class="">Estudo de caso com intervenção psicológica individual realizada no Brasil</td></tr></tbody></table></div><div class="tbl-foot"><span>Deslize para o lado para ver todas as colunas.</span></div></div></article><article class="item filled" id="i-tab_caract"><div class="item-h"><h3>7.3 Tabela de caracterização</h3></div><p class="hint">O perfil de cada estudo: população, amostra, tipo de intervenção e delineamento.</p><div><div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Instituição e região</th><th>População</th><th>Nº da amostra</th><th>Modalidade de jogo</th><th>Abordagem psicológica</th><th>Tipo de intervenção</th><th>Delineamento</th><th>Contexto de atendimento</th></tr></thead><tbody><tr><td contenteditable="true" data-ph="ID" class="id">E01</td><td contenteditable="true" data-ph="Instituição e região" class="">Universidade federal, Sudeste</td><td contenteditable="true" data-ph="População" class="">Adultos com transtorno do jogo</td><td contenteditable="true" data-ph="Nº da amostra" class="">12</td><td contenteditable="true" data-ph="Modalidade de jogo" class="">Apostas esportivas online</td><td contenteditable="true" data-ph="Abordagem psicológica" class="">Terapia cognitivo-comportamental (TCC)</td><td contenteditable="true" data-ph="Tipo de intervenção" class="">Psicoterapia em grupo</td><td contenteditable="true" data-ph="Delineamento" class="">Relato de experiência</td><td contenteditable="true" data-ph="Contexto de atendimento" class="">CAPS AD</td></tr><tr><td contenteditable="true" data-ph="ID" class="id">E02</td><td contenteditable="true" data-ph="Instituição e região" class="">Universidade estadual, Sul</td><td contenteditable="true" data-ph="População" class="">Homem adulto, 34 anos, com ludomania</td><td contenteditable="true" data-ph="Nº da amostra" class="">1</td><td contenteditable="true" data-ph="Modalidade de jogo" class="">Cassino online</td><td contenteditable="true" data-ph="Abordagem psicológica" class="">Psicodinâmica</td><td contenteditable="true" data-ph="Tipo de intervenção" class="">Psicoterapia individual</td><td contenteditable="true" data-ph="Delineamento" class="">Estudo de caso</td><td contenteditable="true" data-ph="Contexto de atendimento" class="">Clínica-escola</td></tr></tbody></table></div><div class="tbl-foot"><span>Deslize para o lado para ver todas as colunas.</span></div></div></article><article class="item filled" id="i-tab_resultados"><div class="item-h"><h3>7.4 Tabela de dados extraídos</h3></div><p class="hint">Cada dado retirado de cada estudo: o que foi coletado e de onde.</p><div><div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Objetivos</th><th>Técnicas terapêuticas</th><th>Intervenções realizadas</th><th>Resultados encontrados</th><th>Limitações</th></tr></thead><tbody><tr><td contenteditable="true" data-ph="ID" class="id">E01</td><td contenteditable="true" data-ph="Objetivos" class="">Descrever a experiência de um grupo de TCC para pessoas com transtorno do jogo</td><td contenteditable="true" data-ph="Técnicas terapêuticas" class="">Reestruturação cognitiva, prevenção de recaída</td><td contenteditable="true" data-ph="Intervenções realizadas" class="">12 sessões semanais em grupo</td><td contenteditable="true" data-ph="Resultados encontrados" class="">Redução da frequência de apostas em 8 dos 12 participantes</td><td contenteditable="true" data-ph="Limitações" class="">Amostra pequena, sem grupo de comparação</td></tr><tr><td contenteditable="true" data-ph="ID" class="id">E02</td><td contenteditable="true" data-ph="Objetivos" class="">Analisar o processo terapêutico de um caso de ludomania</td><td contenteditable="true" data-ph="Técnicas terapêuticas" class="">Associação livre, interpretação</td><td contenteditable="true" data-ph="Intervenções realizadas" class="">40 sessões de psicoterapia individual</td><td contenteditable="true" data-ph="Resultados encontrados" class="">Interrupção das apostas após 8 meses de tratamento</td><td contenteditable="true" data-ph="Limitações" class="">Caso único, sem acompanhamento após a alta</td></tr></tbody></table></div><div class="tbl-foot"><span>Deslize para o lado para ver todas as colunas.</span></div></div></article></div></section><section class="sec" id="s-qualidade" data-title="Qualidade metodológica e risco de viés" data-n="08"><div class="sec-band"><h2>08 Qualidade metodológica e risco de viés</h2><p class="sec-d">Quanto se pode confiar em cada estudo e como isso pesa nas conclusões.</p></div><div class="items"><article class="item filled" id="i-instrumento"><div class="item-h"><h3>8.1 Instrumento de avaliação</h3></div><p class="hint">A ferramenta usada para avaliar a qualidade dos estudos.</p><textarea class="inp" rows="6" spellcheck="true">MMAT (Mixed Methods Appraisal Tool), adequado para estudos qualitativos, quantitativos e mistos. Para estudos de caso e relatos de experiência, as listas de verificação do JBI.</textarea></article><article class="item filled" id="i-crit_avaliacao"><div class="item-h"><h3>8.2 Critérios de avaliação</h3></div><p class="hint">Os pontos que os revisores vão observar em cada estudo.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Clareza da pergunta ou do objetivo">Clareza da pergunta ou do objetivo</button><button class="chip-x" type="button" aria-label="Remover Clareza da pergunta ou do objetivo">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Adequação do método">Adequação do método</button><button class="chip-x" type="button" aria-label="Remover Adequação do método">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Descrição da intervenção">Descrição da intervenção</button><button class="chip-x" type="button" aria-label="Remover Descrição da intervenção">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Coleta de dados adequada">Coleta de dados adequada</button><button class="chip-x" type="button" aria-label="Remover Coleta de dados adequada">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Coerência entre dados e conclusões">Coerência entre dados e conclusões</button><button class="chip-x" type="button" aria-label="Remover Coerência entre dados e conclusões">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Critérios de avaliação" value=""></div></article><article class="item filled" id="i-classificacao"><div class="item-h"><h3>8.3 Classificação da qualidade</h3></div><p class="hint">Os três níveis de qualidade e o que coloca um estudo em cada um.</p><div><div class="sub"><label class="sub-l" for="classificacao-alta">Alta</label><textarea class="inp" rows="2" id="classificacao-alta">Atende a todos ou quase todos os critérios de avaliação.</textarea></div><div class="sub"><label class="sub-l" for="classificacao-media">Média</label><textarea class="inp" rows="2" id="classificacao-media">Atende à maior parte dos critérios, com limitações pontuais.</textarea></div><div class="sub"><label class="sub-l" for="classificacao-baixa">Baixa</label><textarea class="inp" rows="2" id="classificacao-baixa">Atende a poucos critérios ou tem falhas metodológicas importantes.</textarea></div></div></article><article class="item filled" id="i-estrategia_qualidade"><div class="item-h"><h3>8.4 Estratégia por nível de qualidade</h3></div><p class="hint">Como a qualidade de cada estudo vai influenciar as conclusões da revisão.</p><textarea class="inp" rows="7" spellcheck="true">Os estudos de baixa qualidade terão suas conclusões apresentadas junto com suas limitações. Os estudos de qualidade metodológica alta serão analisados com maior profundidade, sustentando as principais conclusões da revisão.</textarea></article><article class="item filled" id="i-vies"><div class="item-h"><h3>8.5 Risco de viés</h3></div><p class="hint">Como o viés será analisado: pelo instrumento aplicado pelos revisores ou pelas limitações declaradas no próprio estudo.</p><textarea class="inp" rows="5" spellcheck="true">O risco de viés será avaliado pelos revisores com o instrumento escolhido e confrontado com as limitações declaradas pelos próprios autores de cada estudo.</textarea></article><article class="item filled" id="i-tab_qualidade"><div class="item-h"><h3>8.6 Tabela de avaliação da qualidade</h3></div><p class="hint">O resultado da avaliação de cada estudo e o que será feito com ele.</p><div><div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Instrumento</th><th>Critérios atendidos</th><th>Qualidade (alta, média, baixa)</th><th>Risco de viés</th><th>Encaminhamento</th></tr></thead><tbody><tr><td contenteditable="true" data-ph="ID" class="id">E01</td><td contenteditable="true" data-ph="Instrumento" class="">MMAT</td><td contenteditable="true" data-ph="Critérios atendidos" class="">4 de 5</td><td contenteditable="true" data-ph="Qualidade (alta, média, baixa)" class="">Média</td><td contenteditable="true" data-ph="Risco de viés" class="">Moderado: sem grupo de comparação</td><td contenteditable="true" data-ph="Encaminhamento" class="">Conclusões apresentadas com suas limitações</td></tr><tr><td contenteditable="true" data-ph="ID" class="id">E02</td><td contenteditable="true" data-ph="Instrumento" class="">JBI para estudos de caso</td><td contenteditable="true" data-ph="Critérios atendidos" class="">7 de 8</td><td contenteditable="true" data-ph="Qualidade (alta, média, baixa)" class="">Alta</td><td contenteditable="true" data-ph="Risco de viés" class="">Baixo</td><td contenteditable="true" data-ph="Encaminhamento" class="">Analisado com maior profundidade</td></tr></tbody></table></div><div class="tbl-foot"><span>Deslize para o lado para ver todas as colunas.</span></div></div></article></div></section><section class="sec" id="s-sintese" data-title="Síntese dos resultados" data-n="09"><div class="sec-band"><h2>09 Síntese dos resultados</h2><p class="sec-d">Como os achados dos estudos serão agrupados e comparados.</p></div><div class="items"><article class="item filled" id="i-metodo_sintese"><div class="item-h"><h3>9.1 Método de síntese</h3></div><p class="hint">Se a síntese será narrativa ou por metanálise, e por quê.</p><textarea class="inp" rows="7" spellcheck="true">Síntese narrativa, pois se espera grande variedade de delineamentos (artigos, estudos de caso, relatos de experiência, teses e dissertações). A metanálise só será considerada se houver estudos quantitativos comparáveis.</textarea></article><article class="item filled" id="i-o_que_extrair"><div class="item-h"><h3>9.2 O que extrair para a síntese</h3></div><p class="hint">Os elementos de cada estudo que alimentam a síntese.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Fenômeno observado">Fenômeno observado</button><button class="chip-x" type="button" aria-label="Remover Fenômeno observado">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Método de tratamento">Método de tratamento</button><button class="chip-x" type="button" aria-label="Remover Método de tratamento">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Intervenção psicológica">Intervenção psicológica</button><button class="chip-x" type="button" aria-label="Remover Intervenção psicológica">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Intervenção psiquiátrica associada">Intervenção psiquiátrica associada</button><button class="chip-x" type="button" aria-label="Remover Intervenção psiquiátrica associada">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Abordagem utilizada (ex.: TCC, DBT)">Abordagem utilizada (ex.: TCC, DBT)</button><button class="chip-x" type="button" aria-label="Remover Abordagem utilizada (ex.: TCC, DBT)">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Contexto de atendimento">Contexto de atendimento</button><button class="chip-x" type="button" aria-label="Remover Contexto de atendimento">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="O que extrair para a síntese" value=""></div></article><article class="item filled" id="i-eixos"><div class="item-h"><h3>9.3 Eixos de organização</h3></div><p class="hint">As categorias em que a produção será agrupada.</p><div class="tags"><span class="chip"><button class="chip-t" type="button" aria-label="Editar Abordagens teóricas e terapêuticas">Abordagens teóricas e terapêuticas</button><button class="chip-x" type="button" aria-label="Remover Abordagens teóricas e terapêuticas">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Tipos de intervenção">Tipos de intervenção</button><button class="chip-x" type="button" aria-label="Remover Tipos de intervenção">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Experiências de atendimento">Experiências de atendimento</button><button class="chip-x" type="button" aria-label="Remover Experiências de atendimento">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Resultados relatados">Resultados relatados</button><button class="chip-x" type="button" aria-label="Remover Resultados relatados">×</button></span><span class="chip"><button class="chip-t" type="button" aria-label="Editar Lacunas na pesquisa brasileira">Lacunas na pesquisa brasileira</button><button class="chip-x" type="button" aria-label="Remover Lacunas na pesquisa brasileira">×</button></span><input type="text" placeholder="Digite e use vírgula" enterkeyhint="done" aria-label="Eixos de organização" value=""></div></article><article class="item filled" id="i-tab_sintese"><div class="item-h"><h3>9.4 Tabela de síntese</h3></div><p class="hint">Para cada eixo, os estudos que o compõem, os principais achados e as lacunas.</p><div><div class="tbl-wrap"><table><thead><tr><th>Eixo</th><th>Estudos (IDs)</th><th>Principais achados</th><th>Lacunas</th></tr></thead><tbody><tr><td contenteditable="true" data-ph="Eixo" class="">Abordagens teóricas e terapêuticas</td><td contenteditable="true" data-ph="Estudos (IDs)" class="">E01, E02</td><td contenteditable="true" data-ph="Principais achados" class="">TCC em grupo (E01) e psicoterapia psicodinâmica individual (E02)</td><td contenteditable="true" data-ph="Lacunas" class="">Nenhum estudo compara abordagens entre si</td></tr><tr><td contenteditable="true" data-ph="Eixo" class="">Experiências de atendimento</td><td contenteditable="true" data-ph="Estudos (IDs)" class="">E01, E02</td><td contenteditable="true" data-ph="Principais achados" class="">Atendimentos em CAPS AD (E01) e em clínica-escola (E02)</td><td contenteditable="true" data-ph="Lacunas" class="">Falta de acompanhamento após o fim do tratamento</td></tr></tbody></table></div><div class="tbl-foot"><span>Deslize para o lado para ver todas as colunas.</span></div></div></article></div></section><section class="sec" id="s-analise" data-title="Análise e conclusão" data-n="10"><div class="sec-band"><h2>10 Análise e conclusão</h2><p class="sec-d">Como a revisão chega ao seu resultado final.</p></div><div class="items"><article class="item filled" id="i-proposta_analise"><div class="item-h"><h3>10.1 Proposta de análise</h3></div><p class="hint">Como a produção será organizada e interpretada.</p><textarea class="inp" rows="9" spellcheck="true">A produção será organizada considerando as abordagens teóricas e terapêuticas, os tipos de intervenção, as experiências de atendimento, os resultados relatados e as lacunas existentes na pesquisa brasileira. Serão considerados artigos, estudos de caso, relatos de experiência, teses e dissertações.</textarea></article><article class="item filled" id="i-produto_final"><div class="item-h"><h3>10.2 Resultado esperado</h3></div><p class="hint">O que a revisão entrega ao final.</p><textarea class="inp" rows="7" spellcheck="true">Um panorama da produção científica brasileira sobre o tratamento psicológico da ludomania: o que já foi pesquisado, quais práticas de cuidado estão documentadas e quais aspectos ainda necessitam de investigação.</textarea></article></div></section><section class="sec" id="s-amstar" data-title="Vínculo com o AMSTAR 2" data-n="11"><div class="sec-band"><h2>11 Vínculo com o AMSTAR 2</h2><p class="sec-d">As 16 perguntas do AMSTAR 2 e os itens do protocolo que respondem a cada uma.</p></div><div><div class="am" id="am-1"><div class="am-b"><p class="am-q"><b>01</b>A pergunta de pesquisa e os critérios de inclusão contemplam os componentes do PICO?</p><p class="am-where"><span>Onde está no protocolo: </span>3.1 Pergunta norteadora; 3.2 Estratégia PICO; 3.3 Estratégia SPIDER; 5.2 Critérios de inclusão.</p></div></div><div class="am" id="am-2"><div class="am-b"><p class="am-q"><b>02</b>O protocolo foi registrado antes da revisão começar, e os desvios dele foram justificados?</p><p class="am-where"><span>Onde está no protocolo: </span>1.2 Registro do protocolo.</p></div></div><div class="am" id="am-3"><div class="am-b"><p class="am-q"><b>03</b>Os autores explicaram a escolha dos tipos de estudo incluídos?</p><p class="am-where"><span>Onde está no protocolo: </span>5.1 Critérios gerais; 5.2 Critérios de inclusão; 5.3 Critérios de exclusão.</p></div></div><div class="am" id="am-4"><div class="am-b"><p class="am-q"><b>04</b>A busca na literatura foi abrangente?</p><p class="am-where"><span>Onde está no protocolo: </span>4.1 Bases de dados; 4.2 Teses, dissertações e literatura cinzenta; 4.3 Descritores e palavras-chave; 4.4 String de busca com operadores; 4.5 Filtros e limites.</p></div></div><div class="am" id="am-5"><div class="am-b"><p class="am-q"><b>05</b>A seleção dos estudos foi feita por pelo menos dois revisores?</p><p class="am-where"><span>Onde está no protocolo: </span>6.2 Triagem por título e resumo; 6.3 Triagem por texto completo; 6.4 Seleção por mais de um pesquisador.</p></div></div><div class="am" id="am-6"><div class="am-b"><p class="am-q"><b>06</b>A extração dos dados foi feita por pelo menos dois revisores?</p><p class="am-where"><span>Onde está no protocolo: </span>6.4 Seleção por mais de um pesquisador; 7.1 Dados a coletar; 7.4 Tabela de dados extraídos.</p></div></div><div class="am" id="am-7"><div class="am-b"><p class="am-q"><b>07</b>Há uma lista dos estudos excluídos, com a justificativa de cada exclusão?</p><p class="am-where"><span>Onde está no protocolo: </span>6.3 Triagem por texto completo; 7.2 Tabela de estudos incluídos e excluídos.</p></div></div><div class="am" id="am-8"><div class="am-b"><p class="am-q"><b>08</b>Os estudos incluídos foram descritos com detalhe suficiente?</p><p class="am-where"><span>Onde está no protocolo: </span>7.1 Dados a coletar; 7.2 Tabela de estudos incluídos e excluídos; 7.3 Tabela de caracterização.</p></div></div><div class="am" id="am-9"><div class="am-b"><p class="am-q"><b>09</b>Foi usada uma técnica adequada para avaliar o risco de viés dos estudos?</p><p class="am-where"><span>Onde está no protocolo: </span>8.1 Instrumento de avaliação; 8.2 Critérios de avaliação; 8.5 Risco de viés; 8.6 Tabela de avaliação da qualidade.</p></div></div><div class="am" id="am-10"><div class="am-b"><p class="am-q"><b>10</b>Foram relatadas as fontes de financiamento dos estudos incluídos?</p><p class="am-note">Não está entre os itens do protocolo. Se quiser atender, inclua o financiamento em Dados a coletar.</p></div></div><div class="am" id="am-11"><div class="am-b"><p class="am-q"><b>11</b>Se houver metanálise, os métodos estatísticos usados são adequados?</p><p class="am-where"><span>Onde está no protocolo: </span>9.1 Método de síntese.</p><p class="am-note">Só se aplica se a metanálise for realizada.</p></div></div><div class="am" id="am-12"><div class="am-b"><p class="am-q"><b>12</b>Se houver metanálise, foi avaliado o impacto do risco de viés nos resultados?</p><p class="am-where"><span>Onde está no protocolo: </span>8.5 Risco de viés.</p><p class="am-note">Só se aplica se a metanálise for realizada.</p></div></div><div class="am" id="am-13"><div class="am-b"><p class="am-q"><b>13</b>O risco de viés dos estudos foi levado em conta ao interpretar e discutir os resultados?</p><p class="am-where"><span>Onde está no protocolo: </span>8.4 Estratégia por nível de qualidade; 8.6 Tabela de avaliação da qualidade; 10.1 Proposta de análise.</p></div></div><div class="am" id="am-14"><div class="am-b"><p class="am-q"><b>14</b>A diferença entre os resultados dos estudos (heterogeneidade) foi explicada e discutida?</p><p class="am-where"><span>Onde está no protocolo: </span>9.1 Método de síntese; 9.3 Eixos de organização; 9.4 Tabela de síntese.</p></div></div><div class="am" id="am-15"><div class="am-b"><p class="am-q"><b>15</b>Se houver síntese quantitativa, o viés de publicação foi investigado?</p><p class="am-where"><span>Onde está no protocolo: </span>8.5 Risco de viés.</p><p class="am-note">Só se aplica se houver síntese quantitativa.</p></div></div><div class="am" id="am-16"><div class="am-b"><p class="am-q"><b>16</b>Os autores da revisão declararam conflitos de interesse, incluindo o financiamento da própria revisão?</p><p class="am-note">Não está entre os itens do protocolo. Se quiser atender, declare em Identificação e registro.</p></div></div></div></section></div>
+  <footer class="foot">
+    <div>Os dados ficam guardados apenas neste navegador.</div>
+    <button class="btn-reset" id="reset">Restaurar o conteúdo original</button>
+  </footer>
+</main>
+
+<div id="printDoc" aria-hidden="true"></div>
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" role="dialog" aria-label="Índice do protocolo">
+  <div class="sheet-h"><b>Índice</b><button id="closeIx">Fechar</button></div>
+  <div class="sheet-exports" id="sheetExports"></div>
+  <nav class="sheet-list" id="ixList"><button class="ix-sec" type="button"><span>01</span>Identificação e registro</button><button class="ix-it done" type="button" data-ix="titulo"><span>1.1</span>Título</button><button class="ix-it done" type="button" data-ix="registro"><span>1.2</span>Registro do protocolo</button><button class="ix-it done" type="button" data-ix="datas"><span>1.3</span>Datas da pesquisa</button><button class="ix-it done" type="button" data-ix="responsavel"><span>1.4</span>Responsável pela pesquisa</button><button class="ix-it done" type="button" data-ix="participantes"><span>1.5</span>Participantes</button><button class="ix-sec" type="button"><span>02</span>Introdução e justificativa</button><button class="ix-it done" type="button" data-ix="contexto"><span>2.1</span>Contexto geral</button><button class="ix-it done" type="button" data-ix="justificativa"><span>2.2</span>Justificativa da revisão sistemática</button><button class="ix-it done" type="button" data-ix="objetivo"><span>2.3</span>Objetivo</button><button class="ix-sec" type="button"><span>03</span>Pergunta de pesquisa</button><button class="ix-it done" type="button" data-ix="pergunta_norteadora"><span>3.1</span>Pergunta norteadora</button><button class="ix-it done" type="button" data-ix="pico"><span>3.2</span>Estratégia PICO</button><button class="ix-it done" type="button" data-ix="spider"><span>3.3</span>Estratégia SPIDER</button><button class="ix-sec" type="button"><span>04</span>Estratégia de busca</button><button class="ix-it done" type="button" data-ix="bases"><span>4.1</span>Bases de dados</button><button class="ix-it done" type="button" data-ix="cinzenta"><span>4.2</span>Teses, dissertações e literatura cinzenta</button><button class="ix-it done" type="button" data-ix="descritores"><span>4.3</span>Descritores e palavras-chave</button><button class="ix-it done" type="button" data-ix="string"><span>4.4</span>String de busca com operadores</button><button class="ix-it done" type="button" data-ix="filtros"><span>4.5</span>Filtros e limites</button><button class="ix-sec" type="button"><span>05</span>Critérios de elegibilidade</button><button class="ix-it done" type="button" data-ix="crit_gerais"><span>5.1</span>Critérios gerais</button><button class="ix-it done" type="button" data-ix="crit_inclusao"><span>5.2</span>Critérios de inclusão</button><button class="ix-it done" type="button" data-ix="crit_exclusao"><span>5.3</span>Critérios de exclusão</button><button class="ix-it done" type="button" data-ix="crit_qualidade"><span>5.4</span>Requisitos de qualidade</button><button class="ix-sec" type="button"><span>06</span>Seleção dos estudos</button><button class="ix-it done" type="button" data-ix="duplicatas"><span>6.1</span>Remoção de duplicatas</button><button class="ix-it done" type="button" data-ix="triagem_resumo"><span>6.2</span>Triagem por título e resumo</button><button class="ix-it done" type="button" data-ix="triagem_completo"><span>6.3</span>Triagem por texto completo</button><button class="ix-it done" type="button" data-ix="revisores"><span>6.4</span>Seleção por mais de um pesquisador</button><button class="ix-it" type="button" data-ix="prisma"><span>6.5</span>Fluxograma PRISMA</button><button class="ix-sec" type="button"><span>07</span>Registro e extração dos dados</button><button class="ix-it done" type="button" data-ix="dados"><span>7.1</span>Dados a coletar</button><button class="ix-it done" type="button" data-ix="tab_incluidos"><span>7.2</span>Tabela de estudos incluídos e excluídos</button><button class="ix-it done" type="button" data-ix="tab_caract"><span>7.3</span>Tabela de caracterização</button><button class="ix-it done" type="button" data-ix="tab_resultados"><span>7.4</span>Tabela de dados extraídos</button><button class="ix-sec" type="button"><span>08</span>Qualidade metodológica e risco de viés</button><button class="ix-it done" type="button" data-ix="instrumento"><span>8.1</span>Instrumento de avaliação</button><button class="ix-it done" type="button" data-ix="crit_avaliacao"><span>8.2</span>Critérios de avaliação</button><button class="ix-it done" type="button" data-ix="classificacao"><span>8.3</span>Classificação da qualidade</button><button class="ix-it done" type="button" data-ix="estrategia_qualidade"><span>8.4</span>Estratégia por nível de qualidade</button><button class="ix-it done" type="button" data-ix="vies"><span>8.5</span>Risco de viés</button><button class="ix-it done" type="button" data-ix="tab_qualidade"><span>8.6</span>Tabela de avaliação da qualidade</button><button class="ix-sec" type="button"><span>09</span>Síntese dos resultados</button><button class="ix-it done" type="button" data-ix="metodo_sintese"><span>9.1</span>Método de síntese</button><button class="ix-it done" type="button" data-ix="o_que_extrair"><span>9.2</span>O que extrair para a síntese</button><button class="ix-it done" type="button" data-ix="eixos"><span>9.3</span>Eixos de organização</button><button class="ix-it done" type="button" data-ix="tab_sintese"><span>9.4</span>Tabela de síntese</button><button class="ix-sec" type="button"><span>10</span>Análise e conclusão</button><button class="ix-it done" type="button" data-ix="proposta_analise"><span>10.1</span>Proposta de análise</button><button class="ix-it done" type="button" data-ix="produto_final"><span>10.2</span>Resultado esperado</button><button class="ix-sec" type="button"><span>11</span>Vínculo com o AMSTAR 2</button></nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/docx@9.5.1/dist/index.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ---------- Estrutura do protocolo ---------- */
+var SECTIONS = [
+{ id:"identificacao", t:"Identificação e registro", d:"Quem conduz a revisão, quando ela acontece e onde o protocolo fica registrado.", items:[
+  { id:"titulo", t:"Título", type:"textarea",
+    h:"O nome da revisão, deixando claros o tema, a população e o tipo de estudo.",
+    v:"Intervenções psicológicas no tratamento do vício em apostas (bets): uma revisão sistemática da produção científica brasileira." },
+  { id:"registro", t:"Registro do protocolo", type:"textarea", a:[2],
+    h:"Onde o protocolo será registrado antes da busca começar, e o número do registro.",
+    v:"PROSPERO. Número de registro: CRD42026000000." },
+  { id:"datas", t:"Datas da pesquisa", type:"dates",
+    h:"Quando a pesquisa começa, quando a busca será feita e quando deve terminar.",
+    f:[{k:"inicio",l:"Início previsto"},{k:"busca",l:"Data da busca nas bases"},{k:"fim",l:"Conclusão prevista"}] },
+  { id:"responsavel", t:"Responsável pela pesquisa", type:"text",
+    h:"Nome do pesquisador que responde pela revisão.",
+    v:"Não definido", ph:"Nome do pesquisador responsável" },
+  { id:"participantes", t:"Participantes", type:"tags",
+    h:"Quem participa da revisão e qual o papel de cada um.",
+    v:["Richard Feynman: triagem e extração","Cesar Lattes: triagem e extração","Marie Curie: resolução de divergências","Carl Sagan: apoio à seleção e à análise"] }
+]},
+{ id:"introducao", t:"Introdução e justificativa", d:"Por que esta revisão existe e o que ela quer alcançar.", items:[
+  { id:"contexto", t:"Contexto geral", type:"textarea",
+    h:"O tema da pesquisa e o que se pretende identificar na literatura.",
+    v:"A pesquisa pretende identificar e analisar o conhecimento científico produzido no Brasil sobre intervenções psicológicas voltadas ao tratamento da ludomania e dos problemas relacionados às apostas (bets). Busca-se compreender quais abordagens psicológicas são utilizadas, quais tratamentos e estratégias de intervenção são descritos e quais resultados são apresentados pela literatura." },
+  { id:"justificativa", t:"Justificativa da revisão sistemática", type:"textarea",
+    h:"Por que uma revisão sistemática é necessária: a lacuna que ela preenche e a sua relevância.",
+    v:"Não há um panorama sistematizado da produção científica brasileira sobre intervenções psicológicas para a ludomania e os problemas relacionados às apostas (bets). Reunir e analisar essa produção permite identificar o que já foi pesquisado, quais práticas de cuidado estão documentadas e quais aspectos ainda necessitam de investigação, oferecendo base para a prática clínica e para pesquisas futuras." },
+  { id:"objetivo", t:"Objetivo", type:"textarea",
+    h:"O que a revisão quer construir ao final.",
+    v:"Construir um panorama da produção científica brasileira sobre o tratamento psicológico da ludomania, identificando o que já foi pesquisado, quais práticas de cuidado estão documentadas e quais aspectos ainda necessitam de investigação." }
+]},
+{ id:"pergunta", t:"Pergunta de pesquisa", d:"Definida antes da busca. Orienta os termos, os critérios e a análise.", items:[
+  { id:"pergunta_norteadora", t:"Pergunta norteadora", type:"textarea", rows:4, a:[1],
+    h:"Uma pergunta única e clara que a revisão vai responder.",
+    v:"Quais intervenções e experiências de atendimento ao vício em apostas (bets ou ludomania) são descritas na produção científica brasileira, e quais resultados elas apresentam?" },
+  { id:"spider", t:"Estratégia SPIDER", type:"fields", a:[1],
+    h:"Estratégia para organizar estudos qualitativos, quantitativos e mistos, relatos de experiência e estudos de caso.",
+    f:[
+      {k:"s",l:"S",s:"Amostra — quem participa ou é estudado",v:"Pessoas com vício em apostas (bets ou ludomania) atendidas no Brasil."},
+      {k:"pi",l:"PI",s:"Fenômeno de interesse — o que será investigado",v:"Intervenções psicológicas e experiências de atendimento ao vício em apostas."},
+      {k:"d",l:"D",s:"Desenho — como o estudo foi realizado",v:"Estudos de caso, relatos de experiência, estudos qualitativos, quantitativos e mistos, teses e dissertações."},
+      {k:"e",l:"E",s:"Avaliação — quais resultados serão observados",v:"Resultados, percepções e experiências de cuidado relatadas."},
+      {k:"r",l:"R",s:"Tipo de pesquisa — qual abordagem metodológica foi usada",v:"Qualitativa, quantitativa e mista."}
+    ]},
+  { id:"pergunta_spider", t:"Rascunho da pergunta orientado pelo SPIDER", type:"textarea", derived:true, rows:4, a:[1],
+    h:"Formulação provisória construída a partir dos componentes SPIDER. O texto é atualizado automaticamente quando a estratégia é alterada.",
+    v:"" }
+]},
+{ id:"busca", t:"Estratégia de busca", d:"Onde e como os estudos serão procurados.", items:[
+  { id:"bases", t:"Bases de dados", type:"tags", a:[4],
+    h:"As bases nacionais e internacionais que serão consultadas.",
+    v:["BVS","LILACS","SciELO","PePSIC","PubMed","PsycINFO","Scopus","Web of Science","OpenAlex"] },
+  { id:"cinzenta", t:"Teses, dissertações e literatura cinzenta", type:"tags", a:[4],
+    h:"Fontes fora dos periódicos que também serão pesquisadas.",
+    v:["Biblioteca Digital Brasileira de Teses e Dissertações (BDTD)","Catálogo de Teses e Dissertações da CAPES"] },
+  { id:"descritores", t:"Descritores e palavras-chave", type:"tags", a:[4],
+    h:"Os termos de busca, em português e inglês, conferidos no DeCS e no MeSH.",
+    v:["ludomania","transtorno do jogo","transtorno de jogo","jogo patológico","jogo compulsivo","jogos de azar","apostas","apostas esportivas","apostas online","apostas pela internet","bets","psicoterapia","intervenção psicológica","intervenções psicológicas","tratamento","tratamento psicológico","terapia cognitivo-comportamental","TCC","gambling disorder","gambling addiction","pathological gambling","problem gambling","compulsive gambling","sports betting","online betting","internet betting","bets","psychotherapy","psychological intervention","psychological treatment","treatment","counseling","cognitive behavioral therapy","CBT","Brazil"] },
+  { id:"string", t:"String de busca com operadores", type:"code", a:[4],
+    h:"A combinação dos termos com operadores booleanos (AND, OR, NOT), adaptada para cada base.",
+    v:"(\"transtorno do jogo\" OR \"transtorno de jogo\" OR ludomania OR \"jogo patológico\" OR \"jogo compulsivo\" OR \"jogos de azar\" OR \"apostas esportivas\" OR \"apostas online\" OR \"apostas pela internet\" OR apostas OR bets)\nAND (\"intervenção psicológica\" OR \"intervenções psicológicas\" OR psicoterapia OR \"terapia psicológica\" OR tratamento OR tratamentos OR \"tratamento psicológico\" OR aconselhamento OR \"terapia cognitivo-comportamental\" OR TCC)\nAND (Brasil OR brasileiro OR brasileira OR brasileir*)\n\n(\"gambling disorder\" OR \"gambling addiction\" OR \"pathological gambling\" OR \"problem gambling\" OR \"compulsive gambling\" OR \"sports betting\" OR \"online betting\" OR \"internet betting\" OR bets)\nAND (\"psychological intervention\" OR psychotherapy OR \"psychological treatment\" OR treatment OR treatments OR counseling OR \"cognitive behavioral therapy\" OR CBT)\nAND (Brazil OR Brazilian)\n\nBusca complementar sem bloco geográfico:\n(\"transtorno do jogo\" OR \"transtorno de jogo\" OR ludomania OR \"jogo patológico\" OR \"jogo compulsivo\" OR \"jogos de azar\" OR \"apostas esportivas\" OR \"apostas online\" OR \"apostas pela internet\" OR apostas OR bets)\nAND (\"intervenção psicológica\" OR \"intervenções psicológicas\" OR psicoterapia OR \"terapia psicológica\" OR tratamento OR tratamentos OR \"tratamento psicológico\" OR aconselhamento OR \"terapia cognitivo-comportamental\" OR TCC)\n\n(\"gambling disorder\" OR \"gambling addiction\" OR \"pathological gambling\" OR \"problem gambling\" OR \"compulsive gambling\" OR \"sports betting\" OR \"online betting\" OR \"internet betting\" OR bets)\nAND (\"psychological intervention\" OR psychotherapy OR \"psychological treatment\" OR treatment OR treatments OR counseling OR \"cognitive behavioral therapy\" OR CBT)" },
+  { id:"participantes_busca", t:"Participantes da estratégia de busca", type:"tags", a:[4],
+    h:"Os participantes responsáveis por elaborar, adaptar e executar as estratégias de busca nas bases.",
+    v:["Richard Feynman","Cesar Lattes","Marie Curie","Carl Sagan"] },
+  { id:"filtros", t:"Filtros e limites", type:"tags", a:[4],
+    h:"Recortes aplicados na busca, como idioma, período e local.",
+    v:["Estudos realizados no Brasil","Idiomas: português, inglês e espanhol"] }
+]},
+{ id:"elegibilidade", t:"Critérios de elegibilidade", d:"As regras que decidem se um estudo entra ou não na revisão.", items:[
+  { id:"crit_gerais", t:"Critérios gerais", type:"tags", a:[3],
+    h:"Regras amplas que valem para qualquer estudo: tipo de estudo, origem e formato.",
+    v:["Estudos primários","Produção científica brasileira","Artigos","Estudos de caso","Relatos de experiência","Teses","Dissertações"] },
+  { id:"crit_inclusao", t:"Critérios de inclusão", type:"tags", a:[1,3],
+    h:"Características específicas do tema que o estudo precisa ter para ser incluído.",
+    v:["Aborda intervenção psicológica para ludomania ou problemas com apostas","Descreve abordagem, técnica ou estratégia terapêutica","Apresenta experiência de atendimento ou resultados","Produção científica brasileira: intervenção ou experiência de atendimento realizada no Brasil, independentemente do idioma, periódico ou instituição dos autores"] },
+  { id:"crit_exclusao", t:"Critérios de exclusão", type:"tags", a:[3],
+    h:"Características que tiram o estudo da revisão, mesmo que ele trate do tema.",
+    v:["Estudos secundários (revisões)","Sem intervenção psicológica","Realizado fora do Brasil","Editoriais, cartas e resumos de eventos","Texto completo indisponível"] },
+  { id:"crit_qualidade", t:"Requisitos de qualidade", type:"tags",
+    h:"O mínimo de qualidade que o estudo precisa ter para seguir na revisão.",
+    v:["Método descrito","Intervenção descrita com clareza","Resultados apresentados"] }
+]},
+{ id:"selecao", t:"Seleção dos estudos", d:"O caminho entre os resultados da busca e os estudos incluídos.", items:[
+  { id:"revisores", t:"Seleção por mais de um pesquisador", type:"textarea", a:[5,6],
+    h:"Selecione os nomes dos pesquisadores participantes e defina como as divergências serão resolvidas.",
+    v:"Richard Feynman, Cesar Lattes e Marie Curie participam da seleção e da extração, de forma independente. As divergências serão discutidas em estratégia de consenso; quando não houver acordo, será feita votação majoritária entre os revisores. Se ainda persistir a divergência, Marie Curie dará o voto de desempate." },
+  { id:"duplicatas", t:"Remoção de duplicatas", type:"textarea",
+    h:"Como e com qual ferramenta os registros repetidos serão identificados, conferidos e removidos.",
+    v:"As referências encontradas serão exportadas para o Rayyan ou o Zotero. A ferramenta identificará registros com o mesmo DOI, título ou combinação de autoria e ano; os casos sinalizados serão conferidos manualmente antes da remoção. A lista final de referências únicas seguirá para a triagem." },
+  { id:"triagem_resumo", t:"Triagem por título e resumo", type:"textarea", a:[5],
+    h:"Como será feita a primeira leitura, aplicando os critérios de elegibilidade.",
+    v:"Os revisores leem títulos e resumos de forma independente e aplicam os critérios de elegibilidade. Estudos que claramente não atendem aos critérios são excluídos nesta etapa." },
+  { id:"triagem_completo", t:"Triagem por texto completo", type:"textarea", a:[5,7],
+    h:"Como será feita a leitura integral dos estudos que passaram pela primeira triagem.",
+    v:"Os estudos restantes são lidos na íntegra. Cada exclusão é registrada com o critério aplicado e a justificativa." },
+  /* { id:"prisma", t:"Fluxograma PRISMA", type:"prisma",
+    h:"O número de estudos em cada etapa. Comece em zero e atualize durante a revisão." } */
+  { id:"dados", t:"Dados a coletar", type:"tags", a:[6,8],
+    h:"As informações que serão extraídas de cada estudo incluído. DOI, URL ou identificador de repositório serão registrados quando disponíveis; a ausência de DOI não será motivo de exclusão. Nas tabelas, serão usados identificadores internos.",
+    v:["DOI (quando disponível)","URL ou identificador de repositório (quando disponível)","Autoria","Ano","Instituição","Região","Tipo de publicação","Objetivos","Participantes","Modalidade de jogo investigada","Abordagem psicológica","Técnicas terapêuticas","Intervenções realizadas","Contexto de atendimento","Resultados encontrados","Limitações dos estudos"] },
+  { id:"tab_incluidos", t:"Tabela de estudos incluídos e excluídos", type:"table", a:[7,8],
+    h:"Todos os estudos lidos na íntegra, com identificadores internos, a situação de cada um e o critério de inclusão ou exclusão que justifica a decisão.",
+    cols:["ID","Autoria","Ano","Título","Tipo de publicação","Base de origem","Situação","Etapa","Critério aplicado","Justificativa"],
+    rows:[
+      ["E01","Souza, A. M.; Lima, R. P.","2019","Terapia cognitivo-comportamental em grupo para pessoas com transtorno do jogo: relato de experiência em um CAPS AD","Artigo (relato de experiência)","LILACS","Incluído","Texto completo","Critérios de inclusão atendidos","Descreve intervenção psicológica em grupo para ludomania realizada no Brasil"],
+      ["E02","Oliveira, C. R.","2022","Atendimento psicodinâmico de um caso de ludomania associada a cassinos online","Dissertação","BDTD","Incluído","Texto completo","Critérios de inclusão atendidos","Estudo de caso com intervenção psicológica individual realizada no Brasil"]
+    ]},
+  { id:"tab_caract", t:"Tabela de caracterização", type:"table", a:[8],
+    h:"O perfil de cada estudo: população, amostra, tipo de intervenção e delineamento.",
+    cols:["ID","Instituição e região","População","Nº da amostra","Modalidade de jogo","Abordagem psicológica","Tipo de intervenção","Delineamento","Contexto de atendimento"],
+    rows:[
+      ["E01","Universidade federal, Sudeste","Adultos com transtorno do jogo","12","Apostas esportivas online","Terapia cognitivo-comportamental (TCC)","Psicoterapia em grupo","Relato de experiência","CAPS AD"],
+      ["E02","Universidade estadual, Sul","Homem adulto, 34 anos, com ludomania","1","Cassino online","Psicodinâmica","Psicoterapia individual","Estudo de caso","Clínica-escola"]
+    ]},
+  { id:"tab_resultados", t:"Tabela de dados extraídos", type:"table", a:[6],
+    h:"Cada dado retirado de cada estudo: o que foi coletado e de onde.",
+    cols:["ID","Objetivos","Técnicas terapêuticas","Intervenções realizadas","Resultados encontrados","Limitações"],
+    rows:[
+      ["E01","Descrever a experiência de um grupo de TCC para pessoas com transtorno do jogo","Reestruturação cognitiva, prevenção de recaída","12 sessões semanais em grupo","Redução da frequência de apostas em 8 dos 12 participantes","Amostra pequena, sem grupo de comparação"],
+      ["E02","Analisar o processo terapêutico de um caso de ludomania","Associação livre, interpretação","40 sessões de psicoterapia individual","Interrupção das apostas após 8 meses de tratamento","Caso único, sem acompanhamento após a alta"]
+    ]}
+]},
+{ id:"qualidade", t:"Qualidade metodológica e risco de viés", d:"Quanto se pode confiar em cada estudo e como isso pesa nas conclusões.", items:[
+  { id:"crit_avaliacao", t:"Critérios de avaliação", type:"tags", a:[9],
+    h:"Os pontos que os revisores vão observar em cada estudo.",
+    v:["Clareza da pergunta ou do objetivo","Adequação do método","Descrição da intervenção","Coleta de dados adequada","Coerência entre dados e conclusões"] },
+  { id:"classificacao", t:"Classificação da qualidade", type:"fields",
+    h:"Os três níveis de qualidade e o que coloca um estudo em cada um.",
+    f:[
+      {k:"alta",l:"Alta",v:"Atende a todos ou quase todos os critérios de avaliação."},
+      {k:"media",l:"Média",v:"Atende à maior parte dos critérios, com limitações pontuais."},
+      {k:"baixa",l:"Baixa",v:"Atende a poucos critérios ou tem falhas metodológicas importantes."}
+    ]},
+  { id:"estrategia_qualidade", t:"Estratégia por nível de qualidade", type:"textarea", a:[13],
+    h:"Como a qualidade de cada estudo vai influenciar as conclusões da revisão.",
+    v:"Os estudos de baixa qualidade terão suas conclusões apresentadas junto com suas limitações. Os estudos de qualidade metodológica alta serão analisados com maior profundidade, sustentando as principais conclusões da revisão." },
+  { id:"vies", t:"Risco de viés", type:"textarea", a:[9,12,15],
+    h:"Como o viés será analisado: pelo instrumento aplicado pelos revisores ou pelas limitações declaradas no próprio estudo.",
+    v:"O risco de viés será avaliado pelos revisores com o instrumento escolhido e confrontado com as limitações declaradas pelos próprios autores de cada estudo." },
+  { id:"tab_qualidade", t:"Tabela de avaliação da qualidade", type:"table", a:[9,13],
+    h:"O resultado da avaliação de cada estudo e o que será feito com ele.",
+    cols:["ID","Critérios atendidos","Qualidade (alta, média, baixa)","Risco de viés","Encaminhamento"],
+    rows:[
+      ["A definir","4 de 5","Média","Moderado: sem grupo de comparação","Conclusões apresentadas com suas limitações"],
+      ["A definir","7 de 8","Alta","Baixo","Analisado com maior profundidade"]
+    ]}
+]},
+{ id:"sintese", t:"Síntese dos resultados", d:"Como os achados dos estudos serão agrupados e comparados.", items:[
+  { id:"metodo_sintese", t:"Método de síntese", type:"textarea", a:[11,14],
+    h:"Se a síntese será narrativa ou por metanálise, e por quê.",
+    v:"A revisão será conduzida como uma revisão sistemática de métodos mistos. Os resultados quantitativos serão organizados em síntese narrativa, e os achados qualitativos serão analisados por síntese temática. Essa abordagem permitirá integrar os diferentes delineamentos (artigos, estudos de caso, relatos de experiência, teses e dissertações), sem exigir metanálise." },
+  { id:"o_que_extrair", t:"O que extrair para a síntese", type:"tags",
+    h:"Elementos que serão organizados diretamente na síntese.",
+    v:["Método de tratamento","Intervenção psicológica","Intervenção psiquiátrica associada","Abordagem utilizada","Contexto de atendimento","Resultados encontrados"] },
+  { id:"eixos", t:"Eixos de organização", type:"tags", a:[14],
+    h:"As categorias em que a produção será agrupada.",
+    v:["Abordagens teóricas e terapêuticas","Tipos de intervenção","Experiências de atendimento","Resultados relatados"] },
+  { id:"tab_sintese", t:"Tabela de síntese", type:"table", a:[14],
+    h:"Para cada eixo, os estudos relacionados e os principais achados.",
+    cols:["Eixo","Estudos relacionados","Principais achados"],
+    rows:[
+      ["Abordagens teóricas e terapêuticas","Souza et al. (2019); Oliveira (2022)","TCC em grupo e psicoterapia psicodinâmica individual"],
+      ["Experiências de atendimento","Souza et al. (2019); Oliveira (2022)","Atendimentos em CAPS AD e em clínica-escola"]
+    ]},
+  { id:"proposta_analise", t:"Proposta de análise", type:"textarea", a:[13],
+    h:"Como a produção será organizada e interpretada.",
+    v:"A produção será organizada considerando as abordagens teóricas e terapêuticas, os tipos de intervenção, as experiências de atendimento e os resultados relatados. Serão observadas as diferenças entre os estudos e o que elas mostram sobre o cuidado ao vício em apostas, de forma exploratória e clara." },
+  { id:"produto_final", t:"Resultado esperado", type:"textarea",
+    h:"O que a revisão entrega ao final.",
+    v:"Será apresentado um panorama da produção científica brasileira sobre o tratamento psicológico do vício em apostas: o que foi encontrado, quais práticas de cuidado estão documentadas e como as experiências de atendimento se apresentam." }
+]}
+];
+
+var AMSTAR = [
+  {n:1, q:"A pergunta de pesquisa e os critérios de inclusão contemplam os componentes do PICO?"},
+  {n:2, c:1, q:"O protocolo foi registrado antes da revisão começar, e os desvios dele foram justificados?"},
+  {n:3, q:"Os autores explicaram a escolha dos tipos de estudo incluídos?"},
+  {n:4, c:1, q:"A busca na literatura foi abrangente?"},
+  {n:5, q:"A seleção dos estudos foi feita por pelo menos dois revisores?"},
+  {n:6, q:"A extração dos dados foi feita por pelo menos dois revisores?"},
+  {n:7, c:1, q:"Há uma lista dos estudos excluídos, com a justificativa de cada exclusão?"},
+  {n:8, q:"Os estudos incluídos foram descritos com detalhe suficiente?"},
+  {n:9, c:1, q:"Foi usada uma técnica adequada para avaliar o risco de viés dos estudos?"},
+  {n:10, q:"Foram relatadas as fontes de financiamento dos estudos incluídos?", note:"Não está entre os itens do protocolo. Se quiser atender, inclua o financiamento em Dados a coletar."},
+  {n:11, c:1, q:"Se houver metanálise, os métodos estatísticos usados são adequados?", note:"Só se aplica se a metanálise for realizada."},
+  {n:12, q:"Se houver metanálise, foi avaliado o impacto do risco de viés nos resultados?", note:"Só se aplica se a metanálise for realizada."},
+  {n:13, c:1, q:"O risco de viés dos estudos foi levado em conta ao interpretar e discutir os resultados?"},
+  {n:14, q:"A diferença entre os resultados dos estudos (heterogeneidade) foi explicada e discutida?"},
+  {n:15, c:1, q:"Se houver síntese quantitativa, o viés de publicação foi investigado?", note:"Só se aplica se houver síntese quantitativa."},
+  {n:16, q:"Os autores da revisão declararam conflitos de interesse, incluindo o financiamento da própria revisão?", note:"Não está entre os itens do protocolo. Se quiser atender, declare em Identificação e registro."}
+];
+
+/* ---------- Numeração e mapa AMSTAR ---------- */
+var ITEM_BY_ID = {};
+var AM_REFS = {};
+SECTIONS.forEach(function(s, si){
+  s.n = String(si+1).padStart(2,"0");
+  s.items.forEach(function(it, ii){
+    it.num = (si+1) + "." + (ii+1);
+    it.sec = s;
+    ITEM_BY_ID[it.id] = it;
+    (it.a||[]).forEach(function(q){ (AM_REFS[q] = AM_REFS[q] || []).push(it.id); });
+  });
+});
+var AM_SEC = { id:"amstar", n:String(SECTIONS.length+1).padStart(2,"0"), t:"Autoavaliação da qualidade do estudo" };
+
+/* ---------- Armazenamento ---------- */
+var KEY = "protocolo-rs-ludomania-v1";
+var state = { v:{}, amstar:{} };
+try { var raw = localStorage.getItem(KEY); if (raw) { var p = JSON.parse(raw); if (p && typeof p === "object") { state.v = p.v || {}; state.amstar = p.amstar || {}; } } } catch(e) {}
+
+var saveTimer = null;
+var topSave = document.getElementById("topSave");
+function save(){
+  topSave.textContent = "Salvando…";
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); topSave.textContent = "Alterações salvas neste aparelho"; }
+    catch(e){ topSave.textContent = "Não foi possível salvar neste navegador"; }
+  }, 350);
+}
+
+function today(){ var t = new Date(); return t.getFullYear() + "-" + String(t.getMonth()+1).padStart(2,"0") + "-" + String(t.getDate()).padStart(2,"0"); }
+function clone(x){ return JSON.parse(JSON.stringify(x)); }
+function defaultOf(it){
+  switch(it.type){
+    case "tags": return clone(it.v || []);
+    case "fields": var o = {}; it.f.forEach(function(f){ o[f.k] = f.v || ""; }); return o;
+    case "dates": var d = {}; it.f.forEach(function(f){ d[f.k] = today(); }); return d;
+    case "table": return { rows: clone(it.rows) };
+    case "prisma": return { bases:0, outras:0, dup:0, excResumo:0, excTexto:0 };
+    default: return it.v || "";
+  }
+}
+function validShape(it, v){
+  if (v === null || v === undefined) return false;
+  switch(it.type){
+    case "tags": return Array.isArray(v) && v.every(function(x){ return typeof x === "string"; });
+    case "fields": case "dates": case "prisma": return typeof v === "object" && !Array.isArray(v);
+    case "table": return typeof v === "object" && Array.isArray(v.rows) && v.rows.every(Array.isArray);
+    default: return typeof v === "string";
+  }
+}
+function sk(it){ return it.type === "table" ? it.id + "@v2" : it.id; }
+function get(it){
+  if (it.derived) return buildSpiderDraft();
+  var k = sk(it);
+  if (!(k in state.v) || !validShape(it, state.v[k])) state.v[k] = defaultOf(it);
+  var v = state.v[k];
+  if (it.type === "dates") it.f.forEach(function(f){ if (!v[f.k]) v[f.k] = today(); });
+  else if (it.type === "text" && String(v).trim() === "") state.v[k] = v = "Não definido";
+  return v;
+}
+function set(it, val){ state.v[sk(it)] = val; save(); markFilled(it); }
+
+function isFilled(it){
+  var v = get(it);
+  switch(it.type){
+    case "tags": return v.length > 0;
+    case "fields": case "dates": return Object.keys(v).some(function(k){ return String(v[k]).trim() !== ""; });
+    case "table": return v.rows.some(function(r){ return r.slice(1).some(function(c){ return String(c).trim() !== ""; }); });
+    case "prisma": return Object.keys(v).some(function(k){ return Number(v[k]) > 0; });
+    default: return String(v).trim() !== "";
+  }
+}
+function markFilled(it){
+  var art = document.getElementById("i-" + it.id);
+  if (art) art.classList.toggle("filled", isFilled(it));
+  var ix = document.querySelector('[data-ix="' + it.id + '"]');
+  if (ix) ix.classList.toggle("done", isFilled(it));
+}
+
+/* ---------- Utilidades ---------- */
+function h(tag, attrs){
+  var e = document.createElement(tag);
+  if (attrs) Object.keys(attrs).forEach(function(k){
+    if (k === "text") e.textContent = attrs[k];
+    else if (k === "class") e.className = attrs[k];
+    else if (k.slice(0,2) === "on") e.addEventListener(k.slice(2), attrs[k]);
+    else e.setAttribute(k, attrs[k]);
+  });
+  for (var i = 2; i < arguments.length; i++){
+    var c = arguments[i];
+    if (c == null) continue;
+    e.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+  }
+  return e;
+}
+function grow(ta){ ta.style.height = "auto"; ta.style.height = (ta.scrollHeight + 2) + "px"; }
+function goTo(id){
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start" });
+}
+
+/* ---------- Campos ---------- */
+function fieldText(it){
+  var inp = h("input", { class:"inp", type:"text", placeholder: it.ph || "" });
+  inp.value = get(it);
+  inp.addEventListener("input", function(){ set(it, inp.value); });
+  return inp;
+}
+function fieldArea(it, code){
+  var attrs = { class:"inp" + (code ? " code" : ""), rows: it.rows || 2, spellcheck: code ? "false" : "true" };
+  if (it.derived) attrs.readonly = "true";
+  var ta = h("textarea", attrs);
+  ta.value = get(it);
+  ta.addEventListener("input", function(){ grow(ta); set(it, ta.value); });
+  requestAnimationFrame(function(){ grow(ta); });
+  return ta;
+}
+function fieldFields(it){
+  var v = get(it), wrap = h("div");
+  it.f.forEach(function(f){
+    var ta = h("textarea", { class:"inp", rows:"2", id: it.id + "-" + f.k });
+    ta.value = v[f.k] || "";
+    ta.addEventListener("input", function(){ grow(ta); var cur = get(it); cur[f.k] = ta.value; set(it, cur); });
+    requestAnimationFrame(function(){ grow(ta); });
+    var lab = h("label", { class:"sub-l", for: it.id + "-" + f.k }, f.l, f.s ? h("small", { text: f.s }) : null);
+    wrap.appendChild(h("div", { class:"sub" }, lab, ta));
+  });
+  return wrap;
+}
+function fieldDates(it){
+  var v = get(it), wrap = h("div");
+  it.f.forEach(function(f){
+    var inp = h("input", { class:"inp", type:"date", id: it.id + "-" + f.k });
+    inp.value = v[f.k] || "";
+    inp.addEventListener("input", function(){ var cur = get(it); cur[f.k] = inp.value; set(it, cur); });
+    wrap.appendChild(h("div", { class:"sub" }, h("label", { class:"sub-l", for: it.id + "-" + f.k, text: f.l }), inp));
+  });
+  return wrap;
+}
+function fieldTags(it){
+  var box = h("div", { class:"tags" });
+  var input = h("input", { type:"text", placeholder:"Digite e use vírgula", enterkeyhint:"done", "aria-label": it.t });
+  function render(){
+    box.querySelectorAll(".chip").forEach(function(c){ c.remove(); });
+    get(it).forEach(function(tag, idx){
+      var chip = h("span", { class:"chip" },
+        h("button", { class:"chip-t", type:"button", text: tag, "aria-label":"Editar " + tag, onclick:function(){
+          commit();
+          var arr = get(it); var t = arr.splice(idx, 1)[0]; set(it, arr); render();
+          input.value = t; input.focus();
+        }}),
+        h("button", { class:"chip-x", type:"button", "aria-label":"Remover " + tag, text:"×", onclick:function(){
+          var arr = get(it); arr.splice(idx, 1); set(it, arr); render();
+        }})
+      );
+      box.insertBefore(chip, input);
+    });
+  }
+  function add(text){
+    var parts = text.split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+    if (!parts.length) return;
+    var arr = get(it); parts.forEach(function(p){ arr.push(p); }); set(it, arr); render();
+  }
+  function commit(){ if (input.value.trim()) { add(input.value); } input.value = ""; }
+  input.addEventListener("input", function(){
+    if (input.value.indexOf(",") > -1){
+      var pieces = input.value.split(",");
+      var last = pieces.pop();
+      add(pieces.join(","));
+      input.value = last.replace(/^\s+/, "");
+    }
+  });
+  input.addEventListener("keydown", function(e){
+    if (e.key === "Enter"){ e.preventDefault(); commit(); }
+    else if (e.key === "Backspace" && input.value === ""){
+      var arr = get(it); if (arr.length){ var t = arr.pop(); set(it, arr); render(); input.value = t; e.preventDefault(); }
+    }
+  });
+  input.addEventListener("blur", commit);
+  box.appendChild(input);
+  box.addEventListener("click", function(e){ if (e.target === box) input.focus(); });
+  render();
+  return box;
+}
+function fieldTable(it){
+  var wrap = h("div"), tw = h("div", { class:"tbl-wrap" });
+  var count = h("span");
+  function render(){
+    var v = get(it);
+    tw.innerHTML = "";
+    var thead = h("thead", null, h("tr", null));
+    it.cols.forEach(function(c){ thead.firstChild.appendChild(h("th", { text:c })); });
+    var tbody = h("tbody");
+    v.rows.forEach(function(row, r){
+      var tr = h("tr");
+      it.cols.forEach(function(c, ci){
+        var td = h("td", { contenteditable:"true", "data-ph": c, class: (ci === 0 && c === "ID") ? "id" : "" });
+        td.textContent = row[ci] || "";
+        td.addEventListener("input", function(){
+          var txt = td.innerText.replace(/\n+$/, "");
+          if (txt.trim() === "" && td.innerHTML !== "") td.innerHTML = "";
+          var cur = get(it); cur.rows[r][ci] = txt; set(it, cur);
+        });
+        td.addEventListener("paste", function(e){
+          e.preventDefault();
+          var t = (e.clipboardData || window.clipboardData).getData("text");
+          document.execCommand("insertText", false, t);
+        });
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    tw.appendChild(h("table", null, thead, tbody));
+    count.textContent = "Deslize para o lado para ver todas as colunas.";
+  }
+  wrap.appendChild(tw);
+  wrap.appendChild(h("div", { class:"tbl-foot" }, count));
+  render();
+  return wrap;
+}
+function fieldPrisma(it){
+  var v = get(it), outs = {};
+  var warn = h("div", { class:"pwarn", text:"Algum número ficou negativo. Confira as exclusões." });
+  function num(k, label, side){
+    var inp = h("input", { type:"number", min:"0", inputmode:"numeric", "aria-label": label });
+    inp.value = v[k];
+    inp.addEventListener("input", function(){ var cur = get(it); cur[k] = Math.max(0, parseInt(inp.value, 10) || 0); set(it, cur); calc(); });
+    inp.addEventListener("focus", function(){ if (inp.value === "0") inp.select(); });
+    return h("div", { class:"pbox" + (side ? " side" : "") }, h("span", { text: label }), inp);
+  }
+  function out(k, label){ outs[k] = h("output"); return h("div", { class:"pbox calc" }, h("span", { text: label }), outs[k]); }
+  function arrow(){ return h("div", { class:"parrow" }); }
+  function calc(){
+    var c = get(it);
+    var total = c.bases + c.outras, triados = total - c.dup, completo = triados - c.excResumo, incl = completo - c.excTexto;
+    outs.total.textContent = total; outs.triados.textContent = triados; outs.completo.textContent = completo; outs.incl.textContent = incl;
+    warn.style.display = (triados < 0 || completo < 0 || incl < 0) ? "block" : "none";
+  }
+  var box = h("div", { class:"prisma" },
+    h("div", { class:"pstage", text:"Identificação" }),
+    num("bases", "Registros encontrados nas bases"),
+    arrow(),
+    num("outras", "Registros em teses, dissertações e outras fontes"),
+    arrow(),
+    out("total", "Total identificado"),
+    arrow(),
+    num("dup", "Duplicatas removidas", true),
+    h("div", { class:"pstage", text:"Triagem" }),
+    out("triados", "Registros triados por título e resumo"),
+    arrow(),
+    num("excResumo", "Excluídos na triagem por título e resumo", true),
+    h("div", { class:"pstage", text:"Elegibilidade" }),
+    out("completo", "Estudos avaliados no texto completo"),
+    arrow(),
+    num("excTexto", "Excluídos no texto completo, com justificativa", true),
+    h("div", { class:"pstage", text:"Inclusão" }),
+    out("incl", "Estudos incluídos na revisão"),
+    warn
+  );
+  calc();
+  return box;
+}
+
+function buildField(it){
+  switch(it.type){
+    case "text": return fieldText(it);
+    case "code": return fieldArea(it, true);
+    case "fields": return fieldFields(it);
+    case "dates": return fieldDates(it);
+    case "tags": return fieldTags(it);
+    case "table": return fieldTable(it);
+    case "prisma": return fieldPrisma(it);
+    default: return fieldArea(it, false);
+  }
+
+}
+
+function buildSpiderDraft(){
+    var spider = ITEM_BY_ID.spider;
+    if (!spider || !spider.f) return "";
+    var value = get(spider);
+    return "Considerando " + (value.s || "a amostra definida") +
+      ", como se apresentam " + (value.pi || "o fenômeno de interesse") +
+      " nos " + (value.d || "desenhos de estudo selecionados") +
+      ", quais " + (value.e || "resultados serão observados") +
+      " em pesquisas " + (value.r || "de diferentes abordagens metodológicas") + "?";
+  }
+
+function syncSpiderDraft(){
+    var draft = document.querySelector("#i-pergunta_spider textarea");
+    if (!draft) return;
+    var text = buildSpiderDraft();
+    if (draft.value !== text){
+      draft.value = text;
+      grow(draft);
+  }
+}
+
+/* ---------- Montagem da página ---------- */
+var secRoot = document.getElementById("sections");
+var ixList = document.getElementById("ixList");
+var isCrit = {}; AMSTAR.forEach(function(q){ if (q.c) isCrit[q.n] = true; });
+
+function render(){
+  secRoot.innerHTML = ""; ixList.innerHTML = "";
+  document.getElementById("heroTitle").textContent = get(ITEM_BY_ID.titulo) || "Protocolo de revisão sistemática";
+
+  SECTIONS.forEach(function(s){
+    var items = h("div", { class:"items" });
+    s.items.forEach(function(it){
+      var art = h("article", { class:"item", id:"i-" + it.id },
+        h("div", { class:"item-h" }, h("h3", { text: it.num + " " + it.t })),
+        h("p", { class:"hint", text: it.h }),
+        buildField(it)
+      );
+      items.appendChild(art);
+    });
+    secRoot.appendChild(h("section", { class:"sec", id:"s-" + s.id, "data-title": s.t, "data-n": s.n },
+      h("div", { class:"sec-band" }, h("h2", { text: s.n + " " + s.t }), h("p", { class:"sec-d", text: s.d })),
+      items
+    ));
+
+    ixList.appendChild(h("button", { class:"ix-sec", type:"button", onclick:function(){ closeIx(); goTo("s-" + s.id); } }, h("span", { text: s.n }), s.t));
+    s.items.forEach(function(it){
+      ixList.appendChild(h("button", { class:"ix-it", type:"button", "data-ix": it.id, onclick:function(){ closeIx(); goTo("i-" + it.id); } }, h("span", { text: it.num }), it.t));
+    });
+  });
+
+  /* AMSTAR */
+  var list = h("div");
+  AMSTAR.forEach(function(q){
+    var refs = (AM_REFS[q.n] || []).map(function(id){ var it = ITEM_BY_ID[id]; return it.num + " " + it.t; });
+    list.appendChild(h("div", { class:"am", id:"am-" + q.n },
+      h("div", { class:"am-b" },
+        h("p", { class:"am-q" }, h("b", { text: String(q.n).padStart(2,"0") }), q.q),
+        refs.length ? h("p", { class:"am-where" }, h("span", { text:"Onde está no protocolo: " }), refs.join("; ") + ".") : null,
+        q.note ? h("p", { class:"am-note", text: q.note }) : null
+      )
+    ));
+  });
+  secRoot.appendChild(h("section", { class:"sec", id:"s-amstar", "data-title": AM_SEC.t, "data-n": AM_SEC.n },
+    h("div", { class:"sec-band" }, h("h2", { text: AM_SEC.n + " " + AM_SEC.t }), h("p", { class:"sec-d", text:"Autoavaliação da qualidade desta pesquisa, considerando as perguntas do AMSTAR 2 e as mudanças feitas no protocolo." })),
+    list
+  ));
+  ixList.appendChild(h("button", { class:"ix-sec", type:"button", onclick:function(){ closeIx(); goTo("s-amstar"); } }, h("span", { text: AM_SEC.n }), AM_SEC.t));
+
+  Object.keys(ITEM_BY_ID).forEach(function(id){ markFilled(ITEM_BY_ID[id]); });
+  observe();
+}
+
+/* título no topo acompanha o item 1.1 */
+document.addEventListener("input", function(e){
+  if (e.target.closest && e.target.closest("#i-titulo")) document.getElementById("heroTitle").textContent = get(ITEM_BY_ID.titulo);
+  if (e.target.closest && e.target.closest("#i-spider")) syncSpiderDraft();
+});
+
+/* ---------- Navegação ---------- */
+var topSec = document.getElementById("topSec");
+var bar = document.getElementById("bar");
+var io = null;
+function observe(){
+  if (io) io.disconnect();
+  if (!("IntersectionObserver" in window)) return;
+  io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting){ var s = en.target; topSec.textContent = s.getAttribute("data-n") + "  " + s.getAttribute("data-title"); }
+    });
+  }, { rootMargin:"-30% 0px -65% 0px" });
+  document.querySelectorAll(".sec").forEach(function(s){ io.observe(s); });
+}
+function onScroll(){
+  var max = document.documentElement.scrollHeight - window.innerHeight;
+  bar.style.width = (max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0) + "%";
+  if (window.scrollY < 120) topSec.textContent = "Protocolo de revisão sistemática";
+}
+window.addEventListener("scroll", onScroll, { passive:true });
+
+function syncExportControls(){
+  var controls = document.getElementById("exportControls");
+  var topIn = document.querySelector(".top-in");
+  var sheetExports = document.getElementById("sheetExports");
+  if (!controls || !topIn || !sheetExports) return;
+  var target = window.matchMedia("(max-width:759px)").matches ? sheetExports : topIn;
+  if (controls.parentElement !== target) target.appendChild(controls);
+}
+syncExportControls();
+var exportMedia = window.matchMedia("(max-width:759px)");
+if (exportMedia.addEventListener) exportMedia.addEventListener("change", syncExportControls);
+else exportMedia.addListener(syncExportControls);
+
+function openIx(){
+  var ixList = document.getElementById("ixList");
+  if (ixList) ixList.scrollTop = 0;
+  document.body.classList.add("open");
+}
+function closeIx(){ document.body.classList.remove("open"); }
+document.getElementById("openIx").addEventListener("click", openIx);
+document.getElementById("closeIx").addEventListener("click", closeIx);
+document.getElementById("sheetBg").addEventListener("click", closeIx);
+document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeIx(); });
+
+/* ---------- Exportar PDF ---------- */
+function fmtDate(v){ var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || ""); return m ? m[3] + "/" + m[2] + "/" + m[1] : (v || "Não definido"); }
+function exportDate(){ return today(); }
+function exportFileName(prefix, extension){ return prefix + "-protocolo-" + exportDate() + "." + extension; }
+function downloadBlob(blob, filename){
+  var link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(function(){ URL.revokeObjectURL(link.href); }, 1000);
+}
+function buildDoc(){
+  var doc = document.getElementById("printDoc");
+  doc.innerHTML = "";
+  doc.appendChild(h("p", { class:"pd-kind", text:"Protocolo de revisão sistemática" }));
+  doc.appendChild(h("h1", { class:"pd-title", text: get(ITEM_BY_ID.titulo) }));
+  SECTIONS.forEach(function(sec){
+    doc.appendChild(h("h2", { class:"pd-sec", text: sec.n + " " + sec.t }));
+    sec.items.forEach(function(it){
+      doc.appendChild(h("h3", { class:"pd-it", text: it.num + " " + it.t }));
+      var v = get(it);
+      if (it.type === "tags"){
+        var ul = h("ul", { class:"pd-v" }); v.forEach(function(t){ ul.appendChild(h("li", { text:t })); }); doc.appendChild(ul);
+      } else if (it.type === "fields" || it.type === "dates"){
+        it.f.forEach(function(f){
+          var val = it.type === "dates" ? fmtDate(v[f.k]) : (v[f.k] || "");
+          doc.appendChild(h("p", { class:"pd-v" }, h("span", { class:"pd-lab", text: f.l + (f.s ? " (" + f.s + ")" : "") + ": " }), val));
+        });
+      } else if (it.type === "table"){
+        var t = h("table", { class:"pd-tbl" }), hr = h("tr");
+        it.cols.forEach(function(c){ hr.appendChild(h("th", { text:c })); });
+        var tb = h("tbody");
+        v.rows.forEach(function(r){ var tr = h("tr"); it.cols.forEach(function(c, ci){ tr.appendChild(h("td", { text: r[ci] || "" })); }); tb.appendChild(tr); });
+        t.appendChild(h("thead", null, hr)); t.appendChild(tb); doc.appendChild(t);
+      } else if (it.type === "prisma"){
+        var total = v.bases + v.outras, tri = total - v.dup, comp = tri - v.excResumo, inc = comp - v.excTexto;
+        var rows = [["Registros encontrados nas bases", v.bases],["Registros em teses, dissertações e outras fontes", v.outras],["Total identificado", total],["Duplicatas removidas", v.dup],["Registros triados por título e resumo", tri],["Excluídos na triagem por título e resumo", v.excResumo],["Estudos avaliados no texto completo", comp],["Excluídos no texto completo, com justificativa", v.excTexto],["Estudos incluídos na revisão", inc]];
+        var pt = h("table", { class:"pd-tbl" }), pb = h("tbody");
+        pt.appendChild(h("thead", null, h("tr", null, h("th", { text:"Etapa" }), h("th", { text:"Nº" }))));
+        rows.forEach(function(r){ pb.appendChild(h("tr", null, h("td", { text:r[0] }), h("td", { text:String(r[1]) }))); });
+        pt.appendChild(pb); doc.appendChild(pt);
+      } else {
+        doc.appendChild(h("p", { class:"pd-v", text: v }));
+      }
+    });
+  });
+  doc.appendChild(h("h2", { class:"pd-sec", text: AM_SEC.n + " " + AM_SEC.t }));
+  AMSTAR.forEach(function(q){
+    var refs = (AM_REFS[q.n] || []).map(function(id){ var it = ITEM_BY_ID[id]; return it.num + " " + it.t; });
+    doc.appendChild(h("div", { class:"pd-am" },
+      h("p", null, h("span", { class:"pd-lab", text: String(q.n).padStart(2,"0") + " " }), q.q),
+      refs.length ? h("p", { class:"pd-v" }, h("span", { class:"pd-lab", text:"Onde está no protocolo: " }), refs.join("; ") + ".") : null,
+      q.note ? h("p", { class:"pd-v pd-note", text: q.note }) : null
+    ));
+  });
+}
+
+function docxRun(text, options){
+  var D = window.docx;
+  return new D.TextRun(Object.assign({
+    text: String(text == null ? "" : text),
+    font: "Georgia",
+    size: 22
+  }, options || {}));
+}
+function docxParagraph(children, options){
+  var D = window.docx;
+  return new D.Paragraph(Object.assign({
+    children: Array.isArray(children) ? children : [docxRun(children)],
+    spacing: { after: 120, line: 276 }
+  }, options || {}));
+}
+function docxTable(it, value){
+  var D = window.docx;
+  var border = { style:D.BorderStyle.SINGLE, size:4, color:"999999" };
+  var borders = { top:border, bottom:border, left:border, right:border, insideHorizontal:border, insideVertical:border };
+  var cellMargins = { top:90, bottom:90, left:110, right:110 };
+  var rows = [];
+  rows.push(new D.TableRow({
+    tableHeader: true,
+    children: it.cols.map(function(col){
+      return new D.TableCell({
+        shading: { fill:"F5F5F5" },
+        margins: cellMargins,
+        verticalAlign: D.VerticalAlign.CENTER,
+        children: [docxParagraph(docxRun(col, { font:"Arial", bold:true, color:"000000", size:18 }), { spacing:{ after:0 } })]
+      });
+    })
+  }));
+  value.rows.forEach(function(row){
+    rows.push(new D.TableRow({
+      children: it.cols.map(function(col, index){
+        return new D.TableCell({
+          margins: cellMargins,
+          verticalAlign: D.VerticalAlign.TOP,
+          children: [docxParagraph(row[index] || "", { spacing:{ after:0 } })]
+        });
+      })
+    }));
+  });
+  return new D.Table({ rows:rows, borders:borders, width:{ size:100, type:D.WidthType.PERCENTAGE } });
+}
+function buildDocx(){
+  if (!window.docx) {
+    throw new Error("A biblioteca de exportação DOCX não foi carregada.");
+  }
+  var D = window.docx, children = [];
+  children.push(docxParagraph("Protocolo de revisão sistemática", {
+    children:[docxRun("Protocolo de revisão sistemática", { font:"Arial", color:"555555", size:18 })],
+    spacing:{ after:100 }
+  }));
+  children.push(docxParagraph(get(ITEM_BY_ID.titulo), {
+    children:[docxRun(get(ITEM_BY_ID.titulo), { font:"Arial", bold:true, color:"000000", size:32 })],
+    spacing:{ after:320 }
+  }));
+  children.push(docxParagraph("Documento editável exportado do protocolo", {
+    children:[docxRun("Documento editável exportado do protocolo", { font:"Arial", color:"555555", italics:true, size:18 })],
+    spacing:{ after:260 }
+  }));
+
+  function addItem(it){
+    var value = get(it);
+    children.push(docxParagraph(it.num + " " + it.t, {
+      children:[docxRun(it.num + " " + it.t, { font:"Arial", bold:true, color:"000000", size:24 })],
+      spacing:{ before:360, after:140 }
+    }));
+    if (it.type === "tags") {
+      value.forEach(function(tag){
+        children.push(docxParagraph(tag, {
+          bullet:{ level:0 },
+          spacing:{ after:40 }
+        }));
+      });
+    } else if (it.type === "fields" || it.type === "dates") {
+      it.f.forEach(function(field){
+        var label = field.l + (field.s ? " (" + field.s + ")" : "") + ": ";
+        children.push(docxParagraph([
+          docxRun(label, { font:"Arial", bold:true, size:20 }),
+          docxRun(it.type === "dates" ? fmtDate(value[field.k]) : (value[field.k] || ""))
+        ], { spacing:{ after:80 } }));
+      });
+    } else if (it.type === "table") {
+      children.push(docxTable(it, value));
+      children.push(docxParagraph("", { spacing:{ after:80 } }));
+    } else if (it.type === "prisma") {
+      var total = value.bases + value.outras;
+      var triados = total - value.dup;
+      var completo = triados - value.excResumo;
+      var incluido = completo - value.excTexto;
+      var prisma = {
+        cols:["Etapa","Nº"],
+        rows:[
+          ["Registros encontrados nas bases", value.bases],
+          ["Registros em teses, dissertações e outras fontes", value.outras],
+          ["Total identificado", total],
+          ["Duplicatas removidas", value.dup],
+          ["Registros triados por título e resumo", triados],
+          ["Excluídos na triagem por título e resumo", value.excResumo],
+          ["Estudos avaliados no texto completo", completo],
+          ["Excluídos no texto completo, com justificativa", value.excTexto],
+          ["Estudos incluídos na revisão", incluido]
+        ]
+      };
+      children.push(docxTable(prisma, prisma));
+    } else {
+      children.push(docxParagraph(value));
+    }
+  }
+
+  SECTIONS.forEach(function(section){
+    children.push(docxParagraph(section.n + " " + section.t, {
+      children:[docxRun(section.n + " " + section.t, { font:"Arial", bold:true, color:"000000", size:26 })],
+      shading:{ fill:"F5F5F5" },
+      spacing:{ before:720, after:240 }
+    }));
+    section.items.forEach(addItem);
+  });
+
+  children.push(docxParagraph(AM_SEC.n + " " + AM_SEC.t, {
+    children:[docxRun(AM_SEC.n + " " + AM_SEC.t, { font:"Arial", bold:true, color:"000000", size:26 })],
+    shading:{ fill:"F5F5F5" },
+    spacing:{ before:720, after:240 }
+  }));
+  AMSTAR.forEach(function(question){
+    var refs = (AM_REFS[question.n] || []).map(function(id){
+      var item = ITEM_BY_ID[id];
+      return item.num + " " + item.t;
+    });
+    children.push(docxParagraph([
+      docxRun(String(question.n).padStart(2, "0") + " ", { font:"Arial", bold:true, size:20 }),
+      docxRun(question.q)
+    ]));
+    if (refs.length) {
+      children.push(docxParagraph([
+        docxRun("Onde está no protocolo: ", { font:"Arial", bold:true, size:20 }),
+        docxRun(refs.join("; ") + ".")
+      ], { spacing:{ after:60 } }));
+    }
+    if (question.note) {
+      children.push(docxParagraph(question.note, { italics:true }));
+    }
+  });
+
+  var document = new D.Document({
+    styles:{
+      default:{
+        document:{
+          run:{ font:"Georgia", size:22 },
+          paragraph:{ spacing:{ line:276, after:120 } }
+        }
+      }
+    },
+    sections:[{
+      properties:{
+        page:{
+          size:{ width:11906, height:16838 },
+          margin:{ top:1020, right:907, bottom:1020, left:907 }
+        }
+      },
+      headers:{
+        default: new D.Header({
+          children:[docxParagraph("Protocolo de revisão sistemática", {
+            children:[docxRun("Protocolo de revisão sistemática", { font:"Arial", color:"777777", size:16 })],
+            spacing:{ after:0 }
+          })]
+        })
+      },
+      footers:{
+        default: new D.Footer({
+          children:[docxParagraph("Documento de trabalho", {
+            children:[docxRun("Documento de trabalho", { font:"Arial", color:"777777", size:16 })],
+            alignment:D.AlignmentType.CENTER,
+            spacing:{ after:0 }
+          })]
+        })
+      },
+      children:children
+    }]
+  });
+  return D.Packer.toBlob(document);
+}
+function buildTablesWorkbook(){
+  if (!window.XLSX) {
+    throw new Error("A biblioteca de exportação de planilhas não foi carregada.");
+  }
+  var workbook = XLSX.utils.book_new();
+  var usedNames = {};
+  var tables = [];
+  SECTIONS.forEach(function(section){
+    section.items.forEach(function(item){
+      if (item.type === "table") tables.push(item);
+    });
+  });
+  tables.forEach(function(item){
+    var value = get(item);
+    var title = item.t || "Tabela";
+    var rows = [
+      [title],
+      ["Dados exportados do protocolo"],
+      item.cols
+    ].concat(value.rows);
+    var worksheet = XLSX.utils.aoa_to_sheet(rows);
+    var lastColumn = Math.max(0, item.cols.length - 1);
+    var lastRow = Math.max(2, rows.length - 1);
+    var titleStyle = {
+      font:{ name:"Arial", sz:14, bold:true, color:{ rgb:"000000" } },
+      fill:{ patternType:"solid", fgColor:{ rgb:"F5F5F5" } },
+      alignment:{ horizontal:"left", vertical:"center" }
+    };
+    var subtitleStyle = {
+      font:{ name:"Arial", sz:10, italic:true, color:{ rgb:"555555" } },
+      alignment:{ horizontal:"left", vertical:"center" }
+    };
+    var headerStyle = {
+      font:{ name:"Arial", sz:10, bold:true, color:{ rgb:"000000" } },
+      fill:{ patternType:"solid", fgColor:{ rgb:"EBEBEB" } },
+      alignment:{ horizontal:"center", vertical:"center", wrapText:true },
+      border:{
+        top:{ style:"thin", color:{ rgb:"999999" } },
+        bottom:{ style:"thin", color:{ rgb:"999999" } },
+        left:{ style:"thin", color:{ rgb:"999999" } },
+        right:{ style:"thin", color:{ rgb:"999999" } }
+      }
+    };
+    var bodyStyle = {
+      font:{ name:"Georgia", sz:10, color:{ rgb:"000000" } },
+      alignment:{ vertical:"top", wrapText:true },
+      border:{
+        top:{ style:"thin", color:{ rgb:"D9D9D9" } },
+        bottom:{ style:"thin", color:{ rgb:"D9D9D9" } },
+        left:{ style:"thin", color:{ rgb:"D9D9D9" } },
+        right:{ style:"thin", color:{ rgb:"D9D9D9" } }
+      }
+    };
+    for (var colIndex = 0; colIndex <= lastColumn; colIndex++){
+      var titleCell = worksheet[XLSX.utils.encode_cell({ r:0, c:colIndex })];
+      var subtitleCell = worksheet[XLSX.utils.encode_cell({ r:1, c:colIndex })];
+      var headerCell = worksheet[XLSX.utils.encode_cell({ r:2, c:colIndex })];
+      if (titleCell) titleCell.s = titleStyle;
+      if (subtitleCell) subtitleCell.s = subtitleStyle;
+      if (headerCell) headerCell.s = headerStyle;
+      for (var rowIndex = 3; rowIndex <= lastRow; rowIndex++){
+        var bodyCell = worksheet[XLSX.utils.encode_cell({ r:rowIndex, c:colIndex })];
+        if (bodyCell) bodyCell.s = bodyStyle;
+      }
+    }
+    worksheet["!merges"] = [
+      { s:{ r:0, c:0 }, e:{ r:0, c:lastColumn } },
+      { s:{ r:1, c:0 }, e:{ r:1, c:lastColumn } }
+    ];
+    worksheet["!freeze"] = { xSplit:0, ySplit:3 };
+    worksheet["!autofilter"] = { ref:"A3:" + XLSX.utils.encode_col(lastColumn) + lastRow };
+    worksheet["!rows"] = [
+      { hpt:24 },
+      { hpt:18 },
+      { hpt:22 }
+    ];
+    worksheet["!cols"] = item.cols.map(function(col){
+      return { wch: Math.max(16, Math.min(48, col.length + 6)) };
+    });
+    var baseName = item.t.replace(/[\\/?*[\]:]/g, "").slice(0, 31) || "Tabela";
+    var name = baseName, suffix = 2;
+    while (usedNames[name]) {
+      var ending = " (" + suffix + ")";
+      name = baseName.slice(0, 31 - ending.length) + ending;
+      suffix++;
+    }
+    usedNames[name] = true;
+    XLSX.utils.book_append_sheet(workbook, worksheet, name);
+  });
+  if (!tables.length) throw new Error("Nenhuma tabela disponível para exportação.");
+  return XLSX.write(workbook, { bookType:"xlsx", type:"array" });
+}
+document.getElementById("exportBtn").addEventListener("click", function(){
+  closeIx();
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  buildDoc();
+  var title = document.title;
+  document.title = "Protocolo-" + exportDate();
+  setTimeout(function(){ window.print(); document.title = title; }, 60);
+});
+document.getElementById("exportDocxBtn").addEventListener("click", function(){
+  var button = document.getElementById("exportDocxBtn");
+  var loading = document.getElementById("docxLoading");
+  var loadingText = loading.querySelector(".loading-box span:last-child");
+  var original = button.textContent;
+  button.disabled = true;
+  button.textContent = "Gerando DOCX…";
+  loadingText.textContent = "Gerando arquivo DOCX…";
+  loading.hidden = false;
+  setTimeout(function(){
+    Promise.resolve().then(function(){ return buildDocx(); }).then(function(blob){
+      downloadBlob(blob, exportFileName("Doc", "docx"));
+    }).catch(function(error){
+      console.error(error);
+      topSave.textContent = "Não foi possível gerar o DOCX";
+    }).finally(function(){
+      loading.hidden = true;
+      button.disabled = false;
+      button.textContent = original;
+    });
+  }, 0);
+});
+document.getElementById("exportTablesBtn").addEventListener("click", function(){
+  var button = document.getElementById("exportTablesBtn");
+  var loading = document.getElementById("docxLoading");
+  var loadingText = loading.querySelector(".loading-box span:last-child");
+  var original = button.textContent;
+  button.disabled = true;
+  button.textContent = "Gerando tabelas…";
+  loadingText.textContent = "Gerando arquivo de tabelas…";
+  loading.hidden = false;
+  setTimeout(function(){
+    Promise.resolve().then(function(){
+      return buildTablesWorkbook();
+    }).then(function(data){
+      var blob = new Blob([data], { type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      downloadBlob(blob, exportFileName("Tabelas", "xlsx"));
+    }).catch(function(error){
+      console.error(error);
+      topSave.textContent = "Não foi possível gerar as tabelas";
+    }).finally(function(){
+      loading.hidden = true;
+      button.disabled = false;
+      button.textContent = original;
+    });
+  }, 0);
+});
+document.getElementById("exportZipBtn").addEventListener("click", function(){
+  var button = document.getElementById("exportZipBtn");
+  var loading = document.getElementById("docxLoading");
+  var loadingText = loading.querySelector(".loading-box span:last-child");
+  var original = button.textContent;
+  button.disabled = true;
+  button.textContent = "Gerando ZIP…";
+  loadingText.textContent = "Gerando arquivo ZIP…";
+  loading.hidden = false;
+  setTimeout(function(){
+    Promise.all([buildDocx(), Promise.resolve().then(buildTablesWorkbook)]).then(function(files){
+      if (!window.JSZip) throw new Error("A biblioteca de exportação ZIP não foi carregada.");
+      var zip = new JSZip();
+      zip.file(exportFileName("Doc", "docx"), files[0]);
+      zip.file(exportFileName("Tabelas", "xlsx"), files[1]);
+      return zip.generateAsync({ type:"blob" });
+    }).then(function(blob){
+      downloadBlob(blob, exportFileName("Zip", "zip"));
+    }).catch(function(error){
+      console.error(error);
+      topSave.textContent = "Não foi possível gerar o ZIP";
+    }).finally(function(){
+      loading.hidden = true;
+      button.disabled = false;
+      button.textContent = original;
+    });
+  }, 0);
+});
+
+/* ---------- Restaurar ---------- */
+var resetBtn = document.getElementById("reset"), armTimer = null;
+resetBtn.addEventListener("click", function(){
+  if (!resetBtn.classList.contains("armed")){
+    resetBtn.classList.add("armed"); resetBtn.textContent = "Toque de novo para apagar suas edições";
+    armTimer = setTimeout(function(){ resetBtn.classList.remove("armed"); resetBtn.textContent = "Restaurar o conteúdo original"; }, 3500);
+    return;
+  }
+  clearTimeout(armTimer);
+  state = { v:{}, amstar:{} };
+  try { localStorage.removeItem(KEY); } catch(e) {}
+  resetBtn.classList.remove("armed"); resetBtn.textContent = "Restaurar o conteúdo original";
+  render(); save(); window.scrollTo(0, 0);
+});
+
+render();
+onScroll();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Prompt — API Hub modular e segura</title>
+<style>
+:root{color-scheme:light dark;--bg:#f4f6fa;--panel:#fff;--ink:#172033;--muted:#596579;--line:#dbe1ea;--accent:#315ee8}
+@media(prefers-color-scheme:dark){:root{--bg:#101521;--panel:#171f2d;--ink:#edf2fb;--muted:#aab6c8;--line:#303c50;--accent:#8ca8ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}header{padding:40px 22px 28px;background:var(--panel);border-bottom:1px solid var(--line)}.wrap{max-width:980px;margin:auto}.eyebrow{color:var(--accent);font-size:.78rem;font-weight:750;letter-spacing:.12em;text-transform:uppercase}h1{line-height:1.15;font-size:clamp(2rem,5vw,3.2rem);margin:.45rem 0 1rem}.lead,.note{color:var(--muted)}main{max-width:980px;margin:28px auto 64px;padding:0 18px}.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:16px}button{border:0;border-radius:9px;padding:11px 16px;font:600 14px system-ui;cursor:pointer;background:var(--accent);color:white}button.secondary{background:var(--panel);color:var(--ink);border:1px solid var(--line)}.note{font-size:.9rem}article{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:clamp(18px,4vw,36px);box-shadow:0 8px 30px #0000000b}#prompt{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.75 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}footer{text-align:center;color:var(--muted);padding:0 18px 32px;font-size:.85rem}@media print{body{background:white;color:#111}header{padding:20px 0}main{margin:12px auto}article{border:0;box-shadow:none;padding:0}.toolbar{display:none}#prompt{font-size:10pt}}
+</style></head>
+<body>
+<header><div class="wrap"><div class="eyebrow">Especificação de arquitetura e implementação</div><h1>API Hub modular e segura</h1><p class="lead">Prompt completo para projetar uma API única, organizada em subaplicações, contextos, assuntos, interfaces e funções, com núcleo central de segurança e governança.</p></div></header>
+<main><div class="toolbar"><button id="copy">Copiar prompt completo</button><button class="secondary" onclick="window.print()">Imprimir / salvar em PDF</button><span class="note" id="status" aria-live="polite">O texto abaixo é o conteúdo integral do prompt.</span></div><article><div id="prompt">
+# PROMPT — Plataforma de API modular, segura e multiaplicação
+
+## Papel e objetivo
+
+Atue como arquiteto(a) de software sênior, especialista em segurança de aplicações, Node.js, TypeScript, APIs HTTP, arquitetura serverless, OWASP API Security Top 10, engenharia de identidade e controle de acesso.
+
+Projete e implemente uma única plataforma de API, centralizada e modular, que funcione como um **hub de acesso a múltiplas subaplicações**. A plataforma deve expor uma única superfície de API, mas organizar internamente aplicações, contextos, assuntos, interfaces e funções de forma independente, governada e extensível.
+
+A estrutura conceitual desejada é:
+
+`/api/{aplicacao}/{contexto}/{assunto}/{interface}/{funcao}`
+
+Exemplos ilustrativos:
+- `/api/aplicacaoa/financeiro/recebimentos/v1/consultar`
+- `/api/aplicacaoa/financeiro/recebimentos/v1/registrar`
+- `/api/aplicacaob/usuarios/perfil/v1/consultar`
+- `/api/aplicacaoc/relatorios/vendas/v1/gerar`
+
+Os nomes são exemplos. Proponha uma convenção consistente e documente-a. Não implemente rotas arbitrárias ou dinâmicas sem um catálogo explícito de aplicações e operações autorizadas.
+
+O objetivo não é criar várias APIs independentes nem vários servidores. É criar **uma API única, com um núcleo comum de segurança e governança, e módulos/subaplicações isolados logicamente**. Cada subaplicação deve poder evoluir, ser testada, habilitada, desabilitada e receber permissões próprias sem comprometer as demais.
+
+Priorize segurança, simplicidade operacional, baixo acoplamento, desempenho, observabilidade, testabilidade e manutenção. Não declare que existe segurança absoluta. Explique ameaças residuais, limites da plataforma e decisões de risco.
+
+## 1. Antes de implementar
+
+Comece apresentando:
+1. A arquitetura proposta e seus motivos.
+2. O fluxo completo de uma requisição, da borda até a resposta.
+3. O modelo de isolamento entre aplicações.
+4. O modelo de identidade, autenticação, autorização e auditoria.
+5. As ameaças consideradas e respectivas mitigações.
+6. As limitações específicas da execução serverless na Vercel.
+7. As decisões que dependem de informações ainda não fornecidas.
+
+Não invente requisitos de negócio, provedores, credenciais, domínios, volumes ou integrações. Quando faltar informação indispensável, registre a premissa e faça uma pergunta objetiva. Se for possível avançar com uma premissa segura, explicite-a e prossiga.
+
+## 2. Stack e restrições tecnológicas
+
+Considere como stack inicial:
+- Node.js em versão LTS suportada pela Vercel.
+- TypeScript em modo estrito.
+- Hono como framework HTTP leve, se compatível com o runtime e adaptador escolhidos.
+- Zod para validação de parâmetros, corpo, query string e configurações.
+- Vercel Functions para hospedagem.
+- Redis gerenciado, por exemplo Upstash, para rate limiting e estado compartilhado quando necessário.
+- Banco relacional existente ou a definir, acessado por camada de repositórios.
+- Vitest para testes automatizados.
+- Testes de segurança e integração no pipeline de CI.
+
+Verifique a compatibilidade das versões e APIs com a documentação oficial vigente antes de fixar dependências ou escrever configurações. Não use APIs obsoletas. Registre versões e justifique escolhas.
+
+Não presuma que memória local de uma função serverless seja compartilhada entre instâncias, persistente ou adequada para locks, sessões, rate limiting global ou estado de negócio. Não mantenha processos permanentes, filas em memória ou tarefas de longa duração em funções serverless. Para tarefas assíncronas, proponha fila/serviço externo apropriado e idempotência.
+
+## 3. Conceito arquitetural: hub central e subaplicações
+
+### 3.1 Núcleo da plataforma
+
+O núcleo central deve ser responsável por:
+- Receber e normalizar requisições.
+- Resolver a rota usando catálogo registrado.
+- Identificar aplicação, contexto, assunto, interface e operação.
+- Autenticar o solicitante.
+- Autorizar aplicação, contexto, assunto, interface e função.
+- Validar parâmetros, query, headers e corpo.
+- Aplicar rate limit, quotas e limites de payload.
+- Criar contexto de execução imutável e tipado.
+- Aplicar políticas transversais de segurança.
+- Encaminhar a execução ao handler registrado.
+- Normalizar respostas e erros.
+- Registrar auditoria e métricas sem vazar dados sensíveis.
+
+O núcleo deve ser pequeno, previsível e independente das regras de negócio das subaplicações.
+
+### 3.2 Subaplicações
+
+Cada subaplicação deve ser um módulo isolado, com:
+- Identificador único e estável, nome e descrição.
+- Estado: habilitada, desabilitada ou em manutenção.
+- Versão.
+- Lista explícita de contextos.
+- Políticas de autenticação e autorização.
+- Limites de uso e rate limits próprios.
+- Permissões exigidas.
+- Handlers e schemas registrados.
+- Configuração validada na inicialização.
+- Testes e documentação próprios.
+
+Uma subaplicação não pode registrar rotas globais irrestritamente, alterar middlewares do núcleo, acessar segredos de outra aplicação ou modificar políticas centrais.
+
+### 3.3 Hierarquia de módulos
+
+Organize os módulos na hierarquia:
+
+**Aplicação → Contexto → Assunto → Interface/versão → Função/operação**
+
+Defina precisamente o significado de cada nível. A interface pode representar a versão do contrato HTTP, por exemplo `v1`; não confunda versão de API com versão interna do pacote.
+
+Cada operação deve declarar explicitamente método HTTP, caminho, identificador, schema de entrada, schema de saída, permissões necessárias, política de autenticação, rate limit, timeout, classificação de sensibilidade, idempotência, efeitos colaterais, handler e política de auditoria.
+
+Não derive permissões apenas do nome da URL. O catálogo de operações é a fonte de verdade.
+
+## 4. Estrutura de diretórios sugerida
+
+Use como ponto de partida e ajuste somente com justificativa:
+
+```text
+src/
+  app/
+    api/
+      index.ts
+      router.ts
+    core/
+      bootstrap.ts
+      registry/
+        application-registry.ts
+        operation-registry.ts
+        validate-registry.ts
+      http/
+        request-context.ts
+        response.ts
+        errors.ts
+      security/
+        authentication/
+        authorization/
+        policies/
+        rate-limit/
+        headers/
+        csrf/
+        input-validation/
+        audit/
+      observability/
+        logger.ts
+        metrics.ts
+        tracing.ts
+    applications/
+      aplicacao-a/
+        manifest.ts
+        permissions.ts
+        financeiro/
+          recebimentos/
+            v1/
+              consultar/
+                schema.ts
+                handler.ts
+                route.ts
+              registrar/
+                schema.ts
+                handler.ts
+                route.ts
+        tests/
+      aplicacao-b/
+        manifest.ts
+        permissions.ts
+        usuarios/
+          perfil/
+            v1/
+              consultar/
+                schema.ts
+                handler.ts
+                route.ts
+    infrastructure/
+      database/
+      redis/
+      identity/
+      secrets/
+    shared/
+      types/
+      schemas/
+      utils/
+  tests/
+    unit/
+    integration/
+    security/
+    contract/
+  scripts/
+  docs/
+  package.json
+  tsconfig.json
+  vercel.json
+```
+
+Não crie arquivos vazios ou camadas sem responsabilidade real. Explique a responsabilidade de cada diretório e arquivo relevante.
+
+## 5. Registro explícito de aplicações e operações
+
+Crie um mecanismo de registro central, preferencialmente baseado em manifests tipados. O registro deve:
+- Ser construído na inicialização.
+- Rejeitar identificadores duplicados, caminhos duplicados ou ambíguos.
+- Rejeitar operações sem schema, handler ou política de autorização.
+- Rejeitar permissões desconhecidas e configurações inválidas.
+- Não permitir que uma aplicação se registre por requisição HTTP pública.
+- Não permitir que dados do cliente escolham módulo arbitrário, arquivo, import dinâmico ou caminho no filesystem.
+- Expor apenas operações habilitadas.
+- Permitir desativação controlada de uma aplicação.
+- Falhar fechado em erro de inicialização, sem disponibilizar rotas parcialmente configuradas.
+
+Não use `eval`, `new Function`, `vm` ou execução de JavaScript recebido por HTTP. O sistema deve carregar código confiável incluído no build/deploy. Plugins remotos exigem projeto separado, assinatura, verificação de integridade, isolamento e modelo de ameaça próprios.
+
+## 6. Identidade, autenticação e autorização
+
+Projete autenticação conforme o tipo de consumidor. Não force JWT em todos os casos.
+
+### 6.1 Autenticação
+
+Considere usuários humanos, serviços máquina a máquina, clientes internos, administradores da plataforma e identidades de subaplicações.
+
+Para sessões de usuários, considere provedor de identidade confiável ou sessões opacas armazenadas em serviço apropriado. Cookies, quando usados, devem ter `HttpOnly`, `Secure`, `SameSite` adequado, escopo restrito e expiração.
+
+Para JWT, valide assinatura, algoritmo permitido por configuração, `iss`, `aud`, `exp`, `nbf` quando presente e demais claims necessárias. Não aceite algoritmo escolhido livremente pelo token. Não confunda decodificação com validação criptográfica.
+
+Para integrações máquina a máquina, prefira OAuth 2.0 Client Credentials ou credenciais de serviço com rotação, escopo e expiração. API keys são segredos: armazene apenas hash quando aplicável, exiba uma única vez, permita revogação, rotação, escopos e identificação do cliente. Nunca use chave estática compartilhada por todos os consumidores.
+
+Não implemente criptografia própria.
+
+### 6.2 Autorização granular
+
+Implemente autorização por política, com princípio do menor privilégio. Considere, conforme aplicável:
+- Identidade e tipo do sujeito.
+- Aplicação, contexto, assunto, interface/versão e operação.
+- Escopos/permissões.
+- Organização/tenant.
+- Propriedade e estado do recurso.
+- Atributos contextuais relevantes.
+
+Considere RBAC combinado com ABAC quando necessário. Não dependa exclusivamente de papéis genéricos como `admin` e `user`.
+
+Implemente verificações contra BOLA/IDOR em cada acesso a objetos. Permissão para executar uma operação não concede acesso a todos os registros daquela operação. A autorização ocorre no servidor, em todas as requisições, antes de efeitos colaterais. O frontend não é uma fronteira de segurança.
+
+Adote negação por padrão: operação sem política explícita é negada.
+
+### 6.3 Separação de privilégios
+
+Separe administrador da plataforma, administrador de subaplicação, operador de negócio, usuário final e serviço automatizado. Administrador de uma subaplicação não administra automaticamente outras aplicações ou o núcleo. Audite alterações de permissões, credenciais, manifests, estado de aplicações e políticas.
+
+## 7. Isolamento entre subaplicações e multi-tenancy
+
+A separação modular não pode ser apenas organizacional no código. Defina fronteiras explícitas:
+- Cada aplicação declara permissões e recursos.
+- Cada operação recebe apenas dependências necessárias.
+- Evite objetos globais mutáveis compartilhados.
+- Não compartilhe credenciais de banco entre aplicações quando houver necessidade real de isolamento mais forte.
+- Separe namespaces/chaves de cache e rate limit por aplicação e tenant.
+- Inclua tenant/organização no contexto autenticado, nunca confiando em tenant enviado livremente pelo cliente.
+- Aplique filtros de tenant em toda consulta pertinente.
+- Considere Row-Level Security se o banco suportar e for adequado.
+- Evite que uma aplicação importe handlers privados de outra.
+- Compartilhe somente contratos e utilitários explicitamente públicos.
+
+Explique a diferença entre isolamento lógico dentro de um processo e isolamento forte por processo/serviço/credencial. Não afirme que módulos TypeScript são uma sandbox de segurança.
+
+## 8. Segurança HTTP e validação
+
+Implemente HTTPS obrigatório, métodos HTTP coerentes, CORS com allowlist exata (nunca `*` combinado com credenciais), proteção CSRF quando cookies autenticados forem usados, headers de segurança adequados, `Content-Type` validado, limite de body, timeout de requisição e dependências, validação estrita de path/query/headers/body, rejeição de campos inesperados quando apropriado, erros normalizados, `Cache-Control` correto para dados privados, proteção contra cache compartilhado de respostas sensíveis, rejeição de métodos não suportados e tratamento correto de `OPTIONS`, `HEAD` e preflight.
+
+Use Zod ou equivalente para validar entrada e, quando relevante, saída. Tipos TypeScript não substituem validação em runtime. Evite SQL por concatenação. Use parâmetros vinculados/prepared statements. Para ordenação, colunas e filtros dinâmicos, use allowlists.
+
+## 9. Rate limiting, quotas e resistência a abuso
+
+Projete limites por IP/origem como sinal auxiliar, identidade autenticada, client ID/serviço, aplicação, operação, tenant e custo da operação. Considere janelas, burst, concorrência, payload e custo computacional. Não use IP como único identificador.
+
+Use armazenamento compartilhado apropriado para consistência entre instâncias serverless. Defina comportamento em indisponibilidade do Redis: para operações sensíveis, falhar fechado ou aplicar política conservadora; documente a decisão.
+
+Inclua proteção contra enumeração, brute force, credential stuffing e abuso de endpoints caros. Respostas de rate limit devem usar HTTP `429` e `Retry-After` quando possível. Não confunda rate limiting com proteção DDoS: descreva a proteção de borda e o que precisa ser configurado separadamente.
+
+## 10. Banco de dados e acesso a recursos
+
+Implemente camada de infraestrutura que não exponha conexão ou credenciais diretamente aos handlers. Exija credenciais exclusivas por ambiente, privilégios mínimos, prepared statements, timeouts, limites de consulta, pool adequado ao serverless, transações quando necessárias, idempotência para operações repetíveis, paginação, limites de resultados, proteção contra consultas caras, auditoria de operações sensíveis, backup/restauração/retenção e migrações controladas.
+
+Não inclua credenciais reais nos exemplos. Forneça `.env.example` somente com nomes de variáveis e valores fictícios claramente marcados.
+
+## 11. Segredos, criptografia e dados sensíveis
+
+Use o gerenciador de variáveis/segredos da plataforma ou serviço apropriado. Nunca coloque segredos em código, repositório, bundle frontend, logs ou erros. Separe desenvolvimento, preview/staging e produção. Restrinja leitura/alteração, planeje rotação, use TLS, criptografia em repouso dos serviços e não crie criptografia própria.
+
+Minimize dados pessoais coletados e retidos. Defina retenção, descarte, mascaramento e acesso. Não registre tokens, senhas, cookies, chaves, dados financeiros completos ou payloads sensíveis. Considere LGPD quando houver dados pessoais: finalidade, necessidade, transparência, retenção, controle de acesso e direitos aplicáveis.
+
+## 12. Logs, auditoria e observabilidade
+
+Implemente logs JSON com ID de correlação/request, timestamp, aplicação/operação, resultado, latência, identificador pseudonimizado do sujeito/cliente quando apropriado, tenant quando permitido, código de erro e resultado da autorização sem dados sensíveis.
+
+Separe logs operacionais de trilhas de auditoria. Auditoria de ações administrativas/sensíveis deve ter integridade, retenção e acesso restrito. Não registre body integral por padrão. Implemente mascaramento/redaction. Não retorne stack trace, caminho interno, SQL ou detalhes de infraestrutura ao cliente.
+
+## 13. Vercel e execução serverless
+
+Avalie especificamente modelo de execução e ciclo de vida das Vercel Functions, runtime Node.js e compatibilidade de bibliotecas, limites de duração/memória/payload/concorrência do plano, cold starts, inicialização do registry, reutilização segura de conexões, região até banco/Redis, variáveis por ambiente, proteção de deployments preview, domínios, Vercel Firewall e recursos de proteção disponíveis no plano.
+
+Não assuma que firewall, proteção contra bots ou WAF estão incluídos em qualquer plano. Confirme na documentação oficial atual o que depende de plano, configuração ou serviço adicional.
+
+A função deve ser stateless para estado de negócio. Estado compartilhado reside em serviços externos. Proteja deployments preview e impeça ambientes não produtivos de acessar dados de produção.
+
+## 14. Segurança específica do hub
+
+O hub possui catálogo interno de aplicações e operações. Cada rota é resolvida exclusivamente nesse catálogo. Implemente:
+1. Identificador estável e normalizado de aplicação.
+2. Manifesto tipado e validado.
+3. Registro explícito de operações.
+4. Verificação de colisões de rota.
+5. Verificação de permissões declaradas.
+6. Estado habilitado/desabilitado.
+7. Versão de contrato.
+8. Políticas específicas por operação.
+9. Auditoria de mudanças no catálogo.
+10. Testes contra invocação de operações privadas de outra aplicação.
+
+Não converta URL diretamente em caminho de arquivo. Não faça import dinâmico baseado em parâmetros não confiáveis. Não permita escolha de handler por string sem allowlist. Aplicação desabilitada não executa handler. Aplicação desconhecida não revela detalhes internos.
+
+## 15. Se houver entrega de interfaces ou código ao frontend
+
+A API poderá informar qual interface o frontend deve apresentar. Trate isso como distribuição de configuração, não como execução irrestrita de código remoto.
+
+Prefira JSON declarativo, componentes previamente registrados no frontend, schema e versão validados, sem nomes arbitrários de componentes/imports/caminhos. Não aceite `eval`, `new Function` ou código recebido via HTTP. Assine e versione configurações quando necessário. Separe autorização para consultar configuração da autorização para executar operação de negócio.
+
+Distribuição futura de módulos executáveis exige análise de ameaça independente: assinatura digital, hashes, origem confiável, política de atualização, rollback, CSP, isolamento por iframe/sandbox ou WebAssembly conforme o caso. Assinatura não é sandbox.
+
+## 16. Tratamento de erros
+
+Defina catálogo estável, por exemplo:
+- `AUTHENTICATION_REQUIRED`
+- `ACCESS_DENIED`
+- `RESOURCE_NOT_FOUND`
+- `APPLICATION_DISABLED`
+- `OPERATION_NOT_AVAILABLE`
+- `VALIDATION_ERROR`
+- `RATE_LIMIT_EXCEEDED`
+- `IDEMPOTENCY_CONFLICT`
+- `INTERNAL_ERROR`
+
+Use status HTTP apropriados. Não revele se recurso privado existe quando isso facilitar enumeração; avalie `404` quando ocultar existência for necessário. Padronize resposta, por exemplo:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "A requisição contém dados inválidos.",
+    "request_id": "identificador-de-correlacao"
+  }
+}
+```
+
+Não inclua stack trace nem detalhes internos.
+
+## 17. Testes obrigatórios
+
+Crie testes unitários, integração, contrato e segurança. Inclua no mínimo:
+- Requisição sem autenticação.
+- Token expirado/inválido e issuer/audience incorretos.
+- Credencial revogada.
+- Usuário sem permissão.
+- Acesso a recurso de outro usuário/tenant.
+- Aplicação desabilitada/inexistente.
+- Operação inexistente.
+- Colisão de rota no registry.
+- Schema inválido/campos inesperados.
+- Payload excessivo e método indevido.
+- CORS não autorizado e CSRF quando aplicável.
+- Rate limit por identidade, IP e operação.
+- Redis e banco indisponíveis.
+- Tentativas de SQL Injection e path traversal.
+- Tentativa de escolher módulo/handler arbitrário.
+- Vazamento entre subaplicações e tenants.
+- Repetição de operação não idempotente.
+- Logs com dados sensíveis.
+- Erros sem stack trace.
+- Configuração insegura de ambiente.
+
+Adicione testes negativos e regressivos. Não considere aprovado apenas porque recebeu qualquer erro: verifique status, código, ausência de efeitos colaterais e ausência de vazamento.
+
+## 18. CI/CD e cadeia de suprimentos
+
+Configure pipeline para typecheck, lint, testes unitários/integração/contrato, auditoria de dependências, verificação de segredos, build, análise estática e verificação de configuração. Deploy somente após etapas obrigatórias. Use lockfile e versões controladas. Minimize dependências e avalie transitivas e scripts de instalação. Defina rollback e resposta a incidente.
+
+## 19. Documentação e entregáveis
+
+Entregue:
+1. Diagrama textual da arquitetura.
+2. Fluxo detalhado de requisição.
+3. Estrutura final de diretórios.
+4. Responsabilidade dos módulos.
+5. Modelo de manifesto de subaplicação.
+6. Modelo de registro de operação.
+7. Modelo de permissões e políticas.
+8. Implementação funcional do núcleo.
+9. Uma subaplicação demonstrativa completa.
+10. Duas operações demonstrativas, uma de leitura e outra com efeito colateral.
+11. Middleware de autenticação.
+12. Autorização granular.
+13. Validação de entrada e saída.
+14. Rate limiting distribuído.
+15. Auditoria e logging seguro.
+16. Tratamento padronizado de erros.
+17. Integração com banco por repositório.
+18. Testes automatizados representativos.
+19. Configuração Vercel.
+20. `package.json`, `tsconfig.json` e arquivos necessários.
+21. `.env.example` sem segredos reais.
+22. OpenAPI/Swagger com autenticação e escopos documentados, sem expor endpoints internos.
+23. README com instalação, execução, deploy, configuração e operação.
+24. Checklist de segurança para produção.
+25. Matriz de ameaças, controles, riscos residuais e responsáveis.
+
+Forneça código real, coerente e compilável. Não omita partes críticas com “implemente aqui” ou pseudocódigo. Se integração depender de credenciais/serviço externo, implemente a interface e explique a configuração necessária sem inventar credenciais.
+
+## 20. Critérios de qualidade e implementação
+
+- TypeScript estrito; evite `any`.
+- Tipos compartilhados sem acoplamento indevido.
+- Funções pequenas e responsabilidades explícitas.
+- Dependências injetadas nos handlers.
+- Nenhuma regra de negócio no roteador central.
+- Nenhum segredo no código.
+- Nenhuma autorização somente no frontend.
+- Nenhum endpoint administrativo público sem autenticação forte e autorização específica.
+- Nenhum acesso dinâmico a módulo baseado em input do cliente.
+- Nenhuma execução de JavaScript recebido por HTTP.
+- Nenhum estado crítico apenas em memória local.
+- Nenhuma permissão implícita.
+- Nenhuma consulta sem limite/paginação quando aplicável.
+- Nenhuma mensagem de erro com informação interna.
+- Nenhuma promessa de “segurança máxima” sem análise de risco.
+
+Quando houver conflito entre conveniência e segurança, explique o impacto e escolha o padrão mais seguro viável operacionalmente.
+
+## 21. Método de trabalho
+
+Trabalhe em etapas, sem gerar código desorganizado:
+
+**Etapa 1 — Arquitetura:** decisões, diagrama, ameaças, trade-offs e estrutura.
+
+**Etapa 2 — Contratos:** tipos, manifests, registry, contexto de requisição e catálogo de erros.
+
+**Etapa 3 — Segurança central:** autenticação, autorização, validação, rate limiting, headers, auditoria e erros.
+
+**Etapa 4 — Roteamento:** resolução exclusivamente pelo registry e integração com adaptador Vercel.
+
+**Etapa 5 — Subaplicação de exemplo:** aplicação completa com contexto, assunto, versão e operações.
+
+**Etapa 6 — Persistência:** repositórios e controles de banco, sem acoplar handlers à tecnologia concreta.
+
+**Etapa 7 — Testes:** execute e apresente resultados, incluindo cenários negativos de segurança.
+
+**Etapa 8 — Deploy e operação:** variáveis, ambientes, Vercel, monitoramento, rollback e checklist de produção.
+
+Ao final de cada etapa, informe arquivos criados/alterados, decisões, testes executados, resultados e pendências. Não afirme que testes foram executados se não foram. Não afirme que a aplicação está segura apenas porque compila.
+
+## 22. Resultado esperado
+
+O resultado deve ser uma plataforma única de API que permita organizar e governar várias subaplicações por uma hierarquia clara:
+
+`API → Aplicação → Contexto → Assunto → Interface/Versão → Função`
+
+Cada subaplicação deve ser modular e independente no domínio, mas subordinada ao núcleo central de identidade, políticas, roteamento, auditoria e governança.
+
+A inclusão de uma nova subaplicação deve exigir apenas:
+1. Criar seu módulo e manifesto.
+2. Declarar contextos, assuntos e operações.
+3. Declarar schemas, permissões e políticas.
+4. Registrar explicitamente a aplicação no catálogo.
+5. Implementar e testar handlers.
+6. Passar pelos controles de CI e segurança.
+
+O núcleo deve garantir que nenhuma subaplicação ultrapasse suas permissões, acesse recursos de outra aplicação ou exponha operações não registradas.
+
+**Comece pela arquitetura e pelas decisões de segurança. Só depois implemente o código.**
+</div></article></main>
+<footer>Documento HTML autônomo · Português (Brasil)</footer>
+<script>
+document.getElementById('copy').addEventListener('click',async()=>{const t=document.getElementById('prompt').innerText;const s=document.getElementById('status');try{await navigator.clipboard.writeText(t);s.textContent='Prompt copiado para a área de transferência.'}catch(e){s.textContent='Não foi possível copiar automaticamente. Selecione o texto e copie manualmente.'}});
+</script>
+</body></html>

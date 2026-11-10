@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliador AMSTAR 2 - Instrumento de Avaliação de Revisões Sistemáticas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* CSS customizado e regras para impressão */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .critical-badge {
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgba(225, 29, 72, 0.4); }
+            50% { border-color: rgba(225, 29, 72, 0.9); }
+        }
+
+        /* Print styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 11pt;
+            }
+            .print-card {
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+                margin-bottom: 1rem !important;
+            }
+            .sticky-header {
+                position: static !important;
+                box-shadow: none !important;
+            }
+            textarea {
+                border: none !important;
+                resize: none;
+                padding: 0 !important;
+            }
+            .print-header {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- CABEÇALHO DA APLICAÇÃO -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="p-2.5 bg-brand-600 rounded-xl text-white shadow-inner">
+                    <i class="fa-solid fa-clipboard-check text-xl sm:text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                        Avaliador AMSTAR 2
+                        <span class="text-xs bg-brand-500/30 text-brand-300 font-medium px-2 py-0.5 rounded-full border border-brand-400/30">v2017</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">Avaliação Qualitativa & Metodológica de Revisões Sistemáticas (Shea et al., 2017)</p>
+                </div>
+            </div>
+
+            <!-- BOTÕES DE AÇÃO PRINCIPAIS -->
+            <div class="flex flex-wrap items-center gap-2 no-print">
+                <button onclick="loadExampleData()" title="Carregar Exemplo Didático de Psicologia" 
+                        class="px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Exemplo Demo
+                </button>
+                <button onclick="resetForm()" title="Limpar Formulário" 
+                        class="px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-left text-slate-400"></i> Limpar
+                </button>
+                <button onclick="copyFormattedReport()" title="Copiar resumo textual" 
+                        class="px-3 py-1.5 text-xs font-semibold bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-regular fa-copy"></i> Copiar Relatório
+                </button>
+                <button onclick="exportJSON()" title="Baixar dados em JSON" 
+                        class="px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-download text-brand-400"></i> JSON
+                </button>
+                <button onclick="window.print()" title="Imprimir ou Salvar PDF" 
+                        class="px-3 py-1.5 text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition-all flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-print"></i> Imprimir / PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- NOTIFICAÇÃO TOAST CONTAINER -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 ease-in-out max-w-md bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center space-x-3 pointer-events-none">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-message" class="text-xs font-medium">Operação realizada!</span>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full space-y-6">
+
+        <!-- PAINEL FIXO / PAINEL RESUMO EM TEMPO REAL -->
+        <section class="sticky top-[60px] z-30 bg-white/95 backdrop-blur border border-slate-200 rounded-2xl shadow-lg p-4 sm:p-5 transition-all sticky-header">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                
+                <!-- COLUNA 1: CLASSIFICAÇÃO GERAL -->
+                <div class="lg:col-span-5 flex items-center space-x-4 border-b lg:border-b-0 lg:border-r border-slate-200 pb-3 lg:pb-0 lg:pr-4">
+                    <div id="confidence-badge-container" class="p-3.5 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center min-w-[64px] min-h-[64px] transition-colors">
+                        <i id="confidence-icon" class="fa-solid fa-hourglass-start text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-600">Nível de Confiança Geral</span>
+                        <div class="flex items-center space-x-2 mt-0.5">
+                            <h2 id="confidence-label" class="text-xl sm:text-2xl font-black text-slate-700">Pendente</h2>
+                        </div>
+                        <p id="confidence-desc" class="text-xs text-slate-600 mt-1">Preencha os itens para calcular a confiança.</p>
+                    </div>
+                </div>
+
+                <!-- COLUNA 2: CONTADORES DE FALHAS -->
+                <div class="lg:col-span-4 grid grid-cols-2 gap-3 border-b lg:border-b-0 lg:border-r border-slate-200 pb-3 lg:pb-0 lg:pr-4">
+                    <div class="bg-rose-50/80 border border-rose-200/80 rounded-xl p-2.5 flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-lg bg-rose-500 text-white flex items-center justify-center font-bold text-base shadow-sm">
+                            <span id="critical-flaws-count">0</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold text-rose-800 uppercase block">Falhas Críticas</span>
+                            <span class="text-[10px] text-rose-600">Dos 7 domínios chave</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50/80 border border-amber-200/80 rounded-xl p-2.5 flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold text-base shadow-sm">
+                            <span id="non-critical-flaws-count">0</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold text-amber-800 uppercase block">Falhas Não-Críticas</span>
+                            <span class="text-[10px] text-amber-600">Dos 9 domínios padrões</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUNA 3: PROGRESSO E REGRAS -->
+                <div class="lg:col-span-3 flex flex-col justify-between h-full space-y-2">
+                    <div class="flex justify-between items-center text-xs font-medium">
+                        <span class="text-slate-500">Progresso de Preenchimento:</span>
+                        <span id="progress-text" class="font-bold text-brand-600">0 / 16 (0%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                        <div id="progress-bar" class="bg-brand-600 h-2.5 rounded-full transition-all duration-300 w-0"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <button onclick="toggleRulesModal()" class="text-[11px] text-brand-600 hover:text-brand-700 font-semibold underline flex items-center gap-1 no-print">
+                            <i class="fa-solid fa-circle-info"></i> Entender Regra Oficial AMSTAR 2
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MODAL / GUIA DE REGRAS DO AMSTAR 2 -->
+        <div id="rules-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto border border-slate-200">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-scale-balanced text-brand-600"></i>
+                        Critérios Oficiais de Classificação AMSTAR 2
+                    </h3>
+                    <button onclick="toggleRulesModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Segundo <strong>Shea et al. (2017, BMJ)</strong>, a avaliação global do AMSTAR 2 é baseada no impacto das falhas encontradas, diferindo da pontuação acumulativa simples. A presença de falhas nos <strong>7 domínios críticos</strong> reduz a confiança nos resultados da revisão:
+                </p>
+
+                <div class="space-y-2 text-xs">
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start space-x-3">
+                        <span class="px-2 py-0.5 bg-emerald-600 text-white font-bold text-[10px] rounded uppercase">Alta</span>
+                        <div>
+                            <strong class="text-emerald-900">0 falhas críticas e no máximo 1 falha não-crítica.</strong>
+                            <p class="text-emerald-700 text-[11px] mt-0.5">A revisão sistemática fornece um resumo preciso e abrangente dos resultados disponíveis.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-start space-x-3">
+                        <span class="px-2 py-0.5 bg-amber-600 text-white font-bold text-[10px] rounded uppercase">Moderada</span>
+                        <div>
+                            <strong class="text-amber-900">0 falhas críticas e mais de 1 falha não-crítica.</strong>
+                            <p class="text-amber-700 text-[11px] mt-0.5">A revisão apresenta mais de uma fragilidade, mas nenhum defeito crítico. Ainda fornece um resumo útil.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-orange-50 border border-orange-200 rounded-xl flex items-start space-x-3">
+                        <span class="px-2 py-0.5 bg-orange-600 text-white font-bold text-[10px] rounded uppercase">Baixa</span>
+                        <div>
+                            <strong class="text-orange-900">1 falha crítica (com ou sem falhas não-críticas).</strong>
+                            <p class="text-orange-700 text-[11px] mt-0.5">A revisão apresenta uma falha crítica em um domínio chave e pode não fornecer um resumo completo e fiel da evidência.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-start space-x-3">
+                        <span class="px-2 py-0.5 bg-rose-600 text-white font-bold text-[10px] rounded uppercase">Criticamente Baixa</span>
+                        <div>
+                            <strong class="text-rose-900">Mais de 1 falha crítica (com ou sem falhas não-críticas).</strong>
+                            <p class="text-rose-700 text-[11px] mt-0.5">A revisão possui múltiplas falhas críticas e não deve ser considerada para fornecer um resumo confiável das evidências.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-600 text-[11px]">
+                    <strong>Nota Metodológica:</strong> Respostas "Parcialmente Sim" em domínios críticos indicam cumprimento parcial da exigência e são contabilizadas como falhas não-críticas, exceto se os autores considerarem rigor mínimo ausente. Respostas "Não Aplicável" (ex: sem metanálise) não contam como falhas.
+                </div>
+
+                <div class="pt-2 text-right">
+                    <button onclick="toggleRulesModal()" class="px-4 py-2 bg-brand-600 text-white text-xs font-semibold rounded-lg hover:bg-brand-700">Entendi</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FORMULÁRIO DADOS DO ESTUDO -->
+        <section class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 print-card">
+            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2">
+                <i class="fa-solid fa-file-invoice text-brand-600"></i> Identification do Estudo Avaliado
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                <div class="md:col-span-2">
+                    <label class="block font-medium text-slate-700 mb-1" for="review-title">Título da Revisão Sistemática *</label>
+                    <input type="text" id="review-title" placeholder="Ex: Eficácia das intervenções cognitivo-comportamentais para depressão na infância: revisão sistemática" 
+                           class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all text-xs">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1" for="review-authors">Autores / Periódico / Ano</label>
+                    <input type="text" id="review-authors" placeholder="Ex: Silva et al. (2023) - Psico-USF" 
+                           class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all text-xs">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1" for="reviewer-name">Nome do Avaliador(a)</label>
+                    <input type="text" id="reviewer-name" placeholder="Ex: Dr. Carlos Eduardo / Mestrando" 
+                           class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all text-xs">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1" for="review-date">Data da Avaliação</label>
+                    <input type="date" id="review-date" 
+                           class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all text-xs">
+                </div>
+
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1" for="synthesis-type">Tipo de Síntese Conduzida</label>
+                    <select id="synthesis-type" onchange="handleSynthesisChange()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all text-xs">
+                        <option value="meta">Síntese Quantitativa (Com Metanálise)</option>
+                        <option value="qualitative">Síntese Qualitativa / Narrativa (Sem Metanálise)</option>
+                    </select>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block font-medium text-slate-700 mb-1" for="review-objective">Escopo / Objetivo Principal da Revisão</label>
+                    <input type="text" id="review-objective" placeholder="Ex: Investigar eficácia de intervenções psicológicas no manejo da ansiedade." 
+                           class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all text-xs">
+                </div>
+            </div>
+        </section>
+
+        <!-- FORMULÁRIO DOS 16 ITENS DO AMSTAR 2 -->
+        <section class="space-y-4">
+            <div class="flex flex-wrap justify-between items-center gap-2">
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-brand-600"></i>
+                    Questionário de Avaliação Metodológica (16 Itens)
+                </h3>
+                <div class="flex items-center space-x-3 text-xs">
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> Domínio Crítico (7)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-400 inline-block"></span> Domínio Padrão (9)</span>
+                </div>
+            </div>
+
+            <!-- CONTAINER ONDE OS CARDS DOS 16 ITENS SERÃO RENDERIZADOS -->
+            <div id="amstar-items-container" class="space-y-4">
+                <!-- Inserido dinamicamente via JS para garantia de manutenção perfeita -->
+            </div>
+        </section>
+
+        <!-- PAINEL DE CONCLUSÃO / EXPORTAÇÃO COMPLETA -->
+        <section class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4 print-card">
+            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2">
+                <i class="fa-solid fa-box-archive text-brand-600"></i> Resumo Final & Observações Gerais do Avaliador
+            </h3>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1" for="overall-notes">Considerações Finais e Implicações para a Prática em Psicologia/Saúde:</label>
+                    <textarea id="overall-notes" rows="4" placeholder="Escreva aqui suas sínteses críticas, principais fragilidades observadas na revisão e recomendações..."
+                              class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all text-xs"></textarea>
+                </div>
+
+                <div class="flex flex-wrap justify-between items-center pt-2 gap-3 no-print">
+                    <div class="text-slate-600 text-xs">
+                        <i class="fa-solid fa-circle-check text-emerald-500"></i> Todas as alterações são salvas automaticamente na sessão local.
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="copyFormattedReport()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                            <i class="fa-solid fa-copy mr-1"></i> Copiar Resumo Formatado
+                        </button>
+                        <button onclick="window.print()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                            <i class="fa-solid fa-file-pdf mr-1"></i> Imprimir Relatório PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ DA PÁGINA -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-600 no-print">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p><strong>Avaliador AMSTAR 2</strong> — Desenvolvido com base no instrumento oficial de Shea et al. (2017) [BMJ 2017;358:j4008].</p>
+            <p class="text-slate-600">Ferramenta livre para apoio à pesquisa acadêmica, pós-graduação e prática baseada em evidências em Psicologia e Saúde.</p>
+        </div>
+    </footer>
+
+    <!-- LOGICA JAVASCRIPT INTEGRADA -->
+    <script>
+        // DEFINIÇÃO OFICIAL DOS 16 ITENS DO AMSTAR 2
+        const amstarItems = [
+            {
+                id: 1,
+                title: "1. Pergunta de pesquisa e critérios de inclusão baseados na estratégia PICO",
+                isCritical: false,
+                desc: "A revisão incluiu os componentes PICO (População, Intervenção, Comparador, Desfecho/Outcome) na sua questão e nos critérios de elegibilidade?",
+                options: ["Sim", "Parcialmente Sim", "Não"],
+                guidelines: "Para 'Sim', deve haver detalhamento claro de População, Intervenção, Grupo de Controle/Comparador e Desfechos pretendidos."
+            },
+            {
+                id: 2,
+                title: "2. Protocolo prévio e justificativa de desvios (DOMÍNIO CRÍTICO)",
+                isCritical: true,
+                desc: "Houve um registro prévio do protocolo de pesquisa (ex.: PROSPERO, Open Science Framework) e os autores justificaram quaisquer desvios significativos?",
+                options: ["Sim", "Parcialmente Sim", "Não"],
+                guidelines: "Exige menção explícita à publicação prévia do protocolo e registro em base pública antes do início da busca."
+            },
+            {
+                id: 3,
+                title: "3. Justificativa para a escolha dos delineamentos dos estudos",
+                isCritical: false,
+                desc: "Os autores da revisão explicaram o motivo da inclusão dos delineamentos de estudo específicos (ex.: apenas ensaios clínicos randomizados ou inclusão de não-randomizados)?",
+                options: ["Sim", "Não"],
+                guidelines: "Deve haver explicação teórica ou metodológica para limitar ou expandir os tipos de desenho de estudo incluídos."
+            },
+            {
+                id: 4,
+                title: "4. Estratégia de busca bibliográfica abrangente (DOMÍNIO CRÍTICO)",
+                isCritical: true,
+                desc: "Os autores utilizaram uma estratégia de busca abrangente e bem documentada em pelo menos duas bases de dados relevantes?",
+                options: ["Sim", "Parcialmente Sim", "Não"],
+                guidelines: "Para 'Sim': Busca em pelo menos 2 bases principais (ex.: PsycINFO, PubMed, Scopus), estratégia completa descrita, literatura cinzenta consultada e busca em até 24 meses."
+            },
+            {
+                id: 5,
+                title: "5. Seleção dos estudos realizada em duplicata",
+                isCritical: false,
+                desc: "A triagem e seleção dos estudos (título, resumo e texto completo) foi realizada de forma independente por pelo menos dois avaliadores?",
+                options: ["Sim", "Não"],
+                guidelines: "Pelo menos dois pesquisadores selecionaram os estudos de forma independente ou houve checagem completa com consenso estipulado."
+            },
+            {
+                id: 6,
+                title: "6. Extração de dados realizada em duplicata",
+                isCritical: false,
+                desc: "A extração de dados dos artigos incluídos foi realizada independentemente por pelo menos dois avaliadores?",
+                options: ["Sim", "Não"],
+                guidelines: "Dois avaliadores extraíram os dados independentemente ou um extraiu e o segundo confirmou a exatidão da totalidade dos dados."
+            },
+            {
+                id: 7,
+                title: "7. Lista e justificativa dos estudos excluídos (DOMÍNIO CRÍTICO)",
+                isCritical: true,
+                desc: "Os autores forneceram a lista completa dos estudos excluídos na etapa de leitura integral e justificaram as exclusões de cada um?",
+                options: ["Sim", "Parcialmente Sim", "Não"],
+                guidelines: "Para 'Sim': É necessária a lista de todos os artigos lidos na íntegra que foram excluídos com suas respectivas justificativas específicas."
+            },
+            {
+                id: 8,
+                title: "8. Caracterização detalhada dos estudos incluídos",
+                isCritical: false,
+                desc: "Os autores descreveram as características dos estudos incluídos em detalhes adequados (participantes, intervenções, comparadores, desfechos e delineamento)?",
+                options: ["Sim", "Parcialmente Sim", "Não"],
+                guidelines: "Para 'Sim': Informações sobre amostra, detalhes da intervenção psicológica/clínica, contextos e mensurações."
+            },
+            {
+                id: 9,
+                title: "9. Avaliação do Risco de Viés dos estudos primários (DOMÍNIO CRÍTICO)",
+                isCritical: true,
+                desc: "Os autores utilizaram instrumentos adequados para avaliar o risco de viés dos estudos incluídos (RCTs ou estudos não-randomizados)?",
+                options: ["Sim", "Parcialmente Sim", "Não"],
+                guidelines: "Exige ferramentas validadas (ex.: Cochrane RoB 2, ROBINS-I, NOS) aplicadas de forma consistente ao delineamento."
+            },
+            {
+                id: 10,
+                title: "10. Relato das fontes de financiamento dos estudos primários",
+                isCritical: false,
+                desc: "Os autores relataram as fontes de financiamento dos estudos primários incluídos na revisão?",
+                options: ["Sim", "Não"],
+                guidelines: "Deve haver menção sobre quem financiou os estudos originais incluídos (ou declarar que não foi informado)."
+            },
+            {
+                id: 11,
+                title: "11. Adequação dos métodos estatísticos para metanálise (DOMÍNIO CRÍTICO)",
+                isCritical: true,
+                desc: "Caso tenha sido realizada metanálise, os métodos estatísticos para combinação dos resultados foram apropriados?",
+                options: ["Sim", "Não", "Sem Metanálise"],
+                guidelines: "Avalia a escolha de modelos (efeitos fixos vs. aleatórios), heterogeneidade e combinação de RCTs e não-randomizados separadamente."
+            },
+            {
+                id: 12,
+                title: "12. Avaliação do impacto do Risco de Viés nos resultados da síntese",
+                isCritical: false,
+                desc: "Caso realizada síntese quantitativa, os autores avaliaram o impacto potencial do risco de viés dos estudos individuais na metanálise?",
+                options: ["Sim", "Não", "Sem Metanálise"],
+                guidelines: "Análises de sensibilidade ou análises de subgrupo limitadas apenas a estudos com baixo risco de viés."
+            },
+            {
+                id: 13,
+                title: "13. Consideração do Risco de Viés na interpretação dos resultados (DOMÍNIO CRÍTICO)",
+                isCritical: true,
+                desc: "Ao discutir os achados e tirar conclusões, os autores consideraram formalmente o risco de viés dos estudos primários?",
+                options: ["Sim", "Não"],
+                guidelines: "As conclusões finais levam em conta a qualidade metodológica da evidência (ex.: diretrizes GRADE)."
+            },
+            {
+                id: 14,
+                title: "14. Explicação e discussão sobre a heterogeneidade observada",
+                isCritical: false,
+                desc: "Os autores investigaram e discutiram adequadamente as causas de eventuais heterogeneidades nos resultados?",
+                options: ["Sim", "Não"],
+                guidelines: "Discussão sobre inconsistências estatísticas (I² ou Q de Cochran) ou clínicas/metodológicas entre os estudos."
+            },
+            {
+                id: 15,
+                title: "15. Investigação adequada do viés de publicação (DOMÍNIO CRÍTICO)",
+                isCritical: true,
+                desc: "Caso realizada metanálise, os autores investigaram o viés de publicação (ex.: gráfico de funil, teste de Egger) e discutiram seus impactos?",
+                options: ["Sim", "Não", "Sem Metanálise"],
+                guidelines: "Avaliação formal de viés de pequenos estudos / publicação caso haja número suficiente de estudos (geralmente >= 10)."
+            },
+            {
+                id: 16,
+                title: "16. Declaração de conflitos de interesse e financiamento da revisão",
+                isCritical: false,
+                desc: "Os autores declararam seus conflitos de interesse e fontes de financiamento para a condução da própria revisão sistemática?",
+                options: ["Sim", "Não"],
+                guidelines: "Declaração transparente de fomento da revisão e ausência de interesses concorrentes."
+            }
+        ];
+
+        // ESTADO GLOBAL DA APLICAÇÃO
+        let answers = {};
+        let justifications = {};
+
+        // INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', () => {
+            // Data atual padrão
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('review-date').value = today;
+
+            // Renderizar formulário
+            renderAmstarItems();
+            
+            // Carregar do localStorage se existir
+            loadLocalState();
+
+            // Atualizar contadores
+            calculateScore();
+        });
+
+        // RENDERIZAÇÃO DOS CARDS
+        function renderAmstarItems() {
+            const container = document.getElementById('amstar-items-container');
+            container.innerHTML = '';
+
+            amstarItems.forEach(item => {
+                const isCrit = item.isCritical;
+                
+                const card = document.createElement('div');
+                card.id = `card-item-${item.id}`;
+                card.className = `p-4 sm:p-5 bg-white border rounded-2xl shadow-sm transition-all print-card hover:shadow-md ${
+                    isCrit ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200'
+                }`;
+
+                let optionsHTML = '';
+                item.options.forEach(opt => {
+                    const optId = `item-${item.id}-${opt.replace(/\s+/g, '-').toLowerCase()}`;
+                    optionsHTML += `
+                        <label for="${optId}" class="inline-flex items-center space-x-2 p-2 sm:px-3 sm:py-1.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors text-xs font-medium">
+                            <input type="radio" id="${optId}" name="item-${item.id}" value="${opt}" 
+                                   onchange="setAnswer(${item.id}, '${opt}')" 
+                                   class="text-brand-600 focus:ring-brand-500 h-4 w-4">
+                            <span>${opt}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-3 mb-3">
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h4 class="text-sm font-bold text-slate-900">${item.title}</h4>
+                                ${isCrit ? 
+                                    `<span class="px-2.5 py-0.5 text-[10px] font-extrabold uppercase bg-rose-100 text-rose-700 border border-rose-300 rounded-full flex items-center gap-1">
+                                        <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> Domínio Crítico
+                                     </span>` : 
+                                    `<span class="px-2.5 py-0.5 text-[10px] font-medium uppercase bg-slate-100 text-slate-600 rounded-full">
+                                        Domínio Padrão
+                                     </span>`
+                                }
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                        </div>
+                    </div>
+
+                    <!-- GUIA DIDÁTICO EXPANDÍVEL -->
+                    <div class="bg-slate-100/70 p-2.5 rounded-xl border border-slate-200/80 mb-3 text-[11px] text-slate-600 flex items-start gap-2">
+                        <i class="fa-solid fa-circle-info text-brand-600 mt-0.5"></i>
+                        <div><strong>Critério de Julgamento:</strong> ${item.guidelines}</div>
+                    </div>
+
+                    <!-- SELEÇÃO DE RESPOSTAS -->
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        ${optionsHTML}
+                    </div>
+
+                    <!-- CAMPO DE EVIDÊNCIA E JUSTIFICATIVA -->
+                    <div>
+                        <input type="text" id="justification-${item.id}" 
+                               oninput="setJustification(${item.id}, this.value)"
+                               placeholder="Registrar Evidência / Página / Parágrafo / Trecho do texto..." 
+                               class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // REGISTRAR RESPOSTA
+        function setAnswer(itemId, value) {
+            answers[itemId] = value;
+            saveLocalState();
+            calculateScore();
+            highlightCard(itemId);
+        }
+
+        // REGISTRAR JUSTIFICATIVA
+        function setJustification(itemId, text) {
+            justifications[itemId] = text;
+            saveLocalState();
+        }
+
+        // DESTAQUE VISUAL NO CARD AO RESPONDER
+        function highlightCard(itemId) {
+            const card = document.getElementById(`card-item-${itemId}`);
+            const isCrit = amstarItems.find(i => i.id === itemId).isCritical;
+            
+            if (answers[itemId] === 'Sim') {
+                card.className = card.className.replace(/border-\S+/, 'border-emerald-300 bg-emerald-50/10');
+            } else if (answers[itemId] === 'Parcialmente Sim') {
+                card.className = card.className.replace(/border-\S+/, 'border-amber-300 bg-amber-50/10');
+            } else if (answers[itemId] === 'Não') {
+                card.className = card.className.replace(/border-\S+/, isCrit ? 'border-rose-400 bg-rose-50/30' : 'border-amber-300 bg-amber-50/10');
+            } else {
+                card.className = card.className.replace(/border-\S+/, 'border-slate-300 bg-slate-50/30');
+            }
+        }
+
+        // MANIPULAR TIPO DE SÍNTESE
+        function handleSynthesisChange() {
+            const type = document.getElementById('synthesis-type').value;
+            const metaItems = [11, 12, 15];
+
+            if (type === 'qualitative') {
+                metaItems.forEach(id => {
+                    // Selecionar N/A automaticamente
+                    const radioNA = document.getElementById(`item-${id}-sem-metanálise`);
+                    if (radioNA) {
+                        radioNA.checked = true;
+                        setAnswer(id, "Sem Metanálise");
+                    }
+                });
+                showToast("Itens 11, 12 e 15 definidos automaticamente como Sem Metanálise.");
+            }
+        }
+
+        // CÁLCULO DA PONTUAÇÃO E CLASSIFICAÇÃO AMSTAR 2
+        function calculateScore() {
+            let criticalFlaws = 0;
+            let nonCriticalFlaws = 0;
+            let answeredCount = 0;
+
+            amstarItems.forEach(item => {
+                const ans = answers[item.id];
+                if (ans) answeredCount++;
+
+                if (item.isCritical) {
+                    // Domínio Crítico
+                    if (ans === 'Não') {
+                        criticalFlaws++;
+                    } else if (ans === 'Parcialmente Sim') {
+                        // Cumprimento parcial em domínio crítico conta como falha não-crítica
+                        nonCriticalFlaws++;
+                    }
+                } else {
+                    // Domínio Não-Crítico
+                    if (ans === 'Não' || ans === 'Parcialmente Sim') {
+                        nonCriticalFlaws++;
+                    }
+                }
+            });
+
+            // Atualizar elementos na tela
+            document.getElementById('critical-flaws-count').innerText = criticalFlaws;
+            document.getElementById('non-critical-flaws-count').innerText = nonCriticalFlaws;
+
+            const percentage = Math.round((answeredCount / 16) * 100);
+            document.getElementById('progress-text').innerText = `${answeredCount} / 16 (${percentage}%)`;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+
+            // CLASSIFICAÇÃO SEGUNDO CRITÉRIOS SHEA ET AL. (2017)
+            const badgeContainer = document.getElementById('confidence-badge-container');
+            const iconEl = document.getElementById('confidence-icon');
+            const labelEl = document.getElementById('confidence-label');
+            const descEl = document.getElementById('confidence-desc');
+
+            if (answeredCount === 0) {
+                badgeContainer.className = "p-3.5 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center min-w-[64px]";
+                iconEl.className = "fa-solid fa-hourglass-start text-2xl";
+                labelEl.innerText = "Pendente";
+                labelEl.className = "text-xl sm:text-2xl font-black text-slate-500";
+                descEl.innerText = "Selecione as opções nos 16 itens abaixo.";
+                return;
+            }
+
+            let confidenceLevel = "";
+            let colorClass = "";
+            let iconClass = "";
+            let description = "";
+
+            if (criticalFlaws === 0) {
+                if (nonCriticalFlaws <= 1) {
+                    confidenceLevel = "ALTA";
+                    colorClass = "bg-emerald-500 text-white shadow-emerald-200";
+                    iconClass = "fa-solid fa-shield-halved text-2xl";
+                    description = "Nenhuma falha crítica e no máximo 1 falha não-crítica. A revisão fornece um resumo preciso e confiável dos resultados.";
+                    labelEl.className = "text-xl sm:text-2xl font-black text-emerald-600";
+                } else {
+                    confidenceLevel = "MODERADA";
+                    colorClass = "bg-amber-500 text-white shadow-amber-200";
+                    iconClass = "fa-solid fa-triangle-exclamation text-2xl";
+                    description = "Sem falhas críticas, mas com mais de 1 falha não-crítica. A revisão ainda fornece um resumo útil da literatura.";
+                    labelEl.className = "text-xl sm:text-2xl font-black text-amber-600";
+                }
+            } else if (criticalFlaws === 1) {
+                confidenceLevel = "BAIXA";
+                colorClass = "bg-orange-500 text-white shadow-orange-200";
+                iconClass = "fa-solid fa-circle-exclamation text-2xl";
+                description = "Possui 1 falha crítica (com ou sem não-críticas). A revisão pode não fornecer um resumo completo e fiel da evidência.";
+                labelEl.className = "text-xl sm:text-2xl font-black text-orange-600";
+            } else { // criticalFlaws > 1
+                confidenceLevel = "CRITICAMENTE BAIXA";
+                colorClass = "bg-rose-600 text-white shadow-rose-200";
+                iconClass = "fa-solid fa-radiation text-2xl";
+                description = "Mais de 1 falha crítica. A revisão possui fraquezas graves e NÃO deve ser considerada para embasar decisões clínicas/teóricas.";
+                labelEl.className = "text-xl sm:text-2xl font-black text-rose-600";
+            }
+
+            badgeContainer.className = `p-3.5 rounded-2xl flex items-center justify-center min-w-[64px] shadow-lg ${colorClass}`;
+            iconEl.className = iconClass;
+            labelEl.innerText = confidenceLevel;
+            descEl.innerText = description;
+        }
+
+        // PERSISTÊNCIA LOCALSTORAGE
+        function saveLocalState() {
+            const data = {
+                title: document.getElementById('review-title').value,
+                authors: document.getElementById('review-authors').value,
+                reviewer: document.getElementById('reviewer-name').value,
+                date: document.getElementById('review-date').value,
+                synthesis: document.getElementById('synthesis-type').value,
+                objective: document.getElementById('review-objective').value,
+                notes: document.getElementById('overall-notes').value,
+                answers: answers,
+                justifications: justifications
+            };
+            localStorage.setItem('amstar2_evaluation_state', JSON.stringify(data));
+        }
+
+        function loadLocalState() {
+            const raw = localStorage.getItem('amstar2_evaluation_state');
+            if (!raw) return;
+            try {
+                const data = JSON.parse(raw);
+                if (data.title) document.getElementById('review-title').value = data.title;
+                if (data.authors) document.getElementById('review-authors').value = data.authors;
+                if (data.reviewer) document.getElementById('reviewer-name').value = data.reviewer;
+                if (data.date) document.getElementById('review-date').value = data.date;
+                if (data.synthesis) document.getElementById('synthesis-type').value = data.synthesis;
+                if (data.objective) document.getElementById('review-objective').value = data.objective;
+                if (data.notes) document.getElementById('overall-notes').value = data.notes;
+
+                if (data.answers) {
+                    answers = data.answers;
+                    Object.keys(answers).forEach(id => {
+                        const val = answers[id];
+                        const radio = document.querySelector(`input[name="item-${id}"][value="${val}"]`);
+                        if (radio) {
+                            radio.checked = true;
+                            highlightCard(parseInt(id));
+                        }
+                    });
+                }
+
+                if (data.justifications) {
+                    justifications = data.justifications;
+                    Object.keys(justifications).forEach(id => {
+                        const input = document.getElementById(`justification-${id}`);
+                        if (input) input.value = justifications[id];
+                    });
+                }
+
+                calculateScore();
+            } catch (e) {
+                console.error("Erro ao carregar do localStorage", e);
+            }
+        }
+
+        // CARREGAR EXEMPLO DIDÁTICO DE PSICOLOGIA
+        function loadExampleData() {
+            resetForm();
+
+            document.getElementById('review-title').value = "Eficácia da Terapia Cognitivo-Comportamental em Crianças com Transtornos de Ansiedade: Uma Revisão Sistemática";
+            document.getElementById('review-authors').value = "Almeida & Santos (2022) - Revista Brasileira de Psicologia";
+            document.getElementById('review-reviewer').value = "Dr. Avaliador Exemplo";
+            document.getElementById('synthesis-type').value = "meta";
+            document.getElementById('review-objective').value = "Avaliar a eficácia de intervenções baseadas em TCC comparadas a controles em amostras pediátricas.";
+            document.getElementById('overall-notes').value = "A revisão apresenta boa estratégia de busca e avaliação de risco de viés, porém falhou gravemente ao não disponibilizar a lista e justificativas dos artigos excluídos (Item 7) e não investigar formalmente o viés de publicação (Item 15), ambos domínios críticos.";
+
+            const sampleAnswers = {
+                1: "Sim", 2: "Sim", 3: "Sim", 4: "Sim", 5: "Sim", 6: "Sim", 
+                7: "Não", // Falha crítica
+                8: "Sim", 9: "Sim", 10: "Não", 11: "Sim", 12: "Sim", 13: "Sim", 14: "Sim", 
+                15: "Não", // Falha crítica
+                16: "Sim"
+            };
+
+            const sampleJustifications = {
+                1: "PICO bem descrito no resumo e na introdução (pág. 2).",
+                2: "Protocolo registrado no PROSPERO (CRD42021000000).",
+                4: "Busca realizada em 4 bases: PsycINFO, PubMed, Scopus e SciELO.",
+                7: "Fluxograma PRISMA apresentado, mas faltou anexo/tabela detalhando os artigos excluídos na leitura na íntegra.",
+                9: "Utilizada a ferramenta RoB 2 da Cochrane para ECRs.",
+                15: "Não foi apresentado Funnel Plot ou teste estatístico de viés de publicação devido ao número reduzido de estudos em subgrupos."
+            };
+
+            answers = sampleAnswers;
+            justifications = sampleJustifications;
+
+            amstarItems.forEach(item => {
+                const ans = answers[item.id];
+                if (ans) {
+                    const radio = document.querySelector(`input[name="item-${item.id}"][value="${ans}"]`);
+                    if (radio) radio.checked = true;
+                    highlightCard(item.id);
+                }
+                if (justifications[item.id]) {
+                    document.getElementById(`justification-${item.id}`).value = justifications[item.id];
+                }
+            });
+
+            saveLocalState();
+            calculateScore();
+            showToast("Exemplo didático em Psicologia carregado com sucesso!");
+        }
+
+        // LIMPAR FORMULÁRIO
+        function resetForm() {
+            answers = {};
+            justifications = {};
+            localStorage.removeItem('amstar2_evaluation_state');
+
+            document.querySelectorAll('input[type="text"], textarea').forEach(input => input.value = '');
+            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+            
+            amstarItems.forEach(item => {
+                const card = document.getElementById(`card-item-${item.id}`);
+                const isCrit = item.isCritical;
+                card.className = `p-4 sm:p-5 bg-white border rounded-2xl shadow-sm transition-all print-card hover:shadow-md ${
+                    isCrit ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200'
+                }`;
+            });
+
+            calculateScore();
+            showToast("Formulário redefinido com sucesso.");
+        }
+
+        // EXPORTAR DADOS EM JSON
+        function exportJSON() {
+            const data = {
+                metadata: {
+                    title: document.getElementById('review-title').value,
+                    authors: document.getElementById('review-authors').value,
+                    reviewer: document.getElementById('reviewer-name').value,
+                    date: document.getElementById('review-date').value,
+                    synthesis: document.getElementById('synthesis-type').value,
+                    objective: document.getElementById('review-objective').value
+                },
+                summary: {
+                    confidence: document.getElementById('confidence-label').innerText,
+                    criticalFlaws: document.getElementById('critical-flaws-count').innerText,
+                    nonCriticalFlaws: document.getElementById('non-critical-flaws-count').innerText
+                },
+                answers: answers,
+                justifications: justifications,
+                notes: document.getElementById('overall-notes').value
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AMSTAR2_Avaliacao_${(document.getElementById('review-authors').value || 'Revisao').replace(/\s+/g, '_')}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Arquivo JSON exportado com sucesso.");
+        }
+
+        // COPIAR RELATÓRIO FORMATADO EM TEXTO
+        function copyFormattedReport() {
+            const title = document.getElementById('review-title').value || "Não informado";
+            const authors = document.getElementById('review-authors').value || "Não informado";
+            const reviewer = document.getElementById('reviewer-name').value || "Não informado";
+            const date = document.getElementById('review-date').value || "Não informado";
+            const confidence = document.getElementById('confidence-label').innerText;
+            const critFlaws = document.getElementById('critical-flaws-count').innerText;
+            const nonCritFlaws = document.getElementById('non-critical-flaws-count').innerText;
+            const notes = document.getElementById('overall-notes').value || "Nenhuma observação registrada.";
+
+            let reportText = `==================================================\n`;
+            reportText += `RELATÓRIO DE AVALIAÇÃO METODOLÓGICA - AMSTAR 2\n`;
+            reportText += `==================================================\n\n`;
+            reportText += `REVISÃO AVALIADA: ${title}\n`;
+            reportText += `AUTORES/PERIÓDICO/ANO: ${authors}\n`;
+            reportText += `AVALIADOR(A): ${reviewer} | DATA: ${date}\n\n`;
+            reportText += `--------------------------------------------------\n`;
+            reportText += `RESULTADO GERAL DE CONFIANÇA: ${confidence}\n`;
+            reportText += `Falhas em Domínios Críticos: ${critFlaws} (de 7)\n`;
+            reportText += `Falhas em Domínios Não-Críticos: ${nonCritFlaws} (de 9)\n`;
+            reportText += `--------------------------------------------------\n\n`;
+            reportText += `DETALHAMENTO DOS 16 ITENS:\n`;
+
+            amstarItems.forEach(item => {
+                const ans = answers[item.id] || "Não respondido";
+                const just = justifications[item.id] ? ` [Evidência: ${justifications[item.id]}]` : '';
+                const tag = item.isCritical ? " (CRÍTICO)" : "";
+                reportText += `Item ${item.id}${tag}: ${ans}${just}\n`;
+            });
+
+            reportText += `\n--------------------------------------------------\n`;
+            reportText += `CONSIDERAÇÕES FINAIS DO AVALIADOR:\n${notes}\n`;
+            reportText += `==================================================\n`;
+
+            // Copiar para área de transferência
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(reportText).then(() => showToast("Relatório copiado para a área de transferência!"));
+            } else {
+                // Fallback para iframe ou contextos restritos
+                const textarea = document.createElement("textarea");
+                textarea.value = reportText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast("Relatório copiado com sucesso!");
+                } catch (err) {
+                    showToast("Falha ao copiar relatório automaticamente.");
+                }
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // EXIBIR NOTIFICAÇÃO TOAST
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // ALTERNAR MODAL DE REGRAS
+        function toggleRulesModal() {
+            const modal = document.getElementById('rules-modal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
