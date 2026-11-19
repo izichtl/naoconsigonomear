@@ -32,18 +32,54 @@
     <div class="sidebar-resizer" id="sidebar-resizer" role="separator"
       aria-label="Redimensionar sidebar" aria-orientation="vertical"
       tabindex="0"></div>
-    <a class="brand" href="index.html" aria-label="Início">arquivo</a>
+    <div class="sidebar-header">
+      <a class="brand" href="index.html" aria-label="Início">arquivo</a>
+      <button class="sidebar-collapse" id="sidebar-collapse" type="button"
+        aria-label="Esconder sidebar" aria-controls="sidebar" aria-expanded="true">
+        ‹
+      </button>
+    </div>
     <nav id="page-navigation">
       <p class="nav-heading">páginas</p>
       <div id="page-list" class="page-list" aria-live="polite"></div>
     </nav>
-    <p class="sidebar-footer">coleção<br>2026</p>
+    <div class="sidebar-bottom">
+      <button class="text-storage-button" id="open-text-storage" type="button"
+        aria-haspopup="dialog" aria-controls="text-storage-modal">
+        Texto salvo
+      </button>
+      <p class="sidebar-footer">coleção<br>2026</p>
+    </div>
   </aside>
+  <button class="sidebar-reveal" id="sidebar-reveal" type="button"
+    aria-label="Mostrar sidebar" aria-controls="sidebar" hidden>
+    ›
+  </button>
 
   <main class="content">
     <iframe id="page-frame" title="Página selecionada"></iframe>
     <p id="empty-state" class="empty-state" hidden>Nenhuma página HTML foi encontrada.</p>
   </main>
+  </div>
+
+  <div class="text-storage-modal" id="text-storage-modal" role="dialog"
+    aria-modal="true" aria-labelledby="text-storage-title" hidden>
+    <div class="text-storage-box">
+      <div class="text-storage-header">
+        <h2 id="text-storage-title">Texto local</h2>
+        <button class="text-storage-close" id="close-text-storage" type="button"
+          aria-label="Fechar">×</button>
+      </div>
+      <label for="stored-text">Cole aqui o texto que deseja guardar neste navegador</label>
+      <textarea id="stored-text" rows="12" spellcheck="false"
+        placeholder="Texto, chave, JWT ou outro conteúdo..."></textarea>
+      <p class="text-storage-status" id="text-storage-status" aria-live="polite"></p>
+      <div class="text-storage-actions">
+        <button type="button" id="copy-stored-text">Copiar</button>
+        <button type="button" id="save-stored-text">Salvar / atualizar</button>
+        <button type="button" id="delete-stored-text" class="delete">Apagar</button>
+      </div>
+    </div>
   </div>
 
   <script>

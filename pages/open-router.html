@@ -285,6 +285,7 @@
       <button class="tab" id="tab-pdf" role="tab" aria-selected="false" aria-controls="panel-pdf">Prompt PDF</button>
       <button class="tab" id="tab-image" role="tab" aria-selected="false" aria-controls="panel-image">Prompt image</button>
       <button class="tab" id="tab-jev" role="tab" aria-selected="false" aria-controls="panel-jev">Prompt JEV</button>
+      <button class="tab" id="tab-history" role="tab" aria-selected="false" aria-controls="panel-history">Histórico</button>
     </div>
 
     <section class="tab-panel active" id="panel-simple" role="tabpanel" aria-labelledby="tab-simple">
@@ -310,8 +311,12 @@
     <section class="tab-panel" id="panel-jev" role="tabpanel" aria-labelledby="tab-jev">
       <iframe class="frame" title="Prompt JEV" src="open-router-jev.html"></iframe>
     </section>
+    <section class="tab-panel" id="panel-history" role="tabpanel" aria-labelledby="tab-history">
+      <iframe class="frame" title="Histórico OpenRouter" src="open-router-history.html"></iframe>
+    </section>
   </main>
 
+  <script src="../openrouter-history.js"></script>
   <script>
     (() => {
       const $ = id => document.getElementById(id);
@@ -389,8 +394,16 @@
           const data = await response.json().catch(() => ({}));
           if (!response.ok) throw new Error(data?.error?.message || `A API respondeu com HTTP ${response.status}.`);
           const content = data?.choices?.[0]?.message?.content;
-          output.textContent = Array.isArray(content) ? content.map(item => item?.text || "").join("") : content || JSON.stringify(data, null, 2);
-          status.textContent = "Resposta recebida.";
+          const text = Array.isArray(content) ? content.map(item => item?.text || "").join("") : content || JSON.stringify(data, null, 2);
+          output.textContent = text;
+          OpenRouterHistory.save({
+            type: "texto",
+            source: "Prompt simples",
+            prompt,
+            content: text,
+            model
+          });
+          status.textContent = "Resposta recebida e salva no histórico.";
         } catch (error) {
           status.textContent = `Erro: ${error.message}`;
         } finally {

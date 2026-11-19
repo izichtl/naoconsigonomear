@@ -230,6 +230,7 @@
   </style>
   <link rel="stylesheet" href="../theme.css">
   <script src="../theme.js" defer></script>
+  <script src="../openrouter-history.js"></script>
 </head>
 
 <body>
@@ -874,6 +875,13 @@ Execute a análise com base no PDF fornecido e retorne todos os itens na estrutu
         const text = responseText(data);
         if (!text) throw new Error("A resposta não trouxe texto. Verifique se o modelo aceita PDFs e tente novamente.");
         const version = saveResponseVersion(text);
+        OpenRouterHistory.save({
+          type: "texto",
+          source: "Prompt PDF",
+          prompt: `${researchContext}\n\n${prompt}`,
+          content: text,
+          model
+        });
         $("output").textContent = text;
         $("resultMeta").textContent = `${selectedFileName ? `Arquivo: ${selectedFileName} · ` : ""}Modelo: ${model}`;
         $("downloadBtn").href = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));

@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenRouter — Histórico</title>
+  <link rel="stylesheet" href="../theme.css">
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--study-bg);
+      color: var(--study-text);
+      font: 14px/1.55 Arial, Helvetica, sans-serif;
+    }
+    main { max-width: 1080px; margin: 0 auto; padding: 24px 18px 48px; }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 42px);
+      line-height: 1;
+      letter-spacing: -.05em;
+      font-weight: 400;
+    }
+    button {
+      border: 1px solid var(--study-border);
+      border-radius: 0;
+      background: var(--study-surface);
+      color: var(--study-text);
+      padding: 9px 12px;
+      font: 700 12px Arial, Helvetica, sans-serif;
+      cursor: pointer;
+    }
+    button:hover, button:focus-visible {
+      background: var(--study-text);
+      color: var(--study-bg);
+    }
+    .empty {
+      border: 1px solid var(--study-border);
+      padding: 24px;
+      color: var(--study-muted);
+    }
+    .history { display: grid; gap: 12px; }
+    .record {
+      border: 1px solid var(--study-border);
+      background: var(--study-surface);
+      padding: 16px;
+    }
+    .record-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      color: var(--study-muted);
+      font-size: 12px;
+    }
+    .type {
+      display: inline-block;
+      border: 1px solid var(--study-border);
+      padding: 3px 7px;
+      color: var(--study-text);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .danger { border-color: #8a1f1f; color: #b84b4b; }
+    .preview {
+      margin: 0 0 12px;
+      color: var(--study-muted);
+      overflow-wrap: anywhere;
+    }
+    details { border-top: 1px solid var(--study-border); padding-top: 10px; }
+    summary { cursor: pointer; font-weight: 700; }
+    .text-content {
+      max-height: 430px;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      margin: 12px 0 0;
+      padding: 12px;
+      border: 1px solid var(--study-border);
+      background: var(--study-input);
+      font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .image-content {
+      display: block;
+      max-width: 100%;
+      max-height: 520px;
+      margin-top: 12px;
+      border: 1px solid var(--study-border);
+      object-fit: contain;
+      background: #080c16;
+    }
+    .image-error { color: #b84b4b; margin-top: 12px; }
+    @media (max-width: 620px) {
+      .toolbar, .record-header { align-items: flex-start; flex-direction: column; }
+      .actions { width: 100%; }
+      .actions button { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="toolbar">
+      <h1>Histórico OpenRouter</h1>
+      <button id="clear-history" type="button">Apagar tudo</button>
+    </div>
+    <div id="history" class="history" aria-live="polite"></div>
+  </main>
+
+  <script src="../openrouter-history.js"></script>
+  <script>
+    (() => {
+      const history = document.getElementById("history");
+      const clearButton = document.getElementById("clear-history");
+
+      async function copyRecord(record) {
+        if (record.type === "imagem" && record.content && navigator.clipboard && window.ClipboardItem) {
+          try {
+            const response = await fetch(record.content);
+            const blob = await response.blob();
+            await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+            return "Imagem copiada.";
+          } catch (error) {
+            // Fall back to copying the image URL or data address below.
+          }
+        }
+        const copyValue = record.content;
+        try {
+          await navigator.clipboard.writeText(copyValue);
+          return "Copiado.";
+        } catch (error) {
+          const textarea = document.createElement("textarea");
+          textarea.value = copyValue;
+          document.body.appendChild(textarea);
+          textarea.select();
+          const copied = document.execCommand("copy");
+          textarea.remove();
+          return copied ? "Copiado." : "Não foi possível copiar.";
+        }
+      }
+
+      function render() {
+        const records = OpenRouterHistory.load();
+        history.innerHTML = "";
+        clearButton.disabled = records.length === 0;
+
+        if (!records.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = "Nenhuma resposta foi salva ainda.";
+          history.appendChild(empty);
+          return;
+        }
+
+        records.forEach(record => {
+          const item = document.createElement("article");
+          item.className = "record";
+
+          const header = document.createElement("div");
+          header.className = "record-header";
+
+          const meta = document.createElement("div");
+          meta.className = "meta";
+          meta.innerHTML = `
+            <span class="type">${record.type === "imagem" ? "Imagem" : "Texto"}</span>
+            <span>${OpenRouterHistory.formatDate(record.savedAt)}</span>
+            <span>${record.source}</span>
+            ${record.model ? `<span>${record.model}</span>` : ""}
+          `;
+
+          const actions = document.createElement("div");
+          actions.className = "actions";
+
+          const copyButton = document.createElement("button");
+          copyButton.type = "button";
+          copyButton.textContent = "Copiar";
+          copyButton.addEventListener("click", async () => {
+            copyButton.textContent = await copyRecord(record);
+            setTimeout(() => { copyButton.textContent = "Copiar"; }, 1400);
+          });
+
+          const removeButton = document.createElement("button");
+          removeButton.type = "button";
+          removeButton.className = "danger";
+          removeButton.textContent = "Remover";
+          removeButton.addEventListener("click", () => {
+            OpenRouterHistory.remove(record.id);
+            render();
+          });
+
+          actions.append(copyButton, removeButton);
+          header.append(meta, actions);
+
+          const preview = document.createElement("p");
+          preview.className = "preview";
+          preview.textContent = OpenRouterHistory.preview(record.prompt || record.content);
+
+          const details = document.createElement("details");
+          const summary = document.createElement("summary");
+          summary.textContent = "Visualizar resposta";
+          details.appendChild(summary);
+
+          if (record.type === "imagem") {
+            if (record.content) {
+              const image = document.createElement("img");
+              image.className = "image-content";
+              image.src = record.content;
+              image.alt = "Imagem gerada pela OpenRouter";
+              details.appendChild(image);
+            } else {
+              const error = document.createElement("p");
+              error.className = "image-error";
+              error.textContent = record.imageError || "Imagem não disponível.";
+              details.appendChild(error);
+            }
+          } else {
+            const text = document.createElement("pre");
+            text.className = "text-content";
+            text.textContent = record.content;
+            details.appendChild(text);
+          }
+
+          item.append(header, preview, details);
+          history.appendChild(item);
+        });
+      }
+
+      clearButton.addEventListener("click", () => {
+        if (!confirm("Remover todo o histórico do OpenRouter?")) return;
+        OpenRouterHistory.clear();
+        render();
+      });
+
+      window.addEventListener("storage", render);
+      render();
+    })();
+  </script>
+</body>
+</html>

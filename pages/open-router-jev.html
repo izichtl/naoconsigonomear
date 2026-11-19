@@ -209,6 +209,7 @@
   </style>
   <link rel="stylesheet" href="../theme.css">
   <script src="../theme.js" defer></script>
+  <script src="../openrouter-history.js"></script>
 </head>
 
 <body>
@@ -410,8 +411,18 @@ Non-peer-reviewed articles</textarea>
           const rawBody = await response.text();
           responseOutput.value = rawBody;
 
+          if (response.ok) {
+            OpenRouterHistory.save({
+              type: "texto",
+              source: "Prompt JEV",
+              prompt: JSON.stringify(generatedJson, null, 2),
+              content: rawBody,
+              model
+            });
+          }
+
           status.textContent = response.ok
-            ? 'Resposta recebida.'
+            ? 'Resposta recebida e salva no histórico.'
             : `A API retornou HTTP ${response.status}.`;
         } catch (error) {
           responseOutput.value = error.message;

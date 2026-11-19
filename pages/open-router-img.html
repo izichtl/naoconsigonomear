@@ -232,6 +232,7 @@
   </style>
   <link rel="stylesheet" href="../theme.css">
   <script src="../theme.js" defer></script>
+  <script src="../openrouter-history.js"></script>
 </head>
 
 <body>
@@ -396,12 +397,19 @@
         outputUrl = image;
         $("outputImage").src = image;
         $("downloadBtn").href = image;
+        OpenRouterHistory.save({
+          type: "imagem",
+          source: "Prompt imagem",
+          prompt,
+          content: image,
+          model
+        });
         const mime = image.startsWith("data:image/jpeg") ? "jpg" : image.startsWith("data:image/webp") ? "webp" : "png";
         $("downloadBtn").download = `imagem-openrouter.${mime}`;
         $("resultMeta").textContent = `Modelo: ${model}`;
         $("emptyState").style.display = "none";
         $("result").style.display = "block";
-        setStatus("Imagem recebida com sucesso.");
+        setStatus("Imagem recebida com sucesso e salva no histórico.");
       } catch (error) {
         setStatus(`Erro: ${error.message}\n\nSe o erro mencionar CORS, o navegador bloqueou a chamada direta. Nesse caso, será necessário usar um pequeno servidor local como intermediário.`, true);
       } finally {

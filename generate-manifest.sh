@@ -15,17 +15,20 @@ while IFS= read -r -d '' file; do
   title="${title//\\/\\\\}"
   title="${title//\"/\\\"}"
   path="${relative//\\/\/}"
+  visible=true
+  case "$path" in
+    pages/open-router-img.html|pages/open-router-jev.html|pages/open-router-pdf.html|pages/open-router-history.html)
+      visible=false
+      ;;
+  esac
   if [ "$first" = true ]; then
     first=false
   else
     printf '%s\n' ',' >> "$OUTPUT"
   fi
-  printf '  {"path":"%s","title":"%s"}' "$path" "$title" >> "$OUTPUT"
+  printf '  {"path":"%s","title":"%s","visible":%s}' "$path" "$title" "$visible" >> "$OUTPUT"
 done < <(
   find "$ROOT_DIR" -type f -name '*.html' ! -path "$ROOT_DIR/index.html" \
-    ! -path "$ROOT_DIR/pages/open-router-img.html" \
-    ! -path "$ROOT_DIR/pages/open-router-jev.html" \
-    ! -path "$ROOT_DIR/pages/open-router-pdf.html" \
     ! -path '*/.git/*' -print0 | sort -z
 )
 
